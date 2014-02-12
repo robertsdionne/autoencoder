@@ -1318,8 +1318,8 @@
 				46799C1118AB092400E5D22F /* Accelerate.framework */,
 				46799C1918AB0BB800E5D22F /* OpenCL */,
 				46799C1318AB093400E5D22F /* OpenCL.framework */,
-				4679A06B18AB131E00E5D22F /* clFFT */,
 				46799C2D18AB131400E5D22F /* clBLAS */,
+				4679A06B18AB131E00E5D22F /* clFFT */,
 			);
 			path = library;
 			sourceTree = "<group>";
@@ -3163,6 +3163,7 @@
 				46799C1018AB080200E5D22F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		46799C2218AB130000E5D22F /* Build configuration list for PBXNativeTarget "clBLAS" */ = {
 			isa = XCConfigurationList;
@@ -3171,6 +3172,7 @@
 				46799C2418AB130000E5D22F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		46799C2A18AB130800E5D22F /* Build configuration list for PBXNativeTarget "clFFT" */ = {
 			isa = XCConfigurationList;
@@ -3179,6 +3181,7 @@
 				46799C2C18AB130800E5D22F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
