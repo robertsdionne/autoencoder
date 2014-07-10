@@ -1,36 +1,25 @@
-#ifndef __textengine__glfwapplication__
-#define __textengine__glfwapplication__
+#ifndef RSD_GLFWAPPLICATION_H_
+#define RSD_GLFWAPPLICATION_H_
 
 #include <GLFW/glfw3.h>
 #include <string>
 
 #include "application.h"
 
-namespace textengine {
+namespace rsd {
 
-  class Controller;
-  class Input;
-  class Joystick;
-  class Keyboard;
-  class Mouse;
   class Renderer;
 
   class GlfwApplication : public Application {
   public:
     GlfwApplication(int argument_count, char *arguments[], int width, int height,
-                    const std::string &title, Controller &controller, Renderer &renderer,
-                    Input &input, Joystick &joystick, Keyboard &keyboard, Mouse &mouse,
-                    bool minimized);
+                    const std::string &title, Renderer &renderer);
 
     virtual ~GlfwApplication();
 
     virtual int Run() override;
 
   protected:
-    static constexpr int kMinimizedWidth = 200;
-
-    static constexpr int kMinimizedHeight = 1;
-
     static void HandleKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     static void HandleMouseButton(GLFWwindow *window, int button, int action, int mods);
@@ -45,15 +34,9 @@ namespace textengine {
     char **arguments;
     int width, height;
     const std::string title;
-    Controller &controller;
     Renderer &renderer;
-    Input &input;
-    Joystick &joystick;
-    Keyboard &keyboard;
-    Mouse &mouse;
-    bool minimized;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__glfwapplication__) */
+#endif  // RSD_GLFWAPPLICATION_H_
