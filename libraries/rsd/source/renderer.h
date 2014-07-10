@@ -1,6 +1,8 @@
 #ifndef RSD_RENDERER_H_
 #define RSD_RENDERER_H_
 
+#include "interface.h"
+
 namespace rsd {
 
   class Renderer {
