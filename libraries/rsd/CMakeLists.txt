@@ -1,0 +1,6 @@
+cmake_minimum_required (VERSION 2.8.12)
+project(rsd)
+add_definitions(-std=c++11 -DGL_GLEXT_PROTOTYPES)
+include_directories(libraries/glfw/include)
+include_directories(libraries/glm)
+add_subdirectory(source)
