@@ -1,12 +1,12 @@
-#ifndef __textengine__program__
-#define __textengine__program__
+#ifndef RSD_PROGRAM_H_
+#define RSD_PROGRAM_H_
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include <vector>
 
-namespace textengine {
+namespace rsd {
 
   class Shader;
 
@@ -48,6 +48,6 @@ namespace textengine {
     GLuint handle;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__program__) */
+#endif  // RSD_PROGRAM_H_

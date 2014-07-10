@@ -1,9 +1,9 @@
-#ifndef __textengine__vertexarray__
-#define __textengine__vertexarray__
+#ifndef RSD_VERTEXARRAY_H_
+#define RSD_VERTEXARRAY_H_
 
 #include <GLFW/glfw3.h>
 
-namespace textengine {
+namespace rsd {
 
   class VertexArray {
   public:
@@ -24,6 +24,6 @@ namespace textengine {
     GLuint handle;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__vertexarray__) */
+#endif  // RSD_VERTEXARRAY_H_

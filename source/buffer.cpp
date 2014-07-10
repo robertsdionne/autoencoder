@@ -2,7 +2,7 @@
 
 #include "buffer.h"
 
-namespace textengine {
+namespace rsd {
 
   Buffer::Buffer() : target(), handle() {}
 
@@ -37,4 +37,4 @@ namespace textengine {
     glBufferSubData(target, offset, size, data);
   }
 
-}  // namespace textengine
+}  // namespace rsd

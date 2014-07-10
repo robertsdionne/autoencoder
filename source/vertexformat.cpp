@@ -4,7 +4,7 @@
 #include "vertexarray.h"
 #include "vertexformat.h"
 
-namespace textengine {
+namespace rsd {
 
   const std::unordered_map<GLenum, GLint> VertexFormat::kTypeSizes = {
     {GL_BYTE, sizeof(char)},
@@ -34,4 +34,4 @@ namespace textengine {
     this->attributes = attributes;
   }
 
-}  // namespace textengine
+}  // namespace rsd

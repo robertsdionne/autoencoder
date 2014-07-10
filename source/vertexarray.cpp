@@ -2,7 +2,7 @@
 
 #include "vertexarray.h"
 
-namespace textengine {
+namespace rsd {
 
   VertexArray::VertexArray() : handle() {}
 
@@ -32,4 +32,4 @@ namespace textengine {
     glVertexAttribPointer(index, size, type, normalized, stride, pointer);
   }
 
-}  // namespace textengine
+}  // namespace rsd

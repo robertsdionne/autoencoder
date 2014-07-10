@@ -1,9 +1,9 @@
 #include "drawable.h"
 
-namespace textengine {
+namespace rsd {
 
   size_t Drawable::data_size() const {
     return sizeof(float) * data.size();
   }
 
-}  // namespace textengine
+}  // namespace rsd

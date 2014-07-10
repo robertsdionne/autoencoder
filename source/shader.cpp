@@ -3,7 +3,7 @@
 #include "checks.h"
 #include "shader.h"
 
-namespace textengine {
+namespace rsd {
 
   Shader::Shader() : type(), sources(), handle() {}
 
@@ -69,4 +69,4 @@ namespace textengine {
     }
   }
 
-}  // namespace textengine
+}  // namespace rsd

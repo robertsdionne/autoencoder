@@ -1,9 +1,9 @@
-#ifndef __textengine__buffer__
-#define __textengine__buffer__
+#ifndef RSD_BUFFER_H_
+#define RSD_BUFFER_H_
 
 #include <GLFW/glfw3.h>
 
-namespace textengine {
+namespace rsd {
 
   class Buffer {
   public:
@@ -26,6 +26,6 @@ namespace textengine {
     GLuint handle;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__buffer__) */
+#endif  // RSD_BUFFER_H_
