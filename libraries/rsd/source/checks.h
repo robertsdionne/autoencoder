@@ -1,5 +1,5 @@
-#ifndef __textengine__checks__
-#define __textengine__checks__
+#ifndef RSD_CHECKS_H_
+#define RSD_CHECKS_H_
 
 #include <cstdlib>
 #include <iostream>
@@ -36,4 +36,4 @@ inline void Fail(const std::string &message, int line, const std::string &file) 
   exit(1);
 }
 
-#endif /* defined(__textengine__checks__) */
+#endif  // RSD_CHECKS_H_

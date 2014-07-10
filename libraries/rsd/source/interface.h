@@ -1,6 +1,5 @@
-#ifndef textengine_interface_h
-#define textengine_interface_h
-
+#ifndef RSD_INTERFACE_H_
+#define RSD_INTERFACE_H_
 
 #define DECLARE_INTERFACE(interface)\
 public:\
@@ -10,4 +9,4 @@ protected:\
   interface(const interface &) = default;\
   interface &operator =(const interface &) = default;
 
-#endif
+#endif  // RSD_INTERFACE_H_

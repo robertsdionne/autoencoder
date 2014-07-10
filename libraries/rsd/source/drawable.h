@@ -1,17 +1,10 @@
-#ifndef __textengine__drawable__
-#define __textengine__drawable__
+#ifndef RSD_DRAWABLE_H_
+#define RSD_DRAWABLE_H_
 
 #include <GLFW/glfw3.h>
-#include <memory>
-#include <string>
 #include <vector>
 
-#include "buffer.h"
-#include "program.h"
-#include "shader.h"
-#include "vertexarray.h"
-
-namespace textengine {
+namespace rsd {
 
   struct Drawable {
     std::vector<float> data;
@@ -21,6 +14,6 @@ namespace textengine {
     size_t data_size() const;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__drawable__) */
+#endif  // RSD_DRAWABLE_H_

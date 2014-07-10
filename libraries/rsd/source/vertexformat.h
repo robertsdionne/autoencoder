@@ -1,12 +1,12 @@
-#ifndef __textengine__vertexformat__
-#define __textengine__vertexformat__
+#ifndef RSD_VERTEXFORMAT_H_
+#define RSD_VERTEXFORMAT_H_
 
 #include <GLFW/glfw3.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace textengine {
+namespace rsd {
 
   class Program;
   class VertexArray;
@@ -33,6 +33,6 @@ namespace textengine {
     std::vector<Attribute> attributes;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__vertexformat__) */
+#endif  // RSD_VERTEXFORMAT_H_

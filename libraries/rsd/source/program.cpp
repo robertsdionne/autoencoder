@@ -5,7 +5,7 @@
 #include "program.h"
 #include "shader.h"
 
-namespace textengine {
+namespace rsd {
 
   Program::Program() : shaders(), handle() {}
 
@@ -108,4 +108,4 @@ namespace textengine {
     glUseProgram(handle);
   }
 
-}  // namespace textengine
+}  // namespace rsd

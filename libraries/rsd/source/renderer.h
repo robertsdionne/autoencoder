@@ -1,9 +1,7 @@
-#ifndef __textengine__renderer__
-#define __textengine__renderer__
+#ifndef RSD_RENDERER_H_
+#define RSD_RENDERER_H_
 
-#include "memory.h"
-
-namespace textengine {
+namespace rsd {
 
   class Renderer {
     DECLARE_INTERFACE(Renderer);
@@ -16,6 +14,6 @@ namespace textengine {
     virtual void Render() = 0;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__renderer__) */
+#endif  // RSD_RENDERER_H_

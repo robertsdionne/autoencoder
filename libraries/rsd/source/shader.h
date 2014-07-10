@@ -1,11 +1,11 @@
-#ifndef __textengine__shader__
-#define __textengine__shader__
+#ifndef RSD_SHADER_H_
+#define RSD_SHADER_H_
 
 #include <GLFW/glfw3.h>
 #include <string>
 #include <vector>
 
-namespace textengine {
+namespace rsd {
 
   class Shader {
   public:
@@ -30,6 +30,6 @@ namespace textengine {
     GLuint handle;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__shader__) */
+#endif  // RSD_SHADER_H_

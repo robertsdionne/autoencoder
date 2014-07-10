@@ -1,9 +1,9 @@
-#ifndef __textengine__application__
-#define __textengine__application__
+#ifndef RSD_APPLICATION_H_
+#define RSD_APPLICATION_H_
 
 #include "interface.h"
 
-namespace textengine {
+namespace rsd {
 
   class Application {
     DECLARE_INTERFACE(Application);
@@ -12,6 +12,6 @@ namespace textengine {
     virtual int Run() = 0;
   };
 
-}  // namespace textengine
+}  // namespace rsd
 
-#endif /* defined(__textengine__application__) */
+#endif  // RSD_APPLICATION_H_
