@@ -28,6 +28,9 @@ namespace rsd {
       switch (action) {
         case GLFW_PRESS:
         case GLFW_REPEAT: {
+          if (GLFW_KEY_ESCAPE == key) {
+            glfwSetWindowShouldClose(window, GL_TRUE);
+          }
           // instance->keyboard.OnKeyDown(key);
           break;
         }
