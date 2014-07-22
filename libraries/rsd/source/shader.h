@@ -15,6 +15,8 @@ namespace rsd {
 
     GLuint get_handle() const;
 
+    void CreateFromFile(GLenum type, const std::string &filename);
+
     void Create(GLenum type, const std::vector<std::string> &&sources);
 
     void Compile();
@@ -23,6 +25,8 @@ namespace rsd {
 
   private:
     void MaybeOutputCompilerError();
+
+    std::string ReadFile(const std::string &filename);
 
   private:
     GLenum type;

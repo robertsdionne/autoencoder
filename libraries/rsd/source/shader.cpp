@@ -1,4 +1,8 @@
 #include <GLFW/glfw3.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <streambuf>
 
 #include "checks.h"
 #include "shader.h"
@@ -44,6 +48,10 @@ namespace rsd {
     MaybeOutputCompilerError();
   }
 
+  void Shader::CreateFromFile(GLenum type, const std::string &filename) {
+    Create(type, {ReadFile(filename)});
+  }
+
   void Shader::Create(GLenum type, const std::vector<std::string> &&sources) {
     if (handle) {
       glDeleteShader(handle);
@@ -67,6 +75,18 @@ namespace rsd {
         FAIL(u8"Failed to compile shader.");
       }
     }
+  }
+
+  std::string Shader::ReadFile(const std::string &filename) {
+    std::cout << "Reading: " << filename << std::endl;
+    std::ifstream file(filename);
+    CHECK_STATE(file.good());
+    std::string content;
+    file.seekg(0, std::ios::end);
+    content.reserve(file.tellg());
+    file.seekg(0, std::ios::beg);
+    content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    return content;
   }
 
 }  // namespace rsd
