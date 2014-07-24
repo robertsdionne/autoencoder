@@ -3,6 +3,8 @@
 #include "checks.h"
 #include "voxelsrenderer.h"
 
+extern char etext, edata, end;
+
 namespace voxels {
 
   void VoxelsRenderer::Change(int width, int height) {
@@ -30,6 +32,13 @@ namespace voxels {
     vertex_buffer.Data(triangle.data_size(), triangle.data.data(), GL_STATIC_DRAW);
     vertex_array.Create();
     vertex_format.Apply(vertex_array, program);
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_1D, texture);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RED, 1024, 0, GL_RED, GL_UNSIGNED_BYTE, &etext - 1024);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     CHECK_STATE(!glGetError());
   }
 

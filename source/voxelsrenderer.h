@@ -29,6 +29,7 @@ namespace voxels {
     rsd::Buffer vertex_buffer;
     rsd::Drawable triangle;
     glm::mat4 model_view, projection;
+    GLuint texture;
   };
 
 }  // namespace voxels
