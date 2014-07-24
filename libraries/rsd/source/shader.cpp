@@ -78,7 +78,6 @@ namespace rsd {
   }
 
   std::string Shader::ReadFile(const std::string &filename) {
-    std::cout << "Reading: " << filename << std::endl;
     std::ifstream file(filename);
     CHECK_STATE(file.good());
     std::string content;

@@ -11,10 +11,11 @@ namespace rsd {
 
   GlfwApplication *GlfwApplication::instance = nullptr;
 
-  GlfwApplication::GlfwApplication(int argument_count, char *arguments[], int width, int height,
-                                   const std::string &title, Renderer &renderer)
+  GlfwApplication::GlfwApplication(
+      int argument_count, char *arguments[], int width, int height, int samples,
+      const std::string &title, Renderer &renderer)
   : window(nullptr), argument_count(argument_count), arguments(arguments), width(width),
-  height(height), title(title), renderer(renderer) {
+  height(height), samples(samples), title(title), renderer(renderer) {
     instance = this;
   }
 
@@ -69,6 +70,9 @@ namespace rsd {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    if (samples) {
+      glfwWindowHint(GLFW_SAMPLES, samples);
+    }
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     CHECK_STATE(window != nullptr);
     glfwSetKeyCallback(window, HandleKeyboard);

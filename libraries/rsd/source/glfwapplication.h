@@ -12,7 +12,7 @@ namespace rsd {
 
   class GlfwApplication : public Application {
   public:
-    GlfwApplication(int argument_count, char *arguments[], int width, int height,
+    GlfwApplication(int argument_count, char *arguments[], int width, int height, int samples,
                     const std::string &title, Renderer &renderer);
 
     virtual ~GlfwApplication();
@@ -32,7 +32,7 @@ namespace rsd {
     GLFWwindow *window;
     int argument_count;
     char **arguments;
-    int width, height;
+    int width, height, samples;
     const std::string title;
     Renderer &renderer;
   };
