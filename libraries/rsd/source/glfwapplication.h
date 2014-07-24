@@ -8,12 +8,13 @@
 
 namespace rsd {
 
+  class Mouse;
   class Renderer;
 
   class GlfwApplication : public Application {
   public:
     GlfwApplication(int argument_count, char *arguments[], int width, int height, int samples,
-                    const std::string &title, Renderer &renderer);
+                    const std::string &title, Renderer &renderer, Mouse &mouse);
 
     virtual ~GlfwApplication();
 
@@ -35,6 +36,7 @@ namespace rsd {
     int width, height, samples;
     const std::string title;
     Renderer &renderer;
+    Mouse &mouse;
   };
 
 }  // namespace rsd

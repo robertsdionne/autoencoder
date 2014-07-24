@@ -5,6 +5,7 @@
 
 #include "checks.h"
 #include "glfwapplication.h"
+#include "mouse.h"
 #include "renderer.h"
 
 namespace rsd {
@@ -13,9 +14,9 @@ namespace rsd {
 
   GlfwApplication::GlfwApplication(
       int argument_count, char *arguments[], int width, int height, int samples,
-      const std::string &title, Renderer &renderer)
+      const std::string &title, Renderer &renderer, Mouse &mouse)
   : window(nullptr), argument_count(argument_count), arguments(arguments), width(width),
-  height(height), samples(samples), title(title), renderer(renderer) {
+  height(height), samples(samples), title(title), renderer(renderer), mouse(mouse) {
     instance = this;
   }
 
@@ -47,11 +48,11 @@ namespace rsd {
     if (instance) {
       switch (action) {
         case GLFW_PRESS: {
-          // instance->mouse.OnButtonDown(button);
+          instance->mouse.OnButtonDown(button);
           break;
         }
         case GLFW_RELEASE: {
-          // instance->mouse.OnButtonUp(button);
+          instance->mouse.OnButtonUp(button);
           break;
         }
       }
@@ -87,10 +88,10 @@ namespace rsd {
     while (!glfwWindowShouldClose(window)) {
       renderer.Render();
       // keyboard.Update();
-      // mouse.Update();
-      // double x, y;
-      // glfwGetCursorPos(window, &x, &y);
-      // mouse.OnCursorMove(glm::vec2(x, y));
+      mouse.Update();
+      double x, y;
+      glfwGetCursorPos(window, &x, &y);
+      mouse.OnCursorMove(glm::vec2(x, y));
       glfwSwapBuffers(window);
       glfwPollEvents();
     }
