@@ -1,3 +1,4 @@
+#include <GLXW/glxw.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <iostream>
@@ -80,6 +81,7 @@ namespace rsd {
     glfwSetMouseButtonCallback(window, HandleMouseButton);
     glfwSetFramebufferSizeCallback(window, HandleReshape);
     glfwMakeContextCurrent(window);
+    CHECK_STATE(!glxwInit());
     glfwSwapInterval(1);
     renderer.Create();
     int framebuffer_width, framebuffer_height;
