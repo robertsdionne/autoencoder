@@ -33,7 +33,7 @@ int h5(int k) {
 }
 
 void main() {
-  ivec2 index = ivec2(gl_FragCoord.xy / 4.0f) % 1024;
+  ivec2 index = ivec2(gl_FragCoord.xy) % 1024;
   if (texture(tex, h0(key(index)) / 1024.0).r > 0 &&
       texture(tex, h1(key(index)) / 1024.0).r > 0 &&
       texture(tex, h2(key(index)) / 1024.0).r > 0 &&
