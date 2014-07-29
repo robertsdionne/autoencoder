@@ -1,6 +1,7 @@
 #ifndef PATHTRACER_PATHTRACERRENDERER_H_
 #define PATHTRACER_PATHTRACERRENDERER_H_
 
+#include <chrono>
 #include <glm/glm.hpp>
 
 #include "buffer.h"
@@ -18,6 +19,8 @@ namespace pathtracer {
   public:
     PathTracerRenderer(rsd::Mouse &mouse);
 
+    virtual ~PathTracerRenderer();
+
     virtual void Change(int width, int height);
 
     virtual void Create();
@@ -34,7 +37,8 @@ namespace pathtracer {
     rsd::Drawable triangle;
     glm::mat4 model_view, projection;
     GLuint texture;
-    unsigned char texture_data[1024] = {};
+    float *texture_data;
+    std::chrono::high_resolution_clock::time_point start;
   };
 
 }  // namespace pathtracer
