@@ -63,9 +63,17 @@ namespace pathtracer {
   }
 
   void PathTracerRenderer::Render() {
-    auto now = std::chrono::high_resolution_clock::now();
+    frame += 1;
+    previous = now;
+    now = std::chrono::high_resolution_clock::now();
     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
         now - start).count() / 1000.0f;
+    auto frame_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+        now - previous).count() / 1000.0f;
+    average = 0.5f * (1.0f / frame_time) + 0.5f * average;
+    if (frame % 100 == 0) {
+      std::cout << average << std::endl;
+    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     compute_program.Use();
     compute_program.Uniformsi({

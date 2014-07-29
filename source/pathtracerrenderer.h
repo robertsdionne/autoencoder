@@ -38,7 +38,9 @@ namespace pathtracer {
     glm::mat4 model_view, projection;
     GLuint texture;
     float *texture_data;
-    std::chrono::high_resolution_clock::time_point start;
+    std::chrono::high_resolution_clock::time_point start, now, previous;
+    float average = 0.0f;
+    unsigned long long frame = 0;
   };
 
 }  // namespace pathtracer
