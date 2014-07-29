@@ -1,5 +1,5 @@
-#ifndef VOXELS_VOXELSRENDERER_H_
-#define VOXELS_VOXELSRENDERER_H_
+#ifndef PATHTRACER_PATHTRACERRENDERER_H_
+#define PATHTRACER_PATHTRACERRENDERER_H_
 
 #include <glm/glm.hpp>
 
@@ -12,11 +12,11 @@
 #include "vertexarray.h"
 #include "vertexformat.h"
 
-namespace voxels {
+namespace pathtracer {
 
-  class VoxelsRenderer : public rsd::Renderer {
+  class PathTracerRenderer : public rsd::Renderer {
   public:
-    VoxelsRenderer(rsd::Mouse &mouse);
+    PathTracerRenderer(rsd::Mouse &mouse);
 
     virtual void Change(int width, int height);
 
@@ -37,6 +37,6 @@ namespace voxels {
     unsigned char texture_data[1024] = {};
   };
 
-}  // namespace voxels
+}  // namespace pathtracer
 
-#endif  // VOXELS_VOXELSRENDERER_H_
+#endif  // PATHTRACER_PATHTRACERRENDERER_H_

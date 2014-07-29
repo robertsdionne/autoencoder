@@ -3,15 +3,15 @@
 #include <iostream>
 
 #include "checks.h"
-#include "voxelsrenderer.h"
+#include "pathtracerrenderer.h"
 
 extern char etext, edata, end;
 
-namespace voxels {
+namespace pathtracer {
 
-  VoxelsRenderer::VoxelsRenderer(rsd::Mouse &mouse) : mouse(mouse) {}
+  PathTracerRenderer::PathTracerRenderer(rsd::Mouse &mouse) : mouse(mouse) {}
 
-  void VoxelsRenderer::Change(int width, int height) {
+  void PathTracerRenderer::Change(int width, int height) {
     glViewport(0, 0, width, height);
   }
 
@@ -43,7 +43,7 @@ namespace voxels {
     return (k * 4248052 & 0xffffffff) >> (32 - 10);
   }
 
-  void VoxelsRenderer::Create() {
+  void PathTracerRenderer::Create() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     vertex_shader.CreateFromFile(GL_VERTEX_SHADER, u8"source/vertex.glsl");
     fragment_shader.CreateFromFile(GL_FRAGMENT_SHADER, u8"source/fragment.glsl");
@@ -77,8 +77,8 @@ namespace voxels {
     CHECK_STATE(!glGetError());
   }
 
-  void VoxelsRenderer::Render() {
-    if (mouse.IsButtonDown(GLFW_MOUSE_BUTTON_1) || mouse.IsButtonDown(GLFW_MOUSE_BUTTON_2)) {
+  void PathTracerRenderer::Render() {
+    if (mouse.IsButtonDown(GLFW_MOUSE_BUTTON_1) or mouse.IsButtonDown(GLFW_MOUSE_BUTTON_2)) {
       auto position = mouse.get_cursor_position() * glm::vec2(1, -1);
       texture_data[h0(key(position))] = mouse.IsButtonDown(GLFW_MOUSE_BUTTON_1);
       texture_data[h1(key(position))] = mouse.IsButtonDown(GLFW_MOUSE_BUTTON_1);
@@ -88,7 +88,7 @@ namespace voxels {
       texture_data[h5(key(position))] = mouse.IsButtonDown(GLFW_MOUSE_BUTTON_1);
       glTexImage1D(GL_TEXTURE_1D, 0, GL_RED, 1024, 0, GL_RED, GL_UNSIGNED_BYTE, texture_data);
     }
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT bitor GL_DEPTH_BUFFER_BIT);
     program.Use();
     vertex_array.Bind();
     glDrawArrays(triangle.element_type, 0, triangle.element_count);
@@ -96,4 +96,4 @@ namespace voxels {
     glDispatchCompute(100, 100, 1);
   }
 
-}  // namespace voxels
+}  // namespace pathtracer

@@ -3,11 +3,11 @@
 
 #include "glfwapplication.h"
 #include "mouse.h"
-#include "voxelsrenderer.h"
+#include "pathtracerrenderer.h"
 
 int main(int argument_count, char *arguments[]) {
   rsd::Mouse mouse;
-  voxels::VoxelsRenderer renderer(mouse);
+  pathtracer::PathTracerRenderer renderer(mouse);
   rsd::GlfwApplication application(
       argument_count, arguments, 1024, 1024, 7, "Bloom Filters", renderer, mouse);
   application.Run();

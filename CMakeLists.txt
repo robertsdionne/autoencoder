@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.12)
-project(bloomfilters)
+project(pathtracer CXX)
 add_definitions(-DGL_GLEXT_PROTOTYPES)
 add_subdirectory(libraries/rsd)
 add_definitions(-std=c++11)
