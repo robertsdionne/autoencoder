@@ -26,17 +26,17 @@ namespace rsd {
 
     GLint GetUniformLocation(const std::string &name);
     
-    void Uniforms(const std::unordered_map<std::string, int> &&uniforms);
+    void Uniformsi(const std::unordered_map<std::string, int> &&uniforms);
 
-    void Uniforms(const std::unordered_map<std::string, float> &&uniforms);
+    void Uniformsf(const std::unordered_map<std::string, float> &&uniforms);
     
-    void Uniforms(const std::unordered_map<std::string, glm::vec2> &&uniforms);
+    void Uniforms2f(const std::unordered_map<std::string, glm::vec2> &&uniforms);
     
-    void Uniforms(const std::unordered_map<std::string, glm::vec3> &&uniforms);
+    void Uniforms3f(const std::unordered_map<std::string, glm::vec3> &&uniforms);
 
-    void Uniforms(const std::unordered_map<std::string, glm::vec4> &&uniforms);
+    void Uniforms4f(const std::unordered_map<std::string, glm::vec4> &&uniforms);
 
-    void Uniforms(const std::unordered_map<std::string, const glm::mat4 *> &&uniforms);
+    void UniformsMatrix4f(const std::unordered_map<std::string, const glm::mat4 *> &&uniforms);
 
     void Use();
 

@@ -61,42 +61,43 @@ namespace rsd {
     }
   }
   
-  void Program::Uniforms(const std::unordered_map<std::string, int> &&uniforms) {
+  void Program::Uniformsi(const std::unordered_map<std::string, int> &&uniforms) {
     Use();
     for (auto &uniform : uniforms) {
       glUniform1i(GetUniformLocation(uniform.first), uniform.second);
     }
   }
 
-  void Program::Uniforms(const std::unordered_map<std::string, float> &&uniforms) {
+  void Program::Uniformsf(const std::unordered_map<std::string, float> &&uniforms) {
     Use();
     for (auto &uniform : uniforms) {
       glUniform1f(GetUniformLocation(uniform.first), uniform.second);
     }
   }
   
-  void Program::Uniforms(const std::unordered_map<std::string, glm::vec2> &&uniforms) {
+  void Program::Uniforms2f(const std::unordered_map<std::string, glm::vec2> &&uniforms) {
     Use();
     for (auto &uniform : uniforms) {
       glUniform2fv(GetUniformLocation(uniform.first), 1, &uniform.second[0]);
     }
   }
   
-  void Program::Uniforms(const std::unordered_map<std::string, glm::vec3> &&uniforms) {
+  void Program::Uniforms3f(const std::unordered_map<std::string, glm::vec3> &&uniforms) {
     Use();
     for (auto &uniform : uniforms) {
       glUniform3fv(GetUniformLocation(uniform.first), 1, &uniform.second[0]);
     }
   }
 
-  void Program::Uniforms(const std::unordered_map<std::string, glm::vec4> &&uniforms) {
+  void Program::Uniforms4f(const std::unordered_map<std::string, glm::vec4> &&uniforms) {
     Use();
     for (auto &uniform : uniforms) {
       glUniform4fv(GetUniformLocation(uniform.first), 1, &uniform.second[0]);
     }
   }
 
-  void Program::Uniforms(const std::unordered_map<std::string, const glm::mat4 *> &&uniforms) {
+  void Program::UniformsMatrix4f(
+      const std::unordered_map<std::string, const glm::mat4 *> &&uniforms) {
     Use();
     for (auto &uniform : uniforms) {
       glUniformMatrix4fv(GetUniformLocation(uniform.first),
