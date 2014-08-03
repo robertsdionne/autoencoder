@@ -29,7 +29,7 @@ namespace rsd {
     GLint *lengths = new GLint[sources.size()];
 #else
     GLchar *source_code[sources.size()];
-    GLin lengths[sources.size()];
+    GLint lengths[sources.size()];
 #endif
 
     {
