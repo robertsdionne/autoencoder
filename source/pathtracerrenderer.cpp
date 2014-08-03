@@ -24,16 +24,22 @@ namespace pathtracer {
 
   void PathTracerRenderer::Create() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    vertex_shader.CreateFromFile(GL_VERTEX_SHADER, u8"source/vertex.glsl");
-    fragment_shader.CreateFromFile(GL_FRAGMENT_SHADER, u8"source/fragment.glsl");
-    compute_shader.CreateFromFile(GL_COMPUTE_SHADER, u8"source/compute.glsl");
+#ifdef WIN32
+    vertex_shader.CreateFromFile(GL_VERTEX_SHADER, "vertex.glsl");
+    fragment_shader.CreateFromFile(GL_FRAGMENT_SHADER, "fragment.glsl");
+    compute_shader.CreateFromFile(GL_COMPUTE_SHADER, "compute.glsl");
+#else
+    vertex_shader.CreateFromFile(GL_VERTEX_SHADER, "source/vertex.glsl");
+    fragment_shader.CreateFromFile(GL_FRAGMENT_SHADER, "source/fragment.glsl");
+    compute_shader.CreateFromFile(GL_COMPUTE_SHADER, "source/compute.glsl");
+#endif
     program.Create({&vertex_shader, &fragment_shader});
     program.CompileAndLink();
     compute_program.Create({&compute_shader});
     compute_program.CompileAndLink();
     vertex_format.Create({
-      {u8"vertex_position", GL_FLOAT, 2},
-      {u8"tex_coordinate", GL_FLOAT, 2}
+      {"vertex_position", GL_FLOAT, 2},
+      {"tex_coordinate", GL_FLOAT, 2}
     });
     triangle.data.insert(triangle.data.end(), {
     //    x,     y,     u,     v
@@ -77,13 +83,13 @@ namespace pathtracer {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     compute_program.Use();
     compute_program.Uniformsi({
-      {u8"fragments", 0}
+      {"fragments", 0}
     });
     compute_program.Uniformsf({
-      {u8"time", time}
+      {"time", time}
     });
     compute_program.Uniforms2f({
-      {u8"mouse", mouse.get_cursor_position()}
+      {"mouse", mouse.get_cursor_position()}
     });
     glDispatchCompute(1024 / 32, 1024 / 32, 1);
     program.Use();
