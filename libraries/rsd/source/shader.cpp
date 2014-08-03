@@ -1,3 +1,4 @@
+#include <GLXW/glxw.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <fstream>
@@ -23,8 +24,13 @@ namespace rsd {
   }
 
   void Shader::Compile() {
+#ifdef WIN32
+    GLchar **source_code = new GLchar*[sources.size()];
+    GLint *lengths = new GLint[sources.size()];
+#else
     GLchar *source_code[sources.size()];
-    GLint lengths[sources.size()];
+    GLin lengths[sources.size()];
+#endif
 
     {
       int index = 0;
@@ -40,9 +46,13 @@ namespace rsd {
     glShaderSource(handle, static_cast<GLsizei>(sources.size()), source_code, lengths);
 
     for (int i = 0; i < sources.size(); ++i) {
-      delete [] source_code[i];
+      delete[] source_code[i];
       source_code[i] = nullptr;
     }
+#ifdef WIN32
+    delete[] source_code;
+    delete[] lengths;
+#endif
 
     glCompileShader(handle);
     MaybeOutputCompilerError();
@@ -72,7 +82,7 @@ namespace rsd {
       if (length) {
         FAIL(info_log);
       } else {
-        FAIL(u8"Failed to compile shader.");
+        FAIL("Failed to compile shader.");
       }
     }
   }

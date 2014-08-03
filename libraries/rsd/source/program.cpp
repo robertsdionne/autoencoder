@@ -1,3 +1,5 @@
+#include <GLXW/glxw.h>
+#include <GLFW/glfw3.h>
 #include <unordered_map>
 #include <vector>
 
@@ -56,7 +58,7 @@ namespace rsd {
       if (length) {
         FAIL(info_log);
       } else {
-        FAIL(u8"Failed to link program.");
+        FAIL("Failed to link program.");
       }
     }
   }

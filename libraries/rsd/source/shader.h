@@ -1,6 +1,7 @@
 #ifndef RSD_SHADER_H_
 #define RSD_SHADER_H_
 
+#include <GLXW/glxw.h>
 #include <GLFW/glfw3.h>
 #include <string>
 #include <vector>
@@ -21,7 +22,11 @@ namespace rsd {
 
     void Compile();
 
+#ifdef WIN32
+    static const GLsizei kMaxInfoLogLength = 4 * 1024;
+#else
     static constexpr GLsizei kMaxInfoLogLength = 4 * 1024;
+#endif
 
   private:
     void MaybeOutputCompilerError();

@@ -1,6 +1,7 @@
 #ifndef RSD_BUFFER_H_
 #define RSD_BUFFER_H_
 
+#include <GLXW/glxw_wgl.h>
 #include <GLFW/glfw3.h>
 
 namespace rsd {

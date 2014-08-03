@@ -1,6 +1,7 @@
 #ifndef RSD_PROGRAM_H_
 #define RSD_PROGRAM_H_
 
+#include <GLXW/glxw.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <unordered_map>

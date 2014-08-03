@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <iostream>
-#include <unistd.h>
 
 #include "checks.h"
 #include "glfwapplication.h"
