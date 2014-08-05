@@ -1,5 +1,5 @@
-#ifndef PATHTRACER_PATHTRACERRENDERER_H_
-#define PATHTRACER_PATHTRACERRENDERER_H_
+#ifndef AUTOENCODER_AUTOENCODERRENDERER_H_
+#define AUTOENCODER_AUTOENCODERRENDERER_H_
 
 #include <chrono>
 #include <glm/glm.hpp>
@@ -13,13 +13,13 @@
 #include "vertexarray.h"
 #include "vertexformat.h"
 
-namespace pathtracer {
+namespace autoencoder {
 
-  class PathTracerRenderer : public rsd::Renderer {
+  class AutoencoderRenderer : public rsd::Renderer {
   public:
-    PathTracerRenderer(rsd::Mouse &mouse);
+    AutoencoderRenderer(rsd::Mouse &mouse);
 
-    virtual ~PathTracerRenderer();
+    virtual ~AutoencoderRenderer();
 
     virtual void Change(int width, int height);
 
@@ -43,6 +43,6 @@ namespace pathtracer {
     unsigned long long frame = 0;
   };
 
-}  // namespace pathtracer
+}  // namespace autoencoder
 
-#endif  // PATHTRACER_PATHTRACERRENDERER_H_
+#endif  // AUTOENCODER_AUTOENCODERRENDERER_H_

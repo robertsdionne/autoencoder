@@ -3,16 +3,14 @@
 #include <chrono>
 #include <iostream>
 
+#include "autoencoderrenderer.h"
 #include "checks.h"
-#include "pathtracerrenderer.h"
 
-extern char etext, edata, end;
+namespace autoencoder {
 
-namespace pathtracer {
+  AutoencoderRenderer::AutoencoderRenderer(rsd::Mouse &mouse) : mouse(mouse) {}
 
-  PathTracerRenderer::PathTracerRenderer(rsd::Mouse &mouse) : mouse(mouse) {}
-
-  PathTracerRenderer::~PathTracerRenderer() {
+  AutoencoderRenderer::~AutoencoderRenderer() {
     if (weight_data) {
       delete [] weight_data;
     }
@@ -24,7 +22,7 @@ namespace pathtracer {
     }
   }
 
-  void PathTracerRenderer::Change(int width, int height) {
+  void AutoencoderRenderer::Change(int width, int height) {
     glViewport(0, 0, width, height);
   }
 
@@ -38,7 +36,7 @@ namespace pathtracer {
     std::cout << std::endl;
   }
 
-  void PathTracerRenderer::Create() {
+  void AutoencoderRenderer::Create() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 #ifdef WIN32
     vertex_shader.CreateFromFile(GL_VERTEX_SHADER, "vertex.glsl");
@@ -121,7 +119,7 @@ namespace pathtracer {
     start = std::chrono::high_resolution_clock::now();
   }
 
-  void PathTracerRenderer::Render() {
+  void AutoencoderRenderer::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     compute_program.Use();
     compute_program.Uniformsi({
@@ -136,4 +134,4 @@ namespace pathtracer {
     exit(0);
   }
 
-}  // namespace pathtracer
+}  // namespace autoencoder

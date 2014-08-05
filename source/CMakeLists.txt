@@ -1,2 +1,2 @@
-add_executable(pathtracer main.cpp pathtracerrenderer.cpp)
-target_link_libraries(pathtracer rsd)
+add_executable(autoencoder autoencoderrenderer.cpp main.cpp)
+target_link_libraries(autoencoder rsd)

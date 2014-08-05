@@ -11,5 +11,5 @@ CMakeCache.txt
 CMakeFiles/
 [Dd]ebug/
 Makefile
-source/pathtracer
+source/autoencoder
 x64/
