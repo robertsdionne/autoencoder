@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.12)
-project(pathtracer CXX)
+project(autoencoder CXX)
 add_definitions(-DGL_GLEXT_PROTOTYPES)
 add_subdirectory(libraries/rsd)
 if (NOT WIN32)
