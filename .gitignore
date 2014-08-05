@@ -1,2 +1,15 @@
-binary/
-xcuserdata/
+*.a
+*.cmake
+*.filters
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.user
+*.vcxproj
+CMakeCache.txt
+CMakeFiles/
+[Dd]ebug/
+Makefile
+source/pathtracer
+x64/

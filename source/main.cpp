@@ -1,26 +1,16 @@
-#include <OpenCL/cl.hpp>
+#include <GLXW/glxw.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
-#include <string>
-#include <vector>
 
-#include "checks.h"
+#include "glfwapplication.h"
+#include "mouse.h"
+#include "pathtracerrenderer.h"
 
-int main(int argument_count, const char *arguments[]) {
-  std::vector<cl::Platform> platforms;
-  CHECK_STATE(CL_SUCCESS == cl::Platform::get(&platforms));
-  std::cout << platforms.size() << std::endl;
-  auto platform = platforms[0];
-  std::string extensions, name, profile, vendor, version;
-  CHECK_STATE(CL_SUCCESS == platform.getInfo(CL_PLATFORM_EXTENSIONS, &extensions));
-  CHECK_STATE(CL_SUCCESS == platform.getInfo(CL_PLATFORM_NAME, &name));
-  CHECK_STATE(CL_SUCCESS == platform.getInfo(CL_PLATFORM_PROFILE, &profile));
-  CHECK_STATE(CL_SUCCESS == platform.getInfo(CL_PLATFORM_VENDOR, &vendor));
-  CHECK_STATE(CL_SUCCESS == platform.getInfo(CL_PLATFORM_VERSION, &version));
-  std::cout << extensions << std::endl
-    << name << std::endl
-    << profile << std::endl
-    << vendor << std::endl
-    << version << std::endl;
-  
+int main(int argument_count, char *arguments[]) {
+  rsd::Mouse mouse;
+  pathtracer::PathTracerRenderer renderer(mouse);
+  rsd::GlfwApplication application(
+      argument_count, arguments, 1024, 1024, 7, "Bloom Filters", renderer, mouse);
+  application.Run();
   return 0;
 }
