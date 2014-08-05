@@ -13,13 +13,29 @@ namespace pathtracer {
   PathTracerRenderer::PathTracerRenderer(rsd::Mouse &mouse) : mouse(mouse) {}
 
   PathTracerRenderer::~PathTracerRenderer() {
-    if (texture_data) {
-      delete [] texture_data;
+    if (weight_data) {
+      delete [] weight_data;
+    }
+    if (sample_data) {
+      delete [] sample_data;
+    }
+    if (output_data) {
+      delete [] output_data;
     }
   }
 
   void PathTracerRenderer::Change(int width, int height) {
     glViewport(0, 0, width, height);
+  }
+
+  void Print(float *matrix) {
+    for (int i = 0; i < 8; ++i) {
+      for (int j = 0; j < 7; ++j) {
+        std::cout << matrix[8 * i + j] << " ";
+      }
+      std::cout << matrix[8 * i + 7] << std::endl;
+    }
+    std::cout << std::endl;
   }
 
   void PathTracerRenderer::Create() {
@@ -54,47 +70,70 @@ namespace pathtracer {
     vertex_buffer.Data(triangle.data_size(), triangle.data.data(), GL_STATIC_DRAW);
     vertex_array.Create();
     vertex_format.Apply(vertex_array, program);
-    texture_data = new float[1024 * 1024 * 4];
+    weight_data = new float[8 * 8];
+    for (int i = 0; i < 8; ++i) {
+      for (int j = 0; j < 8; ++j) {
+        weight_data[8 * i + j] = i == j;
+      }
+    }
+    Print(weight_data);
     glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1024, 1024, 0, GL_RGBA, GL_FLOAT, texture_data);
+    glGenTextures(1, &weights);
+    glBindTexture(GL_TEXTURE_2D, weights);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 8, 8, 0, GL_RED, GL_FLOAT, weight_data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glBindImageTexture(0, texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+    glBindImageTexture(0, weights, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
+    sample_data = new float[8 * 8];
+    for (int i = 0; i < 8; ++i) {
+      for (int j = 0; j < 8; ++j) {
+        sample_data[8 * i + j] = 1.0f;
+      }
+    }
+    Print(sample_data);
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &samples);
+    glBindTexture(GL_TEXTURE_2D, samples);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 8, 8, 0, GL_RED, GL_FLOAT, sample_data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBindImageTexture(1, samples, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
+    output_data = new float[8 * 8];
+    for (int i = 0; i < 8; ++i) {
+      for (int j = 0; j < 8; ++j) {
+        output_data[8 * i + j] = 0.0f;
+      }
+    }
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &output);
+    glBindTexture(GL_TEXTURE_2D, output);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 8, 8, 0, GL_RED, GL_FLOAT, output_data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBindImageTexture(2, output, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
     CHECK_STATE(!glGetError());
     start = std::chrono::high_resolution_clock::now();
   }
 
   void PathTracerRenderer::Render() {
-    frame += 1;
-    previous = now;
-    now = std::chrono::high_resolution_clock::now();
-    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
-        now - start).count() / 1000.0f;
-    auto frame_time = std::chrono::duration_cast<std::chrono::milliseconds>(
-        now - previous).count() / 1000.0f;
-    average = 0.5f * (1.0f / frame_time) + 0.5f * average;
-    if (frame % 100 == 0) {
-      std::cout << average << std::endl;
-    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     compute_program.Use();
     compute_program.Uniformsi({
-      {"fragments", 0}
+      {u8"weights", 0},
+      {u8"samples", 1},
+      {u8"result", 2}
     });
-    compute_program.Uniformsf({
-      {"time", time}
-    });
-    compute_program.Uniforms2f({
-      {"mouse", mouse.get_cursor_position()}
-    });
-    glDispatchCompute(1024 / 32, 1024 / 32, 1);
-    program.Use();
-    vertex_array.Bind();
-    glDrawArrays(triangle.element_type, 0, triangle.element_count);
+    glDispatchCompute(8 / 2, 8 / 2, 8 / 2);
+    glBindTexture(GL_TEXTURE_2D, output);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, output_data);
+    Print(output_data);
+    exit(0);
   }
 
 }  // namespace pathtracer
