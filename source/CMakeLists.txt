@@ -1,2 +1,2 @@
-add_executable(autoencoder autoencoderrenderer.cpp main.cpp)
-target_link_libraries(autoencoder rsd)
+add_executable(autoencoder main.cpp)
+target_link_libraries(autoencoder)
