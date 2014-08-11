@@ -1,2 +1,5 @@
+if (APPLE)
+  find_library(OPENCL_LIBRARY OpenCL)
+endif(APPLE)
 add_executable(autoencoder main.cpp)
-target_link_libraries(autoencoder)
+target_link_libraries(autoencoder ${OPENCL_LIBRARY})
