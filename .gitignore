@@ -7,9 +7,12 @@
 *.suo
 *.user
 *.vcxproj
+.ipynb_checkpoints/
 CMakeCache.txt
 CMakeFiles/
-[Dd]ebug/
 Makefile
+[Dd]ebug/
+data/
 source/autoencoder
+venv/
 x64/
