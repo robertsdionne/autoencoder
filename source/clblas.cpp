@@ -1,6 +1,7 @@
 #include <clBLAS.h>
 #include <cassert>
 #include <cstdio>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <sys/types.h>
@@ -54,7 +55,6 @@ int main(int argument_count, char *arguments[]) {
   for (auto i = 0; i < number_of_devices; ++i) {
     assert(CL_SUCCESS == clGetDeviceInfo(
         devices[i], CL_DEVICE_NAME, sizeof(buffer), buffer, &size));
-    std::cout << buffer << std::endl;
     std::string device_name = buffer;
     if (std::string::npos != device_name.find("GeForce")) {
       device = devices[i];
@@ -104,6 +104,14 @@ int main(int argument_count, char *arguments[]) {
   assert(CL_SUCCESS == clReleaseMemObject(buffer_a));
   assert(CL_SUCCESS == clReleaseMemObject(buffer_b));
   assert(CL_SUCCESS == clReleaseMemObject(buffer_c));
+
+  std::cout << std::scientific << std::setprecision(2);
+  for (auto i = 0; i < kM; ++i) {
+    for (auto j = 0; j < kN; ++j) {
+      std::cout << std::setw(10) << result[i * kN + j];
+    }
+    std::cout << std::endl;
+  }
 
   clblasTeardown();
 
