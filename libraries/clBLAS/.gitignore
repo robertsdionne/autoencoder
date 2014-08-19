@@ -17,3 +17,8 @@
 
 # Generated kernel template files
 *.clT
+
+*.version.h
+
+staging/
+tplgen-prefix/
