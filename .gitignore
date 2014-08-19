@@ -13,4 +13,5 @@ Makefile
 [Dd]ebug/
 data/
 source/autoencoder
+source/clblas
 x64/

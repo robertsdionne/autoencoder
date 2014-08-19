@@ -4,5 +4,7 @@ if (APPLE)
   find_library(OPENCL_LIBRARY OpenCL)
 endif(APPLE)
 add_executable(autoencoder autoencoder.cpp main.cpp)
+add_executable(clblas clblas.cpp)
 target_link_libraries(
     autoencoder clBLAS clFFT ${AUDIO_TOOLBOX_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${OPENCL_LIBRARY})
+target_link_libraries(clblas clBLAS clFFT ${OPENCL_LIBRARY})
