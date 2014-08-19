@@ -1,6 +1,8 @@
 #include <AudioToolbox/AudioToolbox.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <cassert>
+#include <clBLAS.h>
+#include <clFFT.h>
 #include <iostream>
 #include <limits>
 

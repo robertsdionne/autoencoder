@@ -1,7 +1,10 @@
 cmake_minimum_required (VERSION 2.8.12)
 project(autoencoder CXX)
+include_directories(
+    libraries/clBLAS/src libraries/clFFT/src/include libraries/eigen libraries/opencl/include)
+add_subdirectory(libraries/clBLAS/src)
+add_subdirectory(libraries/clFFT/src)
 if (NOT WIN32)
   add_definitions(-std=c++11)
 endif()
-include_directories(libraries/eigen libraries/opencl/include)
 add_subdirectory(source)
