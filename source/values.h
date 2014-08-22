@@ -8,9 +8,10 @@
 namespace autoencoder {
 
   struct Values {
-    Values(int width) : width(width) {
-      values = new float[width]();
-      differences = new float[width]();
+    Values(int width, int height = 1, int depth = 1, int duration = 1)
+    : width(width), height(height), depth(depth), duration(duration) {
+      values = new float[width * height * depth * duration]();
+      differences = new float[width * height * depth * duration]();
     }
 
     ~Values() {
@@ -18,24 +19,28 @@ namespace autoencoder {
       delete [] differences;
     }
 
-    float difference(int i) const {
+    inline int offset(int i, int j = 0, int k = 0, int l = 0) const {
       assert(0 <= i && i < width);
-      return differences[i];
+      assert(0 <= j && j < height);
+      assert(0 <= k && k < depth);
+      assert(0 <= l && l < duration);
+      return ((i * height + j) * depth + k) * duration + l;
     }
 
-    float &difference(int i) {
-      assert(0 <= i && i < width);
-      return differences[i];
+    float difference(int i, int j = 0, int k = 0, int l = 0) const {
+      return differences[offset(i, j, k, l)];
     }
 
-    float value(int i) const {
-      assert(0 <= i && i < width);
-      return values[i];
+    float &difference(int i, int j = 0, int k = 0, int l = 0) {
+      return differences[offset(i, j, k, l)];
     }
 
-    float &value(int i) {
-      assert(0 <= i && i < width);
-      return values[i];
+    float value(int i, int j = 0, int k = 0, int l = 0) const {
+      return values[offset(i, j, k, l)];
+    }
+
+    float &value(int i, int j = 0, int k = 0, int l = 0) {
+      return values[offset(i, j, k, l)];
     }
 
     Values operator +(const Values &other) {
@@ -47,8 +52,9 @@ namespace autoencoder {
       return result;
     }
 
+  public:
     float *values, *differences;
-    int width;
+    int width, height, depth, duration;
   };
 
   static std::ostream &operator <<(std::ostream &out, const Values &vector) {
