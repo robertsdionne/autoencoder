@@ -1,2 +1,2 @@
-add_executable(test test.cpp)
-target_link_libraries(test gtest gtest_main)
+add_executable(all test.cpp)
+target_link_libraries(all gtest gtest_main)
