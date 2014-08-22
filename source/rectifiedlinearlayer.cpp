@@ -2,21 +2,21 @@
 #include <cassert>
 
 #include "rectifiedlinearlayer.h"
-#include "vector.h"
+#include "values.h"
 
 namespace autoencoder {
 
-  void RectifiedLinearLayer::ForwardCpu(const Vector &bottom, Vector *top) {
+  void RectifiedLinearLayer::ForwardCpu(const Values &bottom, Values *top) {
     assert(bottom.width == top->width);
     for (auto i = 0; i < top->width; ++i) {
-      top->operator()(i) = std::max(0.0f, bottom(i));
+      top->value(i) = std::max(0.0f, bottom.value(i));
     }
   }
 
-  void RectifiedLinearLayer::BackwardCpu(const Vector &top, Vector *bottom) {
+  void RectifiedLinearLayer::BackwardCpu(const Values &top, Values *bottom) {
     assert(top.width == bottom->width);
     for (auto i = 0; i < bottom->width; ++i) {
-      bottom->operator()(i) = top(i) > 0.0f;
+      bottom->difference(i) = top.difference(i) > 0.0f;
     }
   }
 

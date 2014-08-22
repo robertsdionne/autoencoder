@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "vector.h"
+#include "values.h"
 
 namespace autoencoder {
 
@@ -11,24 +11,24 @@ namespace autoencoder {
   public:
     virtual ~Layer() = default;
 
-    inline void Forward(const Vector &bottom, Vector *top) {
+    inline void Forward(const Values &bottom, Values *top) {
       ForwardCpu(bottom, top);
     }
 
-    inline void Backward(const Vector &top, Vector *bottom) {
+    inline void Backward(const Values &top, Values *bottom) {
       BackwardCpu(top, bottom);
     }
 
   protected:
-    virtual void ForwardCpu(const Vector &bottom, Vector *top) = 0;
+    virtual void ForwardCpu(const Values &bottom, Values *top) = 0;
 
-    virtual void ForwardGpu(const Vector &bottom, Vector *top) {
+    virtual void ForwardGpu(const Values &bottom, Values *top) {
       ForwardCpu(bottom, top);
     }
 
-    virtual void BackwardCpu(const Vector &top, Vector *bottom) = 0;
+    virtual void BackwardCpu(const Values &top, Values *bottom) = 0;
 
-    virtual void BackwardGpu(const Vector &top, Vector *bottom) {
+    virtual void BackwardGpu(const Values &top, Values *bottom) {
       BackwardCpu(top, bottom);
     }
   };
