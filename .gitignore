@@ -15,4 +15,5 @@ data/
 source/autoencoder
 source/clblas
 source/clfft
+tests/test
 x64/
