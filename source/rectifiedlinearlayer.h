@@ -2,14 +2,15 @@
 #define AUTOENCODER_RECTIFIEDLINEARLAYER_H_
 
 #include "layer.h"
+#include "vector.h"
 
 namespace autoencoder {
 
   class RectifiedLinearLayer : public Layer {
   public:
-    virtual void ForwardCpu(const std::vector<float *> &bottom, std::vector<float *> *top);
+    virtual void ForwardCpu(const Vector &bottom, Vector *top);
 
-    virtual void BackwardCpu(const std::vector<float *> &top, std::vector<float *> *bottom);
+    virtual void BackwardCpu(const Vector &top, Vector *bottom);
   };
 
 }  // namespace autoencoder

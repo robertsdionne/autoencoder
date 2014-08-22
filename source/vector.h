@@ -2,6 +2,8 @@
 #define AUTOENCODER_VECTOR_H_
 
 #include <cassert>
+#include <iomanip>
+#include <iostream>
 
 namespace autoencoder {
 

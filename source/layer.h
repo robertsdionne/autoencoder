@@ -3,30 +3,32 @@
 
 #include <vector>
 
+#include "vector.h"
+
 namespace autoencoder {
 
   class Layer {
   public:
     virtual ~Layer() = default;
 
-    inline void Forward(const std::vector<float *> &bottom, std::vector<float *> *top) {
+    inline void Forward(const Vector &bottom, Vector *top) {
       ForwardCpu(bottom, top);
     }
 
-    inline void Backward(const std::vector<float *> &top, std::vector<float *> *bottom) {
+    inline void Backward(const Vector &top, Vector *bottom) {
       BackwardCpu(top, bottom);
     }
 
   protected:
-    virtual void ForwardCpu(const std::vector<float *> &bottom, std::vector<float *> *top) = 0;
+    virtual void ForwardCpu(const Vector &bottom, Vector *top) = 0;
 
-    virtual void ForwardGpu(const std::vector<float *> &bottom, std::vector<float *> *top) {
+    virtual void ForwardGpu(const Vector &bottom, Vector *top) {
       ForwardCpu(bottom, top);
     }
 
-    virtual void BackwardCpu(const std::vector<float *> &top, std::vector<float *> *bottom) = 0;
+    virtual void BackwardCpu(const Vector &top, Vector *bottom) = 0;
 
-    virtual void BackwardGpu(const std::vector<float *> &top, std::vector<float *> *bottom) {
+    virtual void BackwardGpu(const Vector &top, Vector *bottom) {
       BackwardCpu(top, bottom);
     }
   };
