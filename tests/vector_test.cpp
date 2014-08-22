@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
 
-TEST(MyTest, TestTesting) {
+TEST(VectorTest, Test) {
   EXPECT_EQ(1, 1);
 }
