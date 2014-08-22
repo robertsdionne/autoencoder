@@ -5,6 +5,8 @@ if (APPLE)
 endif(APPLE)
 add_executable(autoencoder autoencoder.cpp main.cpp)
 add_executable(clblas clblas.cpp)
+add_executable(clfft clfft.cpp)
 target_link_libraries(
     autoencoder clBLAS clFFT ${AUDIO_TOOLBOX_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${OPENCL_LIBRARY})
 target_link_libraries(clblas clBLAS clFFT ${OPENCL_LIBRARY})
+target_link_libraries(clfft clBLAS clFFT ${OPENCL_LIBRARY})

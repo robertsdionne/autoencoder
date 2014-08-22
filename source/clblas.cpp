@@ -1,5 +1,5 @@
-#include <clBLAS.h>
 #include <cassert>
+#include <clBLAS.h>
 #include <cstdio>
 #include <iomanip>
 #include <iostream>
