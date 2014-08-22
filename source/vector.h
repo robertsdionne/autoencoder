@@ -1,6 +1,8 @@
 #ifndef AUTOENCODER_VECTOR_H_
 #define AUTOENCODER_VECTOR_H_
 
+#include <cassert>
+
 namespace autoencoder {
 
   struct Vector {
@@ -12,9 +14,23 @@ namespace autoencoder {
       delete [] values;
     }
 
-    float &operator ()(int i) const {
+    float operator ()(int i) const {
       assert(0 <= i && i < width);
       return values[i];
+    }
+
+    float &operator ()(int i) {
+      assert(0 <= i && i < width);
+      return values[i];
+    }
+
+    Vector operator +(const Vector &other) {
+      assert(other.width == width);
+      auto result = Vector(width);
+      for (auto i = 0; i < result.width; ++i) {
+        result(i) = this->operator()(i) + other(i);
+      }
+      return result;
     }
 
     float *values;
