@@ -17,3 +17,6 @@ source/clblas
 source/clfft
 tests/alltests
 x64/
+
+# Project specific exceptions
+!internal_utils.cmake
