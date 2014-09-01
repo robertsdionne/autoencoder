@@ -43,15 +43,6 @@ namespace autoencoder {
       return values[Offset(i, j, k, l)];
     }
 
-    Values operator +(const Values &other) {
-      assert(other.width == width);
-      auto result = Values(width);
-      for (auto i = 0; i < result.width; ++i) {
-        result.value(i) = this->value(i) + other.value(i);
-      }
-      return result;
-    }
-
   public:
     float *values, *differences;
     int width, height, depth, duration;
