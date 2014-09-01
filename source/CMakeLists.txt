@@ -3,7 +3,7 @@ if (APPLE)
   find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
   find_library(OPENCL_LIBRARY OpenCL)
 endif(APPLE)
-add_library(autoencoderlib innerproductlayer.cpp rectifiedlinearlayer.cpp)
+add_library(autoencoderlib innerproductlayer.cpp matrixmath.cpp rectifiedlinearlayer.cpp)
 add_executable(
     autoencoder audio.cpp innerproductlayer.cpp main.cpp rectifiedlinearlayer.cpp)
 add_executable(clblas clblas.cpp)

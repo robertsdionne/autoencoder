@@ -40,5 +40,5 @@ TEST(ValuesTest, TestElementAccessMultidimensional) {
 TEST(ValuesTest, TestPrinting) {
   std::ostringstream out;
   out << autoencoder::Values(5);
-  EXPECT_EQ("  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00", out.str());
+  EXPECT_EQ("  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00\n", out.str());
 }

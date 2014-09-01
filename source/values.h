@@ -53,7 +53,7 @@ namespace autoencoder {
     for (auto i = 0; i < vector.width; ++i) {
       out << std::setw(10) << vector.value(i);
     }
-    std::cout << std::endl;
+    out << std::endl;
     return out;
   }
 
