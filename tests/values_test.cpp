@@ -1,3 +1,4 @@
+#include <cmath>
 #include <gtest/gtest.h>
 #include <sstream>
 #include <string>
@@ -19,6 +20,20 @@ TEST(ValuesTest, TestElementAccess) {
   }
   for (auto i = 0; i < vector.width; ++i) {
     EXPECT_FLOAT_EQ(i, vector.value(i));
+  }
+}
+
+TEST(ValuesTest, TestElementAccessMultidimensional) {
+  auto vector = autoencoder::Values(4, 4);
+  for (auto i = 0; i < vector.width; ++i) {
+    for (auto j = 0; j < vector.height; ++j) {
+      vector.value(i, j) = (i < j ? -1.0f : 1.0f) * i * j;
+    }
+  }
+  for (auto i = 0; i < vector.width; ++i) {
+    for (auto j = 0; j < vector.height; ++j) {
+      EXPECT_FLOAT_EQ((i < j ? -1.0f : 1.0f) * i * j, vector.value(i, j));
+    }
   }
 }
 
