@@ -19,7 +19,7 @@ namespace autoencoder {
       delete [] differences;
     }
 
-    inline int offset(int i, int j = 0, int k = 0, int l = 0) const {
+    inline int Offset(int i, int j = 0, int k = 0, int l = 0) const {
       assert(0 <= i && i < width);
       assert(0 <= j && j < height);
       assert(0 <= k && k < depth);
@@ -28,19 +28,19 @@ namespace autoencoder {
     }
 
     float difference(int i, int j = 0, int k = 0, int l = 0) const {
-      return differences[offset(i, j, k, l)];
+      return differences[Offset(i, j, k, l)];
     }
 
     float &difference(int i, int j = 0, int k = 0, int l = 0) {
-      return differences[offset(i, j, k, l)];
+      return differences[Offset(i, j, k, l)];
     }
 
     float value(int i, int j = 0, int k = 0, int l = 0) const {
-      return values[offset(i, j, k, l)];
+      return values[Offset(i, j, k, l)];
     }
 
     float &value(int i, int j = 0, int k = 0, int l = 0) {
-      return values[offset(i, j, k, l)];
+      return values[Offset(i, j, k, l)];
     }
 
     Values operator +(const Values &other) {
