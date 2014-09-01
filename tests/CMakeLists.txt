@@ -1,3 +1,3 @@
 include_directories(../source)
 add_executable(alltests matrixmath_test.cpp rectifiedlinearlayer_test.cpp values_test.cpp)
-target_link_libraries(alltests autoencoderlib gtest gtest_main)
+target_link_libraries(alltests autoencoderlib gflags-static gtest gtest_main)
