@@ -5,10 +5,9 @@ if (APPLE)
 endif(APPLE)
 add_library(autoencoderlib innerproductlayer.cpp matrixmath.cpp rectifiedlinearlayer.cpp)
 add_executable(
-    autoencoder audio.cpp innerproductlayer.cpp main.cpp rectifiedlinearlayer.cpp)
+    autoencoder innerproductlayer.cpp main.cpp rectifiedlinearlayer.cpp)
 add_executable(clblas clblas.cpp)
 add_executable(clfft clfft.cpp)
-target_link_libraries(
-    autoencoder clBLAS clFFT ${AUDIO_TOOLBOX_LIBRARY} ${CORE_FOUNDATION_LIBRARY} ${OPENCL_LIBRARY})
+target_link_libraries(autoencoder clBLAS clFFT ${OPENCL_LIBRARY})
 target_link_libraries(clblas clBLAS clFFT ${OPENCL_LIBRARY})
 target_link_libraries(clfft clBLAS clFFT ${OPENCL_LIBRARY})

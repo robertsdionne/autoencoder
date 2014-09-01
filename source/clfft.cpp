@@ -6,6 +6,12 @@
 
 constexpr size_t kN = 16;
 
+#ifdef __APPLE__
+constexpr const char *kTargetGpu = "GeForce";
+#else
+constexpr const char *kTargetGpu = "Cayman";
+#endif
+
 int main(int argument_count, char *arguments[]) {
   cl_platform_id platform = 0;
   assert(CL_SUCCESS == clGetPlatformIDs(1, &platform, nullptr));
@@ -21,7 +27,7 @@ int main(int argument_count, char *arguments[]) {
     assert(CL_SUCCESS == clGetDeviceInfo(
         devices[i], CL_DEVICE_NAME, sizeof(buffer), buffer, &size));
     std::string device_name = buffer;
-    if (std::string::npos != device_name.find("GeForce")) {
+    if (std::string::npos != device_name.find(kTargetGpu)) {
       device = devices[i];
     }
   }

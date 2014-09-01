@@ -4,10 +4,12 @@ include_directories(
     libraries/clBLAS/src
     libraries/clFFT/src/include
     libraries/eigen
+    libraries/gflags-2.1.1/include
     libraries/gtest-1.7.0/include
     libraries/opencl/include)
 add_subdirectory(libraries/clBLAS/src)
 add_subdirectory(libraries/clFFT/src)
+add_subdirectory(libraries/gflags-2.1.1)
 add_subdirectory(libraries/gtest-1.7.0)
 if (NOT WIN32)
   add_definitions(-std=c++11)
