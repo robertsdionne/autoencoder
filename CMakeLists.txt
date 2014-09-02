@@ -8,6 +8,11 @@ add_subdirectory(libraries/clFFT/src)
 add_subdirectory(libraries/gflags-2.1.1)
 add_subdirectory(libraries/gtest-1.7.0)
 
+# Disable client, kernel tests and tests for clBLAS and clFFT to avoid depending upon Boost.
+set(BUILD_CLIENT OFF)
+set(BUILD_KTEST OFF)
+set(BUILD_TEST OFF)
+
 if (APPLE)
   find_library(ACCELERATE_LIBRARY Accelerate)
   find_library(AUDIO_TOOLBOX_LIBRARY AudioToolbox)
