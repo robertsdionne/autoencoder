@@ -8,13 +8,22 @@ add_subdirectory(libraries/clFFT/src)
 add_subdirectory(libraries/gflags-2.1.1)
 add_subdirectory(libraries/gtest-1.7.0)
 
-ExternalProject_Add(OpenBLAS
-    PREFIX libraries/OpenBLAS-0.2.11
-    SOURCE_DIR libraries/OpenBLAS-0.2.11
-    CONFIGURE_COMMAND true
-    BINARY_DIR libraries/OpenBLAS-0.2.11
-    BUILD_COMMAND $(MAKE)
-    INSTALL_COMMAND true)
+if (APPLE)
+  find_library(ACCELERATE_LIBRARY Accelerate)
+  find_library(AUDIO_TOOLBOX_LIBRARY AudioToolbox)
+  find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
+  find_library(OPENCL_LIBRARY OpenCL)
+  set(BLAS_LIBRARY ${ACCELERATE_LIBRARY})
+else(APPLE)
+  ExternalProject_Add(OpenBLAS
+      PREFIX libraries/OpenBLAS-0.2.11
+      SOURCE_DIR libraries/OpenBLAS-0.2.11
+      CONFIGURE_COMMAND true
+      BINARY_DIR libraries/OpenBLAS-0.2.11
+      BUILD_COMMAND $(MAKE)
+      INSTALL_COMMAND true)
+  set(BLAS_LIBRARY openblas)
+endif(APPLE)
 
 include_directories(
     libraries/OpenBLAS-0.2.11

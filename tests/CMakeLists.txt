@@ -8,4 +8,4 @@ add_executable(alltests
 
 add_dependencies(alltests OpenBLAS)
 
-target_link_libraries(alltests autoencoderlib gflags-static gtest gtest_main openblas)
+target_link_libraries(alltests autoencoderlib gflags-static gtest gtest_main ${BLAS_LIBRARY})
