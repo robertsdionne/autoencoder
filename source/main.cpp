@@ -1,7 +1,7 @@
 #include <gflags/gflags.h>
 #include <iostream>
 
-#include "rectifiedlinearlayer.h"
+#include "rectifiedlinearlayer.hpp"
 
 constexpr int kWordVectorDimension = 50;
 

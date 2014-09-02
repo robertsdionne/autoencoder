@@ -1,7 +1,7 @@
 #include BLAS_HEADER
 
-#include "matrixmath.h"
-#include "values.h"
+#include "matrixmath.hpp"
+#include "values.hpp"
 
 namespace autoencoder {
 

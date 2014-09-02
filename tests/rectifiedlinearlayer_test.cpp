@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "rectifiedlinearlayer.h"
-#include "values.h"
+#include "rectifiedlinearlayer.hpp"
+#include "values.hpp"
 
 TEST(RectifiedLinearLayerTest, TestForwardCpu) {
   auto input = autoencoder::Values(10);

@@ -1,8 +1,8 @@
 #ifndef AUTOENCODER_RECTIFIEDLINEARLAYER_H_
 #define AUTOENCODER_RECTIFIEDLINEARLAYER_H_
 
-#include "layer.h"
-#include "values.h"
+#include "layer.hpp"
+#include "values.hpp"
 
 namespace autoencoder {
 

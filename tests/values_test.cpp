@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-#include "values.h"
+#include "values.hpp"
 
 TEST(ValuesTest, TestConstruction) {
   auto vector = autoencoder::Values(10);

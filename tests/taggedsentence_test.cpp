@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "taggedsentence.h"
+#include "taggedsentence.hpp"
 
 TEST(TaggedSentenceTest, TestConstruction) {
   auto words = std::vector<std::string>{"one", "two", "three"};

@@ -1,8 +1,8 @@
 #ifndef AUTOENCODER_INNERPRODUCTLAYER_H_
 #define AUTOENCODER_INNERPRODUCTLAYER_H_
 
-#include "layer.h"
-#include "values.h"
+#include "layer.hpp"
+#include "values.hpp"
 
 namespace autoencoder {
 

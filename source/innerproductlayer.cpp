@@ -1,5 +1,5 @@
-#include "innerproductlayer.h"
-#include "values.h"
+#include "innerproductlayer.hpp"
+#include "values.hpp"
 
 namespace autoencoder {
 

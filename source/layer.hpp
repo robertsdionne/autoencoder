@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "values.h"
+#include "values.hpp"
 
 namespace autoencoder {
 

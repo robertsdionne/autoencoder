@@ -1,7 +1,7 @@
 #include <AudioToolbox/AudioToolbox.h>
 #include <CoreFoundation/CoreFoundation.h>
 
-#include "audio.h"
+#include "audio.hpp"
 
 namespace autoencoder {
 

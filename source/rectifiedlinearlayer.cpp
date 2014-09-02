@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <cassert>
 
-#include "rectifiedlinearlayer.h"
-#include "values.h"
+#include "rectifiedlinearlayer.hpp"
+#include "values.hpp"
 
 namespace autoencoder {
 

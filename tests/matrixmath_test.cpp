@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "matrixmath.h"
-#include "values.h"
+#include "matrixmath.hpp"
+#include "values.hpp"
 
 TEST(MatrixMathTest, TestSgemm) {
   constexpr auto kM = 3, kK = 4, kN = 5;

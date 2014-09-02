@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "taggedsentence.h"
+#include "taggedsentence.hpp"
 
 namespace autoencoder {
 
