@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstdlib>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -11,6 +12,10 @@ namespace autoencoder {
       const std::vector<std::string> &words, const std::vector<std::string> &tags)
   : words(words), tags(tags) {
     assert(words.size() == tags.size());
+  }
+
+  size_t TaggedSentence::size() const {
+    return words.size();
   }
 
   std::string to_string(const TaggedSentence &sentence) {

@@ -1,6 +1,7 @@
 #ifndef AUTOENCODER_TAGGEDSENTENCE_H_
 #define AUTOENCODER_TAGGEDSENTENCE_H_
 
+#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -11,6 +12,8 @@ namespace autoencoder {
     TaggedSentence(const std::vector<std::string> &words, const std::vector<std::string> &tags);
 
     virtual ~TaggedSentence() = default;
+
+    size_t size() const;
 
   public:
     std::vector<std::string> words, tags;
