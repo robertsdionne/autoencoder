@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 2.8.12)
 project(autoencoder CXX)
 
-include(ExternalProject)
-
 add_subdirectory(libraries/clBLAS/src)
 add_subdirectory(libraries/clFFT/src)
 add_subdirectory(libraries/gflags-2.1.1)
@@ -18,8 +16,15 @@ if (APPLE)
   find_library(AUDIO_TOOLBOX_LIBRARY AudioToolbox)
   find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
   find_library(OPENCL_LIBRARY OpenCL)
+
+  add_custom_target(AccelerateBlas)
+
   set(BLAS_LIBRARY ${ACCELERATE_LIBRARY})
-else(APPLE)
+  set(BLAS_TARGET AccelerateBlas)
+  set(BLAS_HEADER <Accelerate/Accelerate.h>)
+else (APPLE)
+  include(ExternalProject)
+
   ExternalProject_Add(OpenBLAS
       PREFIX libraries/OpenBLAS-0.2.11
       SOURCE_DIR libraries/OpenBLAS-0.2.11
@@ -27,11 +32,17 @@ else(APPLE)
       BINARY_DIR libraries/OpenBLAS-0.2.11
       BUILD_COMMAND $(MAKE)
       INSTALL_COMMAND true)
+
+  include_directories(libraries/OpenBLAS-0.2.11)
+
   set(BLAS_LIBRARY openblas)
-endif(APPLE)
+  set(BLAS_TARGET OpenBLAS)
+  set(BLAS_HEADER <cblas.h>)
+endif (APPLE)
+
+add_definitions(-DBLAS_HEADER=${BLAS_HEADER})
 
 include_directories(
-    libraries/OpenBLAS-0.2.11
     libraries/clBLAS/src
     libraries/clFFT/src/include
     libraries/eigen

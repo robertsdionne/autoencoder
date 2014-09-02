@@ -6,6 +6,6 @@ add_executable(alltests
     taggedsentence_test.cpp
     values_test.cpp)
 
-add_dependencies(alltests OpenBLAS)
+add_dependencies(alltests ${BLAS_TARGET})
 
 target_link_libraries(alltests autoencoderlib gflags-static gtest gtest_main ${BLAS_LIBRARY})

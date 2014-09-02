@@ -1,4 +1,4 @@
-#include <cblas.h>
+#include BLAS_HEADER
 
 #include "matrixmath.h"
 #include "values.h"

@@ -15,5 +15,6 @@ TEST(TaggedSentenceTest, TestConstructionMismatchedLength) {
   auto words = std::vector<std::string>{"one", "two"};
   auto tags = std::vector<std::string>{"TAG1"};
   EXPECT_DEATH(
-      autoencoder::TaggedSentence(words, tags), "Assertion.*words\\.size.*==.*tags\\.size.*failed");
+      autoencoder::TaggedSentence(words, tags),
+      "Assertion.*(failed)?.*words\\.size.*==.*tags\\.size.*(failed)?");
 }

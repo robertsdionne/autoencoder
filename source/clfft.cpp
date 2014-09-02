@@ -1,18 +1,18 @@
 #include <cassert>
 #include <clFFT.h>
 #include <cmath>
+#include <gflags/gflags.h>
 #include <iostream>
 #include <string>
 
 constexpr size_t kN = 16;
 
-#ifdef __APPLE__
-constexpr const char *kTargetGpu = "GeForce";
-#else
-constexpr const char *kTargetGpu = "Cayman";
-#endif
+DEFINE_string(target_gpu, "GeForce", "The OpenCL GPU device name");
 
 int main(int argument_count, char *arguments[]) {
+  gflags::SetUsageMessage("clFFT demo program.");
+  gflags::ParseCommandLineFlags(&argument_count, &arguments, true);
+
   cl_platform_id platform = 0;
   assert(CL_SUCCESS == clGetPlatformIDs(1, &platform, nullptr));
   cl_device_id device = 0;
@@ -27,7 +27,7 @@ int main(int argument_count, char *arguments[]) {
     assert(CL_SUCCESS == clGetDeviceInfo(
         devices[i], CL_DEVICE_NAME, sizeof(buffer), buffer, &size));
     std::string device_name = buffer;
-    if (std::string::npos != device_name.find(kTargetGpu)) {
+    if (std::string::npos != device_name.find(FLAGS_target_gpu)) {
       device = devices[i];
     }
   }
