@@ -1,5 +1,5 @@
 add_library(autoencoderlib
-    innerproductlayer.cpp matrixmath.cpp rectifiedlinearlayer.cpp taggedsentence.cpp)
+    dataloader.cpp innerproductlayer.cpp matrixmath.cpp rectifiedlinearlayer.cpp taggedsentence.cpp)
 
 add_executable(
     autoencoder innerproductlayer.cpp main.cpp rectifiedlinearlayer.cpp)

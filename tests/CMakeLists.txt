@@ -1,6 +1,7 @@
 include_directories(../source)
 
 add_executable(alltests
+    dataloader_test.cpp
     matrixmath_test.cpp
     rectifiedlinearlayer_test.cpp
     taggedsentence_test.cpp
