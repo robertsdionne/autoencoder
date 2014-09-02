@@ -4,6 +4,7 @@
 *.opensdf
 *.sdf
 *.sln
+*.so.0
 *.suo
 *.user
 *.vcxproj
@@ -11,6 +12,8 @@ CMakeCache.txt
 CMakeFiles/
 Makefile
 [Dd]ebug/
+libraries/OpenBLAS-0.2.11/src/
+libraries/OpenBLAS-0.2.11/tmp/
 source/autoencoder
 source/clblas
 source/clfft

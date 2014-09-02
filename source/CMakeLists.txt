@@ -3,12 +3,17 @@ if (APPLE)
   find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
   find_library(OPENCL_LIBRARY OpenCL)
 endif(APPLE)
+
 add_library(autoencoderlib
     innerproductlayer.cpp matrixmath.cpp rectifiedlinearlayer.cpp taggedsentence.cpp)
+
 add_executable(
     autoencoder innerproductlayer.cpp main.cpp rectifiedlinearlayer.cpp)
 add_executable(clblas clblas.cpp)
 add_executable(clfft clfft.cpp)
-target_link_libraries(autoencoder clBLAS clFFT gflags-static ${OPENCL_LIBRARY})
+
+add_dependencies(autoencoder OpenBLAS)
+
+target_link_libraries(autoencoder clBLAS clFFT gflags-static openblas ${OPENCL_LIBRARY})
 target_link_libraries(clblas clBLAS clFFT ${OPENCL_LIBRARY})
 target_link_libraries(clfft clBLAS clFFT ${OPENCL_LIBRARY})
