@@ -50,7 +50,7 @@ int main(int argument_count, char *arguments[]) {
     autoencoder::FLAGS_validation_in_domain_filename,
     autoencoder::FLAGS_validation_out_of_domain_filename,
   });
-  std::cout << "Done." << std::endl;
+  std::cout << "Done." << std::endl<< std::endl;
 
   auto part_of_speech_tagger = autoencoder::DumbPartOfSpeechTagger();
   auto evaluator = autoencoder::Evaluator();
@@ -60,29 +60,29 @@ int main(int argument_count, char *arguments[]) {
   auto training_report = evaluator.Evaluate(
       part_of_speech_tagger, training_sentences, training_vocabulary);
   std::cout << "Done." << std::endl;
-  std::cout << training_report << std::endl;
+  std::cout << training_report << std::endl<< std::endl;
 
   std::cout << "Evaluating on in-domain validation data... ";
   std::cout.flush();
   auto validation_in_domain_report = evaluator.Evaluate(
       part_of_speech_tagger, validation_in_domain_sentences, training_vocabulary);
   std::cout << "Done." << std::endl;
-  std::cout << validation_in_domain_report << std::endl;
+  std::cout << validation_in_domain_report << std::endl<< std::endl;
 
   std::cout << "Evaluating on out-of-domain validation data... ";
   std::cout.flush();
   auto validation_out_of_domain_report = evaluator.Evaluate(
       part_of_speech_tagger, validation_out_of_domain_sentences, training_vocabulary);
   std::cout << "Done." << std::endl;
-  std::cout << validation_out_of_domain_report << std::endl;
+  std::cout << validation_out_of_domain_report << std::endl<< std::endl;
 
   if (FLAGS_test) {
     std::cout << "Evaluating on test data!!! ";
     std::cout.flush();
   auto test_report = evaluator.Evaluate(
       part_of_speech_tagger, test_sentences, training_vocabulary);
-  std::cout << "Done." << std::endl;
-  std::cout << test_report << std::endl;
+  std::cout << "Done!" << std::endl;
+  std::cout << test_report << std::endl<< std::endl;
   }
 
   return 0;
