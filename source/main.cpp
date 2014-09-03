@@ -2,11 +2,13 @@
 #include <iostream>
 
 #include "dataloader.hpp"
+#include "dumbpartofspeechtagger.hpp"
 
 DEFINE_int32(iterations, 100, "the number of training iterations");
 DEFINE_double(learning_rate, 0.01, "the learning rate");
 DEFINE_int32(random_seed, -1, "seed the random number generator");
 DEFINE_int32(recurrent_state_dimension, 50, "the recurrent state dimension");
+DEFINE_bool(test, false, "whether to evaluate on the test data");
 DEFINE_int32(test_sentences, -1, "the number of test sentences to use");
 DEFINE_int32(training_sentences, -1, "the number of training sentences to use");
 
@@ -48,6 +50,34 @@ int main(int argument_count, char *arguments[]) {
     autoencoder::FLAGS_validation_out_of_domain_filename,
   });
   std::cout << "Done." << std::endl;
+
+  auto part_of_speech_tagger = autoencoder::DumbPartOfSpeechTagger();
+
+  std::cout << "Evaluating on training data... ";
+  std::cout.flush();
+  // TODO(robertsdionne): evaluate here.
+  std::cout << "Done." << std::endl;
+  // TODO(robertsdionne): print report here.
+
+  std::cout << "Evaluating on in-domain validation data... ";
+  std::cout.flush();
+  // TODO(robertsdionne): evaluate here.
+  std::cout << "Done." << std::endl;
+  // TODO(robertsdionne): print report here.
+
+  std::cout << "Evaluating on out-of-domain validation data... ";
+  std::cout.flush();
+  // TODO(robertsdionne): evaluate here.
+  std::cout << "Done." << std::endl;
+  // TODO(robertsdionne): print report here.
+
+  if (FLAGS_test) {
+    std::cout << "Evaluating on test data!!! ";
+    std::cout.flush();
+    // TODO(robertsdionne): evaluate here.
+    std::cout << "Done!" << std::endl;
+    // TODO(robertsdionne): print report here.
+  }
 
   return 0;
 }
