@@ -3,6 +3,7 @@
 
 #include "dataloader.hpp"
 #include "dumbpartofspeechtagger.hpp"
+#include "evaluator.hpp"
 
 DEFINE_int32(iterations, 100, "the number of training iterations");
 DEFINE_double(learning_rate, 0.01, "the learning rate");
@@ -52,31 +53,36 @@ int main(int argument_count, char *arguments[]) {
   std::cout << "Done." << std::endl;
 
   auto part_of_speech_tagger = autoencoder::DumbPartOfSpeechTagger();
+  auto evaluator = autoencoder::Evaluator();
 
   std::cout << "Evaluating on training data... ";
   std::cout.flush();
-  // TODO(robertsdionne): evaluate here.
+  auto training_report = evaluator.Evaluate(
+      part_of_speech_tagger, training_sentences, training_vocabulary);
   std::cout << "Done." << std::endl;
-  // TODO(robertsdionne): print report here.
+  std::cout << training_report << std::endl;
 
   std::cout << "Evaluating on in-domain validation data... ";
   std::cout.flush();
-  // TODO(robertsdionne): evaluate here.
+  auto validation_in_domain_report = evaluator.Evaluate(
+      part_of_speech_tagger, validation_in_domain_sentences, training_vocabulary);
   std::cout << "Done." << std::endl;
-  // TODO(robertsdionne): print report here.
+  std::cout << validation_in_domain_report << std::endl;
 
   std::cout << "Evaluating on out-of-domain validation data... ";
   std::cout.flush();
-  // TODO(robertsdionne): evaluate here.
+  auto validation_out_of_domain_report = evaluator.Evaluate(
+      part_of_speech_tagger, validation_out_of_domain_sentences, training_vocabulary);
   std::cout << "Done." << std::endl;
-  // TODO(robertsdionne): print report here.
+  std::cout << validation_out_of_domain_report << std::endl;
 
   if (FLAGS_test) {
     std::cout << "Evaluating on test data!!! ";
     std::cout.flush();
-    // TODO(robertsdionne): evaluate here.
-    std::cout << "Done!" << std::endl;
-    // TODO(robertsdionne): print report here.
+  auto test_report = evaluator.Evaluate(
+      part_of_speech_tagger, test_sentences, training_vocabulary);
+  std::cout << "Done." << std::endl;
+  std::cout << test_report << std::endl;
   }
 
   return 0;

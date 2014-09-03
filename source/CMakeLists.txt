@@ -1,6 +1,7 @@
 add_library(autoencoderlib
     dataloader.cpp
     dumbpartofspeechtagger.cpp
+    evaluator.cpp
     innerproductlayer.cpp
     matrixmath.cpp
     rectifiedlinearlayer.cpp
@@ -9,6 +10,7 @@ add_library(autoencoderlib
 add_executable(autoencoder
     dataloader.cpp
     dumbpartofspeechtagger.cpp
+    evaluator.cpp
     innerproductlayer.cpp
     main.cpp
     matrixmath.cpp
