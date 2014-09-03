@@ -1,10 +1,17 @@
 add_library(autoencoderlib
-    dataloader.cpp innerproductlayer.cpp matrixmath.cpp rectifiedlinearlayer.cpp taggedsentence.cpp)
+    dataloader.cpp
+    dumbpartofspeechtagger.cpp
+    innerproductlayer.cpp
+    matrixmath.cpp
+    rectifiedlinearlayer.cpp
+    taggedsentence.cpp)
 
 add_executable(autoencoder
     dataloader.cpp
+    dumbpartofspeechtagger.cpp
     innerproductlayer.cpp
-    main.cpp matrixmath.cpp
+    main.cpp
+    matrixmath.cpp
     rectifiedlinearlayer.cpp
     taggedsentence.cpp)
 add_executable(clblas clblas.cpp)
