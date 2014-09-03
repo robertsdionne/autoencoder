@@ -1,8 +1,12 @@
 add_library(autoencoderlib
     dataloader.cpp innerproductlayer.cpp matrixmath.cpp rectifiedlinearlayer.cpp taggedsentence.cpp)
 
-add_executable(
-    autoencoder innerproductlayer.cpp main.cpp rectifiedlinearlayer.cpp)
+add_executable(autoencoder
+    dataloader.cpp
+    innerproductlayer.cpp
+    main.cpp matrixmath.cpp
+    rectifiedlinearlayer.cpp
+    taggedsentence.cpp)
 add_executable(clblas clblas.cpp)
 add_executable(clfft clfft.cpp)
 
