@@ -18,7 +18,11 @@ namespace autoencoder {
 
   std::vector<std::string> DumbPartOfSpeechTagger::Tag(
       const std::vector<std::string> &sentence) const {
-    return std::vector<std::string>();
+    auto tags = std::vector<std::string>();
+    for (auto &word : sentence) {
+      tags.push_back("NN");
+    }
+    return tags;
   }
 
   float DumbPartOfSpeechTagger::ScoreTagging(const TaggedSentence &tagged_sentence) const {

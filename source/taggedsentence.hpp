@@ -9,6 +9,8 @@ namespace autoencoder {
 
   class TaggedSentence {
   public:
+    TaggedSentence() = default;
+
     TaggedSentence(const std::vector<std::string> &words, const std::vector<std::string> &tags);
 
     virtual ~TaggedSentence() = default;
