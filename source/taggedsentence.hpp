@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_TAGGEDSENTENCE_H_
-#define AUTOENCODER_TAGGEDSENTENCE_H_
+#ifndef AUTOENCODER_TAGGEDSENTENCE_HPP_
+#define AUTOENCODER_TAGGEDSENTENCE_HPP_
 
 #include <cstdlib>
 #include <string>
@@ -25,4 +25,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_TAGGEDSENTENCE_H_
+#endif  // AUTOENCODER_TAGGEDSENTENCE_HPP_

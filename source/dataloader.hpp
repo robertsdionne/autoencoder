@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_DATALOADER_H_
-#define AUTOENCODER_DATALOADER_H_
+#ifndef AUTOENCODER_DATALOADER_HPP_
+#define AUTOENCODER_DATALOADER_HPP_
 
 #include <gflags/gflags.h>
 #include <initializer_list>
@@ -40,4 +40,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_DATALOADER_H_
+#endif  // AUTOENCODER_DATALOADER_HPP_

@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_LAYER_H_
-#define AUTOENCODER_LAYER_H_
+#ifndef AUTOENCODER_LAYER_HPP_
+#define AUTOENCODER_LAYER_HPP_
 
 #include <vector>
 
@@ -35,4 +35,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_LAYER_H_
+#endif  // AUTOENCODER_LAYER_HPP_

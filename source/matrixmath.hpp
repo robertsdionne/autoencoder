@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_MATRIXMATH_H_
-#define AUTOENCODER_MATRIXMATH_H_
+#ifndef AUTOENCODER_MATRIXMATH_HPP_
+#define AUTOENCODER_MATRIXMATH_HPP_
 
 namespace autoencoder {
 
@@ -9,4 +9,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_MATRIXMATH_H_
+#endif  // AUTOENCODER_MATRIXMATH_HPP_

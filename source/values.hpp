@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_VALUES_H_
-#define AUTOENCODER_VALUES_H_
+#ifndef AUTOENCODER_VALUES_HPP_
+#define AUTOENCODER_VALUES_HPP_
 
 #include <cassert>
 #include <iomanip>
@@ -59,4 +59,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_VALUES_H_
+#endif  // AUTOENCODER_VALUES_HPP_

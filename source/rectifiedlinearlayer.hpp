@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_RECTIFIEDLINEARLAYER_H_
-#define AUTOENCODER_RECTIFIEDLINEARLAYER_H_
+#ifndef AUTOENCODER_RECTIFIEDLINEARLAYER_HPP_
+#define AUTOENCODER_RECTIFIEDLINEARLAYER_HPP_
 
 #include "layer.hpp"
 #include "values.hpp"
@@ -17,4 +17,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_RECTIFIEDLINEARLAYER_H_
+#endif  // AUTOENCODER_RECTIFIEDLINEARLAYER_HPP_

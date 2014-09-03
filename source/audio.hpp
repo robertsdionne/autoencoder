@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_AUDIO_H_
-#define AUTOENCODER_AUDIO_H_
+#ifndef AUTOENCODER_AUDIO_HPP_
+#define AUTOENCODER_AUDIO_HPP_
 
 #include <string>
 
@@ -14,4 +14,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_AUDIO_H_
+#endif  // AUTOENCODER_AUDIO_HPP_

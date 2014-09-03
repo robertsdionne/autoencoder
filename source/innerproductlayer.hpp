@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_INNERPRODUCTLAYER_H_
-#define AUTOENCODER_INNERPRODUCTLAYER_H_
+#ifndef AUTOENCODER_INNERPRODUCTLAYER_HPP_
+#define AUTOENCODER_INNERPRODUCTLAYER_HPP_
 
 #include "layer.hpp"
 #include "values.hpp"
@@ -23,4 +23,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_INNERPRODUCTLAYER_H_
+#endif  // AUTOENCODER_INNERPRODUCTLAYER_HPP_

@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_INTERFACE_H_
-#define AUTOENCODER_INTERFACE_H_
+#ifndef AUTOENCODER_INTERFACE_HPP_
+#define AUTOENCODER_INTERFACE_HPP_
 
 #define DECLARE_INTERFACE(interface)\
 public:\
@@ -10,4 +10,4 @@ protected:\
   interface &operator =(const interface &) = default;\
 private:
 
-#endif  // AUTOENCODER_INTERFACE_H_
+#endif  // AUTOENCODER_INTERFACE_HPP_

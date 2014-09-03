@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_PARTOFSPEECHTAGGER_H_
-#define AUTOENCODER_PARTOFSPEECHTAGGER_H_
+#ifndef AUTOENCODER_PARTOFSPEECHTAGGER_HPP_
+#define AUTOENCODER_PARTOFSPEECHTAGGER_HPP_
 
 #include <string>
 #include <vector>
@@ -27,4 +27,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_PARTOFSPEECHTAGGER_H_
+#endif  // AUTOENCODER_PARTOFSPEECHTAGGER_HPP_
