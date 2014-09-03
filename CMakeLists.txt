@@ -1,8 +1,14 @@
 cmake_minimum_required (VERSION 2.8.12)
 project(autoencoder CXX)
 
+if (NOT WIN32)
+#  add_definitions(-std=c++11)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
+endif()
+
 add_subdirectory(libraries/clBLAS/src)
 add_subdirectory(libraries/clFFT/src)
+
 add_subdirectory(libraries/gflags-2.1.1)
 add_subdirectory(libraries/gtest-1.7.0)
 
@@ -30,7 +36,7 @@ else (APPLE)
       SOURCE_DIR libraries/OpenBLAS-0.2.11
       CONFIGURE_COMMAND true
       BINARY_DIR libraries/OpenBLAS-0.2.11
-      BUILD_COMMAND $(MAKE)
+      BUILD_COMMAND CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} $(MAKE)
       INSTALL_COMMAND true)
 
   include_directories(libraries/OpenBLAS-0.2.11)
@@ -43,16 +49,13 @@ endif (APPLE)
 add_definitions(-DBLAS_HEADER=${BLAS_HEADER})
 
 include_directories(
+    SYSTEM
     libraries/clBLAS/src
     libraries/clFFT/src/include
     libraries/eigen
     libraries/gflags-2.1.1/include
     libraries/gtest-1.7.0/include
     libraries/opencl/include)
-
-if (NOT WIN32)
-  add_definitions(-std=c++11)
-endif()
 
 add_subdirectory(source)
 add_subdirectory(tests)

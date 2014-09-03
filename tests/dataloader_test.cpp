@@ -17,5 +17,9 @@ TEST(DataLoaderTest, TestLoadData) {
 }
 
 TEST(DataLoaderTest, TestTokenizeNumbers) {
-
+  auto data_loader = autoencoder::DataLoader();
+  EXPECT_EQ(
+      "0/0/0", data_loader.TokenizeNumbers("+123.456,999.123/-123.123,999,123/+333.9999,888"));
+  EXPECT_EQ("0", data_loader.TokenizeNumbers("50,000"));
+  EXPECT_EQ("0th", data_loader.TokenizeNumbers("-50000.000,0000th"));
 }

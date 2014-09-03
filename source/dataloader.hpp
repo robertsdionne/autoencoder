@@ -3,6 +3,7 @@
 
 #include <gflags/gflags.h>
 #include <vector>
+#include <string>
 
 #include "taggedsentence.hpp"
 
@@ -23,6 +24,8 @@ namespace autoencoder {
     virtual ~DataLoader() = default;
 
     std::vector<TaggedSentence> ReadTaggedSentences(const std::string &filename) const;
+
+    std::string TokenizeNumbers(const std::string &input) const;
   };
 
 }  // namespace autoencoder
