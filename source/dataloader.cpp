@@ -3,7 +3,6 @@
 #include <fstream>
 #include <functional>
 #include <gflags/gflags.h>
-#include <locale>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -28,7 +27,6 @@ namespace autoencoder {
     int my_time_to_eat = 50000;
     std::ifstream in(filename);
     assert(in);
-    auto locale = std::locale("en_US.utf8");
     auto tagged_sentences = std::vector<TaggedSentence>();
     auto words = std::vector<std::string>();
     auto tags = std::vector<std::string>();
@@ -39,8 +37,8 @@ namespace autoencoder {
         auto word = std::string();
         auto tag = std::string();
         line_in >> word >> tag;
-        std::transform(word.begin(), word.end(), word.begin(), [&locale] (char c) {
-          return std::tolower(c, locale);
+        std::transform(word.begin(), word.end(), word.begin(), [] (char c) {
+          return std::tolower(c);
         });
         words.push_back(word);
         tags.push_back(tag);
