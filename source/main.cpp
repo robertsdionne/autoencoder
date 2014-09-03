@@ -79,10 +79,10 @@ int main(int argument_count, char *arguments[]) {
   if (FLAGS_test) {
     std::cout << "Evaluating on test data!!! ";
     std::cout.flush();
-  auto test_report = evaluator.Evaluate(
-      part_of_speech_tagger, test_sentences, training_vocabulary);
-  std::cout << "Done!" << std::endl;
-  std::cout << test_report << std::endl<< std::endl;
+    auto test_report = evaluator.Evaluate(
+        part_of_speech_tagger, test_sentences, training_vocabulary);
+    std::cout << "Done!" << std::endl;
+    std::cout << test_report << std::endl<< std::endl;
   }
 
   return 0;
