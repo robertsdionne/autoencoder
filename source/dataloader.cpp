@@ -37,9 +37,15 @@ namespace autoencoder {
         auto word = std::string();
         auto tag = std::string();
         line_in >> word >> tag;
+
+        // Make word lower case.
         std::transform(word.begin(), word.end(), word.begin(), [] (char c) {
           return std::tolower(c);
         });
+
+        // Replace numbers with 0.
+        word = TokenizeNumbers(word);
+
         words.push_back(word);
         tags.push_back(tag);
       } else {

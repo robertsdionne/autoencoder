@@ -14,6 +14,11 @@ TEST(DataLoaderTest, TestLoadData) {
       "capital_NN ,_, creating_VBG another_DT potential_JJ obstacle_NN to_IN the_DT government_NN "
       "\'s_POS sale_NN of_IN sick_JJ thrifts_NNS ._.",
       autoencoder::to_string(tagged_sentences.at(0)));
+  EXPECT_EQ(
+      "that_DT debt_NN would_MD be_VB paid_VBN off_RP as_IN the_DT assets_NNS are_VBP sold_VBN ,_, "
+      "leaving_VBG the_DT total_JJ spending_NN for_IN the_DT bailout_NN at_IN $_$ 0_CD billion_CD "
+      ",_, or_CC $_$ 0_CD billion_CD including_VBG interest_NN over_IN 0_CD years_NNS ._.",
+      autoencoder::to_string(tagged_sentences.at(8)));
 }
 
 TEST(DataLoaderTest, TestTokenizeNumbers) {
