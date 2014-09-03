@@ -6,7 +6,9 @@ TEST(DataLoaderTest, TestLoadData) {
   auto data_loader = autoencoder::DataLoader();
   auto tagged_sentences = data_loader.ReadTaggedSentences(
       autoencoder::FLAGS_validation_in_domain_filename);
+
   EXPECT_EQ(1700, tagged_sentences.size());
+
   EXPECT_EQ(
       "influential_JJ members_NNS of_IN the_DT house_NNP ways_NNP and_CC means_NNP "
       "committee_NNP introduced_VBD legislation_NN that_WDT would_MD restrict_VB how_WRB the_DT "
@@ -19,6 +21,19 @@ TEST(DataLoaderTest, TestLoadData) {
       "leaving_VBG the_DT total_JJ spending_NN for_IN the_DT bailout_NN at_IN $_$ 0_CD billion_CD "
       ",_, or_CC $_$ 0_CD billion_CD including_VBG interest_NN over_IN 0_CD years_NNS ._.",
       autoencoder::to_string(tagged_sentences.at(8)));
+
+  auto tags = data_loader.FindTags({
+    autoencoder::FLAGS_test_filename,
+    autoencoder::FLAGS_train_filename,
+    autoencoder::FLAGS_validation_in_domain_filename,
+    autoencoder::FLAGS_validation_out_of_domain_filename,
+  });
+
+  EXPECT_EQ(47, tags.size());
+
+  auto vocabulary = data_loader.FindVocabulary(tagged_sentences);
+
+  EXPECT_EQ(5428, vocabulary.size());
 }
 
 TEST(DataLoaderTest, TestTokenizeNumbers) {

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <functional>
 #include <gflags/gflags.h>
+#include <initializer_list>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -23,8 +24,48 @@ namespace autoencoder {
   DEFINE_string(validation_out_of_domain_filename,
       "data/en-web-weblogs-dev.pos", "The out-of-domain validation data.");
 
+    std::set<std::string> DataLoader::FindTags(
+        const std::initializer_list<std::string> &filenames) const {
+      auto tags = std::set<std::string>();
+      for (auto &filename : filenames) {
+        std::ifstream in(filename);
+        assert(in);
+        auto line = std::string();
+        while (std::getline(in, line)) {
+          if (line.size() > 0) {
+            std::istringstream line_in(line);
+            auto word = std::string();
+            auto tag = std::string();
+            line_in >> word >> tag;
+            tags.insert(tag);
+          }
+        }
+      }
+      return tags;
+    }
+
+    std::set<std::string> DataLoader::FindTags(const std::vector<TaggedSentence> &sentences) const {
+      auto tags = std::set<std::string>();
+      for (auto &sentence : sentences) {
+        for (auto &tag : sentence.tags) {
+          tags.insert(tag);
+        }
+      }
+      return tags;
+    }
+
+    std::unordered_set<std::string> DataLoader::FindVocabulary(
+        const std::vector<TaggedSentence> &sentences) const {
+      auto vocabulary = std::unordered_set<std::string>();
+      for (auto &sentence : sentences) {
+        for (auto &word : sentence.words) {
+          vocabulary.insert(word);
+        }
+      }
+      return vocabulary;
+    }
+
   std::vector<TaggedSentence> DataLoader::ReadTaggedSentences(const std::string &filename) const {
-    int my_time_to_eat = 50000;
     std::ifstream in(filename);
     assert(in);
     auto tagged_sentences = std::vector<TaggedSentence>();

@@ -2,8 +2,11 @@
 #define AUTOENCODER_DATALOADER_H_
 
 #include <gflags/gflags.h>
-#include <vector>
+#include <initializer_list>
+#include <set>
 #include <string>
+#include <unordered_set>
+#include <vector>
 
 #include "taggedsentence.hpp"
 
@@ -22,6 +25,13 @@ namespace autoencoder {
     DataLoader() = default;
 
     virtual ~DataLoader() = default;
+
+    std::set<std::string> FindTags(const std::initializer_list<std::string> &filenames) const;
+
+    std::set<std::string> FindTags(const std::vector<TaggedSentence> &sentences) const;
+
+    std::unordered_set<std::string> FindVocabulary(
+        const std::vector<TaggedSentence> &sentences) const;
 
     std::vector<TaggedSentence> ReadTaggedSentences(const std::string &filename) const;
 
