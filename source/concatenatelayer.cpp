@@ -4,20 +4,22 @@
 namespace autoencoder {
 
   void ConcatenateLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
-    for (auto i = 0; i < bottom.at(0)->width; ++i) {
-      top->at(0)->value(i) = bottom.at(0)->value(i);
-    }
-    for (auto i = 0; i < bottom.at(1)->width; ++i) {
-      top->at(0)->value(i + bottom.at(0)->width) = bottom.at(1)->value(i);
+    auto offset = 0;
+    for (auto i = 0; i < bottom.size(); ++i) {
+      for (auto j = 0; j < bottom.at(i)->width; ++j) {
+        top->at(0)->value(j + offset) = bottom.at(i)->value(j);
+      }
+      offset += bottom.at(i)->width;
     }
   }
 
   void ConcatenateLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
-    for (auto i = 0; i < bottom->at(0)->width; ++i) {
-      bottom->at(0)->difference(i) = top.at(0)->difference(i);
-    }
-    for (auto i = 0; i < bottom->at(1)->width; ++i) {
-      bottom->at(1)->difference(i) = top.at(0)->difference(i + bottom->at(0)->width);
+    auto offset = 0;
+    for (auto i = 0; i < bottom->size(); ++i) {
+      for (auto j = 0; j < bottom->at(i)->width; ++j) {
+        bottom->at(i)->difference(j) = top.at(0)->difference(j + offset);
+      }
+      offset += bottom->at(i)->width;
     }
   }
 
