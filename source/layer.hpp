@@ -3,32 +3,32 @@
 
 #include <vector>
 
-#include "values.hpp"
-
 namespace autoencoder {
+
+  struct Values;
 
   class Layer {
   public:
     virtual ~Layer() = default;
 
-    inline void Forward(const Values &bottom, Values *top) {
+    inline void Forward(const std::vector<Values *> &bottom, std::vector<Values *> *top) {
       ForwardCpu(bottom, top);
     }
 
-    inline void Backward(const Values &top, Values *bottom) {
+    inline void Backward(const std::vector<Values *> &top, std::vector<Values *> *bottom) {
       BackwardCpu(top, bottom);
     }
 
   protected:
-    virtual void ForwardCpu(const Values &bottom, Values *top) = 0;
+    virtual void ForwardCpu(const std::vector<Values *> &bottom, std::vector<Values *> *top) = 0;
 
-    virtual void ForwardGpu(const Values &bottom, Values *top) {
+    virtual void ForwardGpu(const std::vector<Values *> &bottom, std::vector<Values *> *top) {
       ForwardCpu(bottom, top);
     }
 
-    virtual void BackwardCpu(const Values &top, Values *bottom) = 0;
+    virtual void BackwardCpu(const std::vector<Values *> &top, std::vector<Values *> *bottom) = 0;
 
-    virtual void BackwardGpu(const Values &top, Values *bottom) {
+    virtual void BackwardGpu(const std::vector<Values *> &top, std::vector<Values *> *bottom) {
       BackwardCpu(top, bottom);
     }
   };

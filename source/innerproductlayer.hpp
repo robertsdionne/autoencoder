@@ -12,9 +12,9 @@ namespace autoencoder {
 
     virtual ~InnerProductLayer() = default;
 
-    virtual void ForwardCpu(const Values &bottom, Values *top);
+    void ForwardCpu(const std::vector<Values *> &bottom, std::vector<Values *> *top) override;
 
-    virtual void BackwardCpu(const Values &top, Values *bottom);
+    void BackwardCpu(const std::vector<Values *> &top, std::vector<Values *> *bottom) override;
 
   private:
     Values weights;

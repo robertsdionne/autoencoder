@@ -6,17 +6,19 @@
 
 namespace autoencoder {
 
-  void RectifiedLinearLayer::ForwardCpu(const Values &bottom, Values *top) {
-    assert(bottom.width == top->width);
-    for (auto i = 0; i < top->width; ++i) {
-      top->value(i) = std::max(0.0f, bottom.value(i));
+  void RectifiedLinearLayer::ForwardCpu(
+      const std::vector<Values *> &bottom, std::vector<Values *> *top) {
+    assert(bottom.at(0)->width == top->at(0)->width);
+    for (auto i = 0; i < top->at(0)->width; ++i) {
+      top->at(0)->value(i) = std::max(0.0f, bottom.at(0)->value(i));
     }
   }
 
-  void RectifiedLinearLayer::BackwardCpu(const Values &top, Values *bottom) {
-    assert(top.width == bottom->width);
-    for (auto i = 0; i < bottom->width; ++i) {
-      bottom->difference(i) = top.difference(i) > 0.0f;
+  void RectifiedLinearLayer::BackwardCpu(
+      const std::vector<Values *> &top, std::vector<Values *> *bottom) {
+    assert(top.at(0)->width == bottom->at(0)->width);
+    for (auto i = 0; i < bottom->at(0)->width; ++i) {
+      bottom->at(0)->difference(i) = top.at(0)->difference(i) > 0.0f;
     }
   }
 

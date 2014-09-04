@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <vector>
 
 #include "rectifiedlinearlayer.hpp"
 #include "values.hpp"
@@ -10,7 +11,8 @@ TEST(RectifiedLinearLayerTest, TestForwardCpu) {
   }
   auto layer = autoencoder::RectifiedLinearLayer();
   auto output = autoencoder::Values(10);
-  layer.ForwardCpu(input, &output);
+  auto out = std::vector<autoencoder::Values *>{&output};
+  layer.ForwardCpu({&input}, &out);
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));
   }
@@ -23,7 +25,8 @@ TEST(RectifiedLinearLayerTest, TestBackwardCpu) {
   }
   auto layer = autoencoder::RectifiedLinearLayer();
   auto input = autoencoder::Values(10);
-  layer.BackwardCpu(output, &input);
+  auto in = std::vector<autoencoder::Values *>{&input};
+  layer.BackwardCpu({&output}, &in);
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(i % 2, input.difference(i));
   }
