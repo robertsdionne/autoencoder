@@ -1,4 +1,5 @@
 #include "innerproductlayer.hpp"
+#include "matrixmath.hpp"
 #include "values.hpp"
 
 namespace autoencoder {
@@ -8,7 +9,8 @@ namespace autoencoder {
 
   void InnerProductLayer::ForwardCpu(
       const std::vector<Values *> &bottom, std::vector<Values *> *top) {
-    // *top = weights * bottom + bias;
+    Saxpby(1.0f, bias, 0.0f, top->at(0));
+    Sgemv(1.0f, weights, *bottom.at(0), 1.0f, top->at(0));
   }
 
   void InnerProductLayer::BackwardCpu(

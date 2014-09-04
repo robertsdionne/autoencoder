@@ -5,6 +5,12 @@
 
 namespace autoencoder {
 
+  void Saxpby(float alpha, const Values &x, float beta, Values *y) {
+    // TODO(robertsdionne): Figure out why clang thinks cblas_saxpby is an undefined symbol.
+    cblas_sscal(y->width, beta, y->values, 1);
+    cblas_saxpy(x.width, alpha, x.values, 1, y->values, 1);
+  }
+
   void Sgemm(float alpha, const Values &A, const Values &B, float beta, Values *C) {
     cblas_sgemm(
         CblasColMajor, CblasNoTrans, CblasNoTrans,
