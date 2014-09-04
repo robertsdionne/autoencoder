@@ -22,7 +22,7 @@ namespace autoencoder {
     virtual ~Evaluator() = default;
 
     EvaluationReport Evaluate(
-        PartOfSpeechTagger &pos_tagger,
+        PartOfSpeechTagger &part_of_speech_tagger,
         const std::vector<TaggedSentence> &tagged_sentences,
         const std::unordered_set<std::string> &training_vocabulary) const;
   };

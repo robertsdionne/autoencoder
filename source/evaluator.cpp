@@ -11,7 +11,7 @@
 namespace autoencoder {
 
   EvaluationReport Evaluator::Evaluate(
-      PartOfSpeechTagger &pos_tagger,
+      PartOfSpeechTagger &part_of_speech_tagger,
       const std::vector<TaggedSentence> &tagged_sentences,
       const std::unordered_set<std::string> &training_vocabulary) const {
     auto number_of_tags = 0.0f;
@@ -21,7 +21,7 @@ namespace autoencoder {
     for (auto &tagged_sentence : tagged_sentences) {
       auto &sentence = tagged_sentence.words;
       auto &gold_tags = tagged_sentence.tags;
-      auto guessed_tags = pos_tagger.Tag(sentence);
+      auto guessed_tags = part_of_speech_tagger.Tag(sentence);
       for (auto i = 0; i < sentence.size(); ++i) {
         auto &word = sentence.at(i);
         auto &gold_tag = gold_tags.at(i);
