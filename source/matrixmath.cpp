@@ -11,16 +11,20 @@ namespace autoencoder {
     cblas_saxpy(x.width, alpha, x.values, 1, y->values, 1);
   }
 
-  void Sgemm(float alpha, const Values &A, const Values &B, float beta, Values *C) {
+  void Sgemm(
+      float alpha, const Values &A, const Values &B, float beta, Values *C,
+      CBLAS_TRANSPOSE transpose_A, CBLAS_TRANSPOSE transpose_B) {
     cblas_sgemm(
-        CblasColMajor, CblasNoTrans, CblasNoTrans,
+        CblasColMajor, transpose_A, transpose_B,
         A.height, B.width, A.width,
         alpha, A.values, A.height, B.values, B.height, beta, C->values, C->height);
   }
 
-  void Sgemv(float alpha, const Values &A, const Values &x, float beta, Values *y) {
+  void Sgemv(
+      float alpha, const Values &A, const Values &x, float beta, Values *y,
+      CBLAS_TRANSPOSE transpose_A) {
     cblas_sgemv(
-        CblasColMajor, CblasNoTrans,
+        CblasColMajor, transpose_A,
         A.height, A.width,
         alpha, A.values, A.height, x.values, 1, beta, y->values, 1);
   }

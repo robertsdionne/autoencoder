@@ -2,23 +2,26 @@
 #define AUTOENCODER_INNERPRODUCTLAYER_HPP_
 
 #include "layer.hpp"
-#include "values.hpp"
 
 namespace autoencoder {
 
+  struct Parameters;
+
   class InnerProductLayer : public Layer {
   public:
-    InnerProductLayer(const Values &weights, const Values &bias);
+    InnerProductLayer(Parameters &weights, Parameters &bias);
 
     virtual ~InnerProductLayer() = default;
 
-    void ForwardCpu(const std::vector<Values *> &bottom, std::vector<Values *> *top) override;
+    void ForwardCpu(
+        const std::vector<Parameters *> &bottom, std::vector<Parameters *> *top) override;
 
-    void BackwardCpu(const std::vector<Values *> &top, std::vector<Values *> *bottom) override;
+    void BackwardCpu(
+        const std::vector<Parameters *> &top, std::vector<Parameters *> *bottom) override;
 
   private:
-    Values weights;
-    Values bias;
+    Parameters &weights;
+    Parameters &bias;
   };
 
 }  // namespace autoencoder

@@ -11,12 +11,10 @@ namespace autoencoder {
     Values(int width, int height = 1, int depth = 1, int duration = 1)
     : width(width), height(height), depth(depth), duration(duration) {
       values = new float[width * height * depth * duration]();
-      differences = new float[width * height * depth * duration]();
     }
 
     ~Values() {
       delete [] values;
-      delete [] differences;
     }
 
     inline int Offset(int i, int j = 0, int k = 0, int l = 0) const {
@@ -25,14 +23,6 @@ namespace autoencoder {
       assert(0 <= k && k < depth);
       assert(0 <= l && l < duration);
       return ((i * height + j) * depth + k) * duration + l;
-    }
-
-    float difference(int i, int j = 0, int k = 0, int l = 0) const {
-      return differences[Offset(i, j, k, l)];
-    }
-
-    float &difference(int i, int j = 0, int k = 0, int l = 0) {
-      return differences[Offset(i, j, k, l)];
     }
 
     float value(int i, int j = 0, int k = 0, int l = 0) const {
@@ -44,8 +34,8 @@ namespace autoencoder {
     }
 
   public:
-    float *values, *differences;
-    int width, height, depth, duration;
+    float *values;
+    const int width, height, depth, duration;
   };
 
   static std::ostream &operator <<(std::ostream &out, const Values &vector) {
