@@ -11,16 +11,16 @@ namespace autoencoder {
 
     virtual ~DumbPartOfSpeechTagger() = default;
 
-    virtual void Train(
+    void Train(
         const std::vector<TaggedSentence> &tagged_sentences,
         float learning_rate,
-        int iterations);
+        int iterations) override;
 
-    virtual void Validate(const std::vector<TaggedSentence> &tagged_sentences) const;
+    void Validate(const std::vector<TaggedSentence> &tagged_sentences) const override;
 
-    virtual std::vector<std::string> Tag(const std::vector<std::string> &sentence) const;
+    std::vector<std::string> Tag(const std::vector<std::string> &sentence) const override;
 
-    virtual float ScoreTagging(const TaggedSentence &tagged_sentence) const;
+    float ScoreTagging(const TaggedSentence &tagged_sentence) const override;
   };
 
 }  // namespace autoencoder
