@@ -15,9 +15,9 @@ namespace autoencoder {
   void InnerProductLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
     // dE/dW
     Sgemv(1.0f,
-        top.at(0)->differences, bottom->at(0)->values, 0.0f, &weights.differences, CblasTrans);
+        top.at(0)->differences, bottom->at(0)->values, 1.0f, &weights.differences, CblasTrans);
     // dE/db
-    Saxpby(1.0f, top.at(0)->differences, 0.0f, &bias.differences);
+    Saxpby(1.0f, top.at(0)->differences, 1.0f, &bias.differences);
     // dE/dx
     Sgemv(1.0f, weights.values, top.at(0)->differences, 0.0f, &bottom->at(0)->differences);
   }

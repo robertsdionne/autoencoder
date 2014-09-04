@@ -8,7 +8,7 @@
 namespace autoencoder {
 
   struct Blob {
-    Blob(int width, int height = 1, int depth = 1, int duration = 1)
+    Blob(int width = 1, int height = 1, int depth = 1, int duration = 1)
     : values(width, height, depth, duration), differences(width, height, depth, duration),
       width(width), height(height), depth(depth), duration(duration) {}
 

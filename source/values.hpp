@@ -8,7 +8,7 @@
 namespace autoencoder {
 
   struct Values {
-    Values(int width, int height = 1, int depth = 1, int duration = 1)
+    Values(int width = 1, int height = 1, int depth = 1, int duration = 1)
     : width(width), height(height), depth(depth), duration(duration) {
       values = new float[width * height * depth * duration]();
     }

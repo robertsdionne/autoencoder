@@ -17,7 +17,6 @@ namespace autoencoder {
       BackwardCpu(top, bottom);
     }
 
-  protected:
     virtual void ForwardCpu(const Blobs &bottom, Blobs *top) = 0;
 
     virtual void ForwardGpu(const Blobs &bottom, Blobs *top) {

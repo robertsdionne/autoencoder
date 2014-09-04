@@ -10,7 +10,6 @@ namespace autoencoder {
   public:
     virtual ~EuclideanLossLayer() = default;
 
-  protected:
     void ForwardCpu(const Blobs &bottom, Blobs *top) override;
 
     void BackwardCpu(const Blobs &top, Blobs *bottom) override;
