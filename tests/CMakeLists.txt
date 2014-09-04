@@ -1,6 +1,7 @@
 include_directories(../source)
 
 add_executable(alltests
+    concatenatelayer_test.cpp
     dataloader_test.cpp
     dumbpartofspeechtagger_test.cpp
     matrixmath_test.cpp

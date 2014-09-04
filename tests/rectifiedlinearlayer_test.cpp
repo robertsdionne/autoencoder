@@ -12,7 +12,7 @@ TEST(RectifiedLinearLayerTest, TestForwardCpu) {
   auto layer = autoencoder::RectifiedLinearLayer();
   auto output = autoencoder::Blob(10);
   auto out = autoencoder::Blobs{&output};
-  layer.Forward({&input}, &out);
+  layer.ForwardCpu({&input}, &out);
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));
   }
@@ -29,7 +29,7 @@ TEST(RectifiedLinearLayerTest, TestBackwardCpu) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
   auto in = autoencoder::Blobs{&input};
-  layer.Backward({&output}, &in);
+  layer.BackwardCpu({&output}, &in);
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(i % 2, input.difference(i));
   }
