@@ -1,5 +1,6 @@
 #include <gflags/gflags.h>
 #include <iostream>
+#include <random>
 
 #include "dataloader.hpp"
 #include "recurrentneuralnetworkpartofspeechtagger.hpp"
@@ -7,7 +8,7 @@
 
 DEFINE_int32(iterations, 100, "the number of training iterations");
 DEFINE_double(learning_rate, 0.01, "the learning rate");
-DEFINE_int32(random_seed, -1, "seed the random number generator");
+DEFINE_int32(random_seed, std::random_device()(), "seed the random number generator");
 DEFINE_int32(recurrent_state_dimension, 50, "the recurrent state dimension");
 DEFINE_bool(test, false, "whether to evaluate on the test data");
 DEFINE_int32(test_sentences, -1, "the number of test sentences to use");

@@ -1,6 +1,7 @@
 set(AUTOENCODER_SOURCES
     concatenatelayer.cpp
     dataloader.cpp
+    dropoutlayer.cpp
     dumbpartofspeechtagger.cpp
     evaluator.cpp
     innerproductlayer.cpp

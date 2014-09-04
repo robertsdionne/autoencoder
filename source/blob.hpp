@@ -28,9 +28,18 @@ namespace autoencoder {
       return values.value(i, j, k, l);
     }
 
+    void Reshape(int width, int height = 1, int depth = 1, int duration = 1) {
+      width = width;
+      height = height;
+      depth = depth;
+      duration = duration;
+      values.Reshape(width, height, depth, duration);
+      differences.Reshape(width, height, depth, duration);
+    }
+
   public:
     Values values, differences;
-    const int width, height, depth, duration;
+    int width, height, depth, duration;
   };
 
   using Blobs = std::vector<Blob *>;
