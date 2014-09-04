@@ -3,6 +3,7 @@ set(AUTOENCODER_SOURCES
     dataloader.cpp
     dropoutlayer.cpp
     dumbpartofspeechtagger.cpp
+    euclideanlosslayer.cpp
     evaluator.cpp
     innerproductlayer.cpp
     matrixmath.cpp
