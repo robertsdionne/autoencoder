@@ -36,7 +36,19 @@ namespace autoencoder {
   }
 
   void PartOfSpeechTagLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
+    auto concatenate_output = Blobs{&concatenated};
+    auto dropout_output = Blobs{&corrupted};
+    auto classify_output = Blobs{&classified};
+    auto softmax_output = Blobs{top.at(0)};
+    auto combine_output = Blobs{&combined};
+    auto rectified_linear_output = Blobs{top.at(1)};
 
+    rectified_linear.BackwardCpu(rectified_linear_output, &combine_output);
+    combine.BackwardCpu(combine_output, &dropout_output);
+    softmax.BackwardCpu(softmax_output, &classify_output);
+    classify.BackwardCpu(classify_output, &dropout_output);
+    dropout.BackwardCpu(dropout_output, &concatenate_output);
+    concatenate.BackwardCpu(concatenate_output, bottom);
   }
 
 }  // namespace autoencoder

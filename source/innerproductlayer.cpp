@@ -19,7 +19,7 @@ namespace autoencoder {
     // dE/db
     Saxpby(1.0f, top.at(0)->differences, 1.0f, &bias.differences);
     // dE/dx
-    Sgemv(1.0f, weights.values, top.at(0)->differences, 0.0f, &bottom->at(0)->differences);
+    Sgemv(1.0f, weights.values, top.at(0)->differences, 1.0f, &bottom->at(0)->differences);
   }
 
 }  // namespace autoencoder
