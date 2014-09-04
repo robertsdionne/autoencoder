@@ -14,7 +14,7 @@ namespace autoencoder {
   void EuclideanLossLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
     for (auto i = 0; i < bottom->size(); ++i) {
       auto sign = i == 0 ? -1.0f : 1.0f;
-      Saxpby(sign, top.at(0)->differences, 0.0f, &bottom->at(i)->differences);
+      Saxpby(sign, top.at(0)->differences, 1.0f, &bottom->at(i)->differences);
     }
   }
 
