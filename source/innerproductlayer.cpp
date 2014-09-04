@@ -1,20 +1,18 @@
+#include "blob.hpp"
 #include "innerproductlayer.hpp"
 #include "matrixmath.hpp"
-#include "parameters.hpp"
 
 namespace autoencoder {
 
-  InnerProductLayer::InnerProductLayer(Parameters &weights, Parameters &bias)
+  InnerProductLayer::InnerProductLayer(Blob &weights, Blob &bias)
   : weights(weights), bias(bias) {}
 
-  void InnerProductLayer::ForwardCpu(
-      const std::vector<Parameters *> &bottom, std::vector<Parameters *> *top) {
+  void InnerProductLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
     Saxpby(1.0f, bias.values, 0.0f, &top->at(0)->values);
     Sgemv(1.0f, weights.values, bottom.at(0)->values, 1.0f, &top->at(0)->values);
   }
 
-  void InnerProductLayer::BackwardCpu(
-      const std::vector<Parameters *> &top, std::vector<Parameters *> *bottom) {
+  void InnerProductLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
     // dE/dW
     Sgemv(1.0f,
         top.at(0)->differences, bottom->at(0)->values, 0.0f, &weights.differences, CblasTrans);

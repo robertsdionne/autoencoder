@@ -1,27 +1,24 @@
 #ifndef AUTOENCODER_INNERPRODUCTLAYER_HPP_
 #define AUTOENCODER_INNERPRODUCTLAYER_HPP_
 
+#include "blob.hpp"
 #include "layer.hpp"
 
 namespace autoencoder {
 
-  struct Parameters;
-
   class InnerProductLayer : public Layer {
   public:
-    InnerProductLayer(Parameters &weights, Parameters &bias);
+    InnerProductLayer(Blob &weights, Blob &bias);
 
     virtual ~InnerProductLayer() = default;
 
-    void ForwardCpu(
-        const std::vector<Parameters *> &bottom, std::vector<Parameters *> *top) override;
+    void ForwardCpu(const Blobs &bottom, Blobs *top) override;
 
-    void BackwardCpu(
-        const std::vector<Parameters *> &top, std::vector<Parameters *> *bottom) override;
+    void BackwardCpu(const Blobs &top, Blobs *bottom) override;
 
   private:
-    Parameters &weights;
-    Parameters &bias;
+    Blob &weights;
+    Blob &bias;
   };
 
 }  // namespace autoencoder

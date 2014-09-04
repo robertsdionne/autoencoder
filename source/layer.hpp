@@ -1,38 +1,32 @@
 #ifndef AUTOENCODER_LAYER_HPP_
 #define AUTOENCODER_LAYER_HPP_
 
-#include <vector>
+#include "blob.hpp"
 
 namespace autoencoder {
-
-  struct Parameters;
 
   class Layer {
   public:
     virtual ~Layer() = default;
 
-    inline void Forward(const std::vector<Parameters *> &bottom, std::vector<Parameters *> *top) {
+    inline void Forward(const Blobs &bottom, Blobs *top) {
       ForwardCpu(bottom, top);
     }
 
-    inline void Backward(const std::vector<Parameters *> &top, std::vector<Parameters *> *bottom) {
+    inline void Backward(const Blobs &top, Blobs *bottom) {
       BackwardCpu(top, bottom);
     }
 
   protected:
-    virtual void ForwardCpu(
-        const std::vector<Parameters *> &bottom, std::vector<Parameters *> *top) = 0;
+    virtual void ForwardCpu(const Blobs &bottom, Blobs *top) = 0;
 
-    virtual void ForwardGpu(
-        const std::vector<Parameters *> &bottom, std::vector<Parameters *> *top) {
+    virtual void ForwardGpu(const Blobs &bottom, Blobs *top) {
       ForwardCpu(bottom, top);
     }
 
-    virtual void BackwardCpu(
-        const std::vector<Parameters *> &top, std::vector<Parameters *> *bottom) = 0;
+    virtual void BackwardCpu(const Blobs &top, Blobs *bottom) = 0;
 
-    virtual void BackwardGpu(
-        const std::vector<Parameters *> &top, std::vector<Parameters *> *bottom) {
+    virtual void BackwardGpu(const Blobs &top, Blobs *bottom) {
       BackwardCpu(top, bottom);
     }
   };
