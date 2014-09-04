@@ -1,5 +1,5 @@
-#ifndef AUTOENCODER_PARTOFSPEECHTAGTAGLAYER_HPP_
-#define AUTOENCODER_PARTOFSPEECHTAGTAGLAYER_HPP_
+#ifndef AUTOENCODER_PARTOFSPEECHWORDLAYER_HPP_
+#define AUTOENCODER_PARTOFSPEECHWORDLAYER_HPP_
 
 #include "blob.hpp"
 #include "concatenatelayer.hpp"
@@ -11,14 +11,14 @@
 
 namespace autoencoder {
 
-  class PartOfSpeechTagLayer : public Layer {
+  class PartOfSpeechWordLayer : public Layer {
   public:
-    PartOfSpeechTagLayer(
+    PartOfSpeechWordLayer(
         float p,
         Blob &classify_weights, Blob &classify_bias,
         Blob &combine_weights, Blob &combine_bias);
 
-    virtual ~PartOfSpeechTagLayer() = default;
+    virtual ~PartOfSpeechWordLayer() = default;
 
     void ForwardCpu(const Blobs &bottom, Blobs *top) override;
 
@@ -37,4 +37,4 @@ namespace autoencoder {
 
 }  // namespace autoencoder
 
-#endif  // AUTOENCODER_PARTOFSPEECHTAGLAYER_HPP_
+#endif  // AUTOENCODER_PARTOFSPEECHWORDLAYER_HPP_

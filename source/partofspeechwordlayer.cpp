@@ -1,11 +1,11 @@
 #include <cmath>
 
 #include "blob.hpp"
-#include "partofspeechtaglayer.hpp"
+#include "partofspeechwordlayer.hpp"
 
 namespace autoencoder {
 
-  PartOfSpeechTagLayer::PartOfSpeechTagLayer(
+  PartOfSpeechWordLayer::PartOfSpeechWordLayer(
       float p,
       Blob &classify_weights, Blob &classify_bias,
       Blob &combine_weights, Blob &combine_bias)
@@ -15,7 +15,7 @@ namespace autoencoder {
       combine(combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear(), softmax() {}
 
-  void PartOfSpeechTagLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
+  void PartOfSpeechWordLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
     auto concatenate_output = Blobs{&concatenated};
     auto dropout_output = Blobs{&corrupted};
     auto classify_output = Blobs{&classified};
@@ -31,7 +31,7 @@ namespace autoencoder {
     rectified_linear.ForwardCpu(combine_output, &rectified_linear_output);
   }
 
-  void PartOfSpeechTagLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
+  void PartOfSpeechWordLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
     auto concatenate_output = Blobs{&concatenated};
     auto dropout_output = Blobs{&corrupted};
     auto classify_output = Blobs{&classified};
