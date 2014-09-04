@@ -1,4 +1,5 @@
-add_library(autoencoderlib
+set(AUTOENCODER_SOURCES
+    concatenatelayer.cpp
     dataloader.cpp
     dumbpartofspeechtagger.cpp
     evaluator.cpp
@@ -8,16 +9,9 @@ add_library(autoencoderlib
     recurrentneuralnetworkpartofspeechtagger.cpp
     taggedsentence.cpp)
 
-add_executable(autoencoder
-    dataloader.cpp
-    dumbpartofspeechtagger.cpp
-    evaluator.cpp
-    innerproductlayer.cpp
-    main.cpp
-    matrixmath.cpp
-    rectifiedlinearlayer.cpp
-    recurrentneuralnetworkpartofspeechtagger.cpp
-    taggedsentence.cpp)
+add_library(autoencoderlib ${AUTOENCODER_SOURCES})
+
+add_executable(autoencoder main.cpp ${AUTOENCODER_SOURCES})
 add_executable(clblas clblas.cpp)
 add_executable(clfft clfft.cpp)
 
