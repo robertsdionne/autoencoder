@@ -9,17 +9,13 @@ namespace autoencoder {
       float p,
       Blob &classify_weights, Blob &classify_bias,
       Blob &combine_weights, Blob &combine_bias)
-    : concatenate(), dropout(p),
-      classify(classify_weights, classify_bias),
-      combine(combine_weights, combine_bias),
+    : concatenate(), concatenated(classify_weights.width),
+      dropout(p), corrupted(classify_weights.width),
+      classify(classify_weights, classify_bias), classified(classify_weights.height),
+      combine(combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear(), softmax() {}
 
   void PartOfSpeechTagLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
-    concatenated.Reshape(bottom.at(0)->width + bottom.at(1)->width);
-    corrupted.Reshape(concatenated.width);
-    classified.Reshape(top->at(0)->width);
-    combined.Reshape(bottom.at(0)->width);
-
     auto concatenate_output = Blobs{&concatenated};
     auto dropout_output = Blobs{&corrupted};
     auto classify_output = Blobs{&classified};
