@@ -27,6 +27,7 @@ namespace autoencoder {
     Blob &classify_weights, &classify_bias;
     Blob &combine_weights, &combine_bias;
     std::vector<PartOfSpeechWordLayer> layers;
+    std::vector<Blob> recurrent_states;
   };
 
 }  // namespace autoencoder
