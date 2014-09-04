@@ -34,10 +34,10 @@ namespace autoencoder {
     }
 
     void Reshape(int width, int height = 1, int depth = 1, int duration = 1) {
-      width = width;
-      height = height;
-      depth = depth;
-      duration = duration;
+      this->width = width;
+      this->height = height;
+      this->depth = depth;
+      this->duration = duration;
       delete [] values;
       values = new float[width * height * depth * duration]();
     }
