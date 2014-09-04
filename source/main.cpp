@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "dataloader.hpp"
-#include "dumbpartofspeechtagger.hpp"
+#include "recurrentneuralnetworkpartofspeechtagger.hpp"
 #include "evaluator.hpp"
 
 DEFINE_int32(iterations, 100, "the number of training iterations");
@@ -52,7 +52,7 @@ int main(int argument_count, char *arguments[]) {
   });
   std::cout << "Done." << std::endl<< std::endl;
 
-  auto part_of_speech_tagger = autoencoder::DumbPartOfSpeechTagger();
+  auto part_of_speech_tagger = autoencoder::RecurrentNeuralNetworkPartOfSpeechTagger();
   auto evaluator = autoencoder::Evaluator();
 
   std::cout << "Evaluating on training data... ";
