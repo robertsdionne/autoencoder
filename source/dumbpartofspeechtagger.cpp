@@ -5,7 +5,7 @@
 #include "dumbpartofspeechtagger.hpp"
 #include "taggedsentence.hpp"
 
-namespace autoencoder {  
+namespace autoencoder {
 
   void DumbPartOfSpeechTagger::Train(
       const std::vector<TaggedSentence> &tagged_sentences,
