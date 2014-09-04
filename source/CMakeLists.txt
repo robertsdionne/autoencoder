@@ -7,6 +7,7 @@ set(AUTOENCODER_SOURCES
     evaluator.cpp
     innerproductlayer.cpp
     matrixmath.cpp
+    partofspeechsentencelayer.cpp
     partofspeechwordlayer.cpp
     rectifiedlinearlayer.cpp
     recurrentneuralnetworkpartofspeechtagger.cpp
