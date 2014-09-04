@@ -1,16 +1,19 @@
 #ifndef AUTOENCODER_DROPOUTLAYER_HPP_
 #define AUTOENCODER_DROPOUTLAYER_HPP_
 
+#include <gflags/gflags.h>
 #include <random>
 
 #include "blob.hpp"
 #include "layer.hpp"
 
+DECLARE_int32(random_seed);
+
 namespace autoencoder {
 
   class DropoutLayer : public Layer {
   public:
-    DropoutLayer(float p);
+    DropoutLayer(float p, unsigned int random_seed = FLAGS_random_seed);
 
     virtual ~DropoutLayer() = default;
 
