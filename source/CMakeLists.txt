@@ -8,6 +8,7 @@ set(AUTOENCODER_SOURCES
     matrixmath.cpp
     rectifiedlinearlayer.cpp
     recurrentneuralnetworkpartofspeechtagger.cpp
+    softmaxlayer.cpp
     taggedsentence.cpp)
 
 add_library(autoencoderlib ${AUTOENCODER_SOURCES})
