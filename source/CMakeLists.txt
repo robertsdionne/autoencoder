@@ -5,6 +5,7 @@ add_library(autoencoderlib
     innerproductlayer.cpp
     matrixmath.cpp
     rectifiedlinearlayer.cpp
+    recurrentneuralnetworkpartofspeechtagger.cpp
     taggedsentence.cpp)
 
 add_executable(autoencoder
@@ -15,6 +16,7 @@ add_executable(autoencoder
     main.cpp
     matrixmath.cpp
     rectifiedlinearlayer.cpp
+    recurrentneuralnetworkpartofspeechtagger.cpp
     taggedsentence.cpp)
 add_executable(clblas clblas.cpp)
 add_executable(clfft clfft.cpp)
