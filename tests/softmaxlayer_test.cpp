@@ -13,6 +13,7 @@ TEST(SoftmaxLayerTest, TestForwardCpu) {
   auto output = autoencoder::Blob(8);
   auto out = autoencoder::Blobs{&output};
   layer.ForwardCpu({&input}, &out);
+
   EXPECT_FLOAT_EQ(0.00057661277f, output.value(0));
   EXPECT_FLOAT_EQ(0.0015673961f, output.value(1));
   EXPECT_FLOAT_EQ(0.0042606243f, output.value(2));
@@ -21,6 +22,12 @@ TEST(SoftmaxLayerTest, TestForwardCpu) {
   EXPECT_FLOAT_EQ(0.085576929f, output.value(5));
   EXPECT_FLOAT_EQ(0.23262221f, output.value(6));
   EXPECT_FLOAT_EQ(0.63233274f, output.value(7));
+
+  auto sum = 0.0f;
+  for (auto i = 0; i < output.width; ++i) {
+    sum += output.value(i);
+  }
+  EXPECT_FLOAT_EQ(1.0f, sum);
 }
 
 TEST(SoftmaxLayerTest, TestBackwardCpu) {
@@ -37,6 +44,7 @@ TEST(SoftmaxLayerTest, TestBackwardCpu) {
     output.difference(i) = (i == 2);
   }
   layer.BackwardCpu(out, &in);
+
   EXPECT_FLOAT_EQ(-2.4567305e-06f, input.difference(0));
   EXPECT_FLOAT_EQ(-6.6780858e-06f, input.difference(1));
   EXPECT_FLOAT_EQ(0.0042424714f, input.difference(2));
