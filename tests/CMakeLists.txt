@@ -7,6 +7,7 @@ add_executable(alltests
     dumbpartofspeechtagger_test.cpp
     euclideanlosslayer_test.cpp
     innerproductlayer_test.cpp
+    lookuptable_test.cpp
     matrixmath_test.cpp
     partofspeechsentencelayer_test.cpp
     partofspeechwordlayer_test.cpp

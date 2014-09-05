@@ -6,6 +6,7 @@ set(AUTOENCODER_SOURCES
     euclideanlosslayer.cpp
     evaluator.cpp
     innerproductlayer.cpp
+    lookuptable.cpp
     matrixmath.cpp
     partofspeechsentencelayer.cpp
     partofspeechwordlayer.cpp
