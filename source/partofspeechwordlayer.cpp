@@ -1,4 +1,6 @@
+#include <cassert>
 #include <cmath>
+#include <random>
 
 #include "blob.hpp"
 #include "partofspeechwordlayer.hpp"
@@ -9,8 +11,8 @@ namespace autoencoder {
       float p,
       Blob &classify_weights, Blob &classify_bias,
       Blob &combine_weights, Blob &combine_bias,
-      unsigned int random_seed)
-    : dropout(p, random_seed),
+      std::mt19937 &generator)
+    : dropout(p, generator),
       corrupted_recurrent(combine_weights.height),
       corrupted_word(combine_weights.width - combine_weights.height),
       classify(classify_weights, classify_bias), classified(classify_weights.height),

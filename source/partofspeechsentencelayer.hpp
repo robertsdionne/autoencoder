@@ -1,6 +1,7 @@
 #ifndef AUTOENCODER_PARTOFSPEECHSENTENCELAYER_HPP_
 #define AUTOENCODER_PARTOFSPEECHSENTENCELAYER_HPP_
 
+#include <random>
 #include <vector>
 
 #include "blob.hpp"
@@ -15,7 +16,7 @@ namespace autoencoder {
         float p,
         Blob &classify_weights, Blob &classify_bias,
         Blob &combine_weights, Blob &combine_bias,
-        unsigned int random_seed = FLAGS_random_seed);
+        std::mt19937 &generator);
 
     virtual ~PartOfSpeechSentenceLayer() = default;
 
@@ -25,7 +26,7 @@ namespace autoencoder {
 
   private:
     float p;
-    unsigned int random_seed;
+    std::mt19937 &generator;
     Blob &classify_weights, &classify_bias;
     Blob &combine_weights, &combine_bias;
     std::vector<PartOfSpeechWordLayer> layers;

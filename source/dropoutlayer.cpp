@@ -6,8 +6,8 @@
 
 namespace autoencoder {
 
-  DropoutLayer::DropoutLayer(float p, unsigned int random_seed)
-    : mask(), p(p), scale(1.0f / p), generator(random_seed), bernoulli(p) {
+  DropoutLayer::DropoutLayer(float p, std::mt19937 &generator)
+    : mask(), p(p), scale(1.0f / p), generator(generator), bernoulli(p) {
     assert(0.0f <= p <= 1.0f);
   }
 

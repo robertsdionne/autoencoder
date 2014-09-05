@@ -14,7 +14,7 @@ namespace autoencoder {
 
   class DropoutLayer : public Layer {
   public:
-    DropoutLayer(float p, unsigned int random_seed = FLAGS_random_seed);
+    DropoutLayer(float p, std::mt19937 &generator);
 
     virtual ~DropoutLayer() = default;
 
@@ -25,7 +25,7 @@ namespace autoencoder {
   private:
     std::vector<Values> mask;
     float p, scale;
-    std::mt19937 generator;
+    std::mt19937 &generator;
     std::bernoulli_distribution bernoulli;
   };
 

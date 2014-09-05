@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <random>
 
 #include "blob.hpp"
 #include "dropoutlayer.hpp"
@@ -8,7 +9,8 @@ TEST(DropoutLayerTest, TestForwardCpu) {
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
-  auto layer = autoencoder::DropoutLayer(0.5f, 123);
+  auto generator = std::mt19937(123);
+  auto layer = autoencoder::DropoutLayer(0.5f, generator);
   auto output = autoencoder::Blob(10);
   auto out = autoencoder::Blobs{&output};
   layer.ForwardCpu({&input}, &out);
@@ -31,7 +33,8 @@ TEST(DropoutLayerTest, TestBackwardCpu) {
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
-  auto layer = autoencoder::DropoutLayer(0.5f, 123);
+  auto generator = std::mt19937(123);
+  auto layer = autoencoder::DropoutLayer(0.5f, generator);
   auto output = autoencoder::Blob(10);
   auto in = autoencoder::Blobs{&input};
   auto out = autoencoder::Blobs{&output};

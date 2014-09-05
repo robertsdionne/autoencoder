@@ -8,6 +8,7 @@ add_executable(alltests
     euclideanlosslayer_test.cpp
     innerproductlayer_test.cpp
     matrixmath_test.cpp
+    partofspeechsentencelayer_test.cpp
     partofspeechwordlayer_test.cpp
     rectifiedlinearlayer_test.cpp
     softmaxlayer_test.cpp
