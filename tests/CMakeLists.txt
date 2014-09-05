@@ -6,6 +6,7 @@ add_executable(alltests
     dropoutlayer_test.cpp
     dumbpartofspeechtagger_test.cpp
     euclideanlosslayer_test.cpp
+    innerproductlayer_test.cpp
     matrixmath_test.cpp
     rectifiedlinearlayer_test.cpp
     taggedsentence_test.cpp

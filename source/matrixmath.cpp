@@ -16,8 +16,14 @@ namespace autoencoder {
       CBLAS_TRANSPOSE transpose_A, CBLAS_TRANSPOSE transpose_B) {
     cblas_sgemm(
         CblasColMajor, transpose_A, transpose_B,
-        A.height, B.width, A.width,
-        alpha, A.values, A.height, B.values, B.height, beta, C->values, C->height);
+        transpose_A == CblasNoTrans ? A.height : A.width,
+        transpose_B == CblasNoTrans ? B.width : B.height,
+        transpose_A == CblasNoTrans ? A.width : A.height,
+        alpha, A.values,
+        A.height,
+        B.values,
+        B.height,
+        beta, C->values, C->height);
   }
 
   void Sgemv(
