@@ -20,19 +20,15 @@ namespace autoencoder {
       rectified_linear() {}
 
   void PartOfSpeechWordLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
-    auto recurrent_output = Blobs{bottom.at(0)};
-    auto word_output = Blobs{bottom.at(1)};
-    auto dropout_recurrent_output = Blobs{&corrupted_recurrent};
-    auto dropout_word_output = Blobs{&corrupted_word};
     auto dropout_output = Blobs{&corrupted_recurrent, &corrupted_word};
+    auto dropout_recurrent_output = Blobs{&corrupted_recurrent};
     auto classify_output = Blobs{&classified};
     auto softmax_output = Blobs{top->at(0)};
     auto concatenate_output = Blobs{&concatenated};
     auto combine_output = Blobs{&combined};
     auto rectified_linear_output = Blobs{top->at(1)};
 
-    dropout.ForwardCpu(recurrent_output, &dropout_recurrent_output);
-    dropout.ForwardCpu(word_output, &dropout_word_output);
+    dropout.ForwardCpu(bottom, &dropout_output);
     classify.ForwardCpu(dropout_recurrent_output, &classify_output);
     softmax.ForwardCpu(classify_output, &softmax_output);
     concatenate.ForwardCpu(dropout_output, &concatenate_output);
@@ -41,11 +37,8 @@ namespace autoencoder {
   }
 
   void PartOfSpeechWordLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
-    auto recurrent_output = Blobs{bottom->at(0)};
-    auto word_output = Blobs{bottom->at(1)};
-    auto dropout_recurrent_output = Blobs{&corrupted_recurrent};
-    auto dropout_word_output = Blobs{&corrupted_word};
     auto dropout_output = Blobs{&corrupted_recurrent, &corrupted_word};
+    auto dropout_recurrent_output = Blobs{&corrupted_recurrent};
     auto classify_output = Blobs{&classified};
     auto softmax_output = Blobs{top.at(0)};
     auto concatenate_output = Blobs{&concatenated};
@@ -57,8 +50,7 @@ namespace autoencoder {
     concatenate.BackwardCpu(concatenate_output, &dropout_output);
     softmax.BackwardCpu(softmax_output, &classify_output);
     classify.BackwardCpu(classify_output, &dropout_recurrent_output);
-    dropout.BackwardCpu(dropout_word_output, &word_output);
-    dropout.BackwardCpu(dropout_recurrent_output, &recurrent_output);
+    dropout.BackwardCpu(dropout_output, bottom);
   }
 
 }  // namespace autoencoder

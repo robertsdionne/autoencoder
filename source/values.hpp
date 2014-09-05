@@ -4,18 +4,14 @@
 #include <cassert>
 #include <iomanip>
 #include <iostream>
+#include <vector>
 
 namespace autoencoder {
 
   struct Values {
     Values(int width = 1, int height = 1, int depth = 1, int duration = 1)
-    : width(width), height(height), depth(depth), duration(duration) {
-      values = new float[width * height * depth * duration]();
-    }
-
-    ~Values() {
-      delete [] values;
-    }
+    : width(width), height(height), depth(depth), duration(duration),
+      values(width * height * depth * duration) {}
 
     inline int Offset(int i, int j = 0, int k = 0, int l = 0) const {
       assert(0 <= i && i < width);
@@ -26,11 +22,11 @@ namespace autoencoder {
     }
 
     float value(int i, int j = 0, int k = 0, int l = 0) const {
-      return values[Offset(i, j, k, l)];
+      return values.at(Offset(i, j, k, l));
     }
 
     float &value(int i, int j = 0, int k = 0, int l = 0) {
-      return values[Offset(i, j, k, l)];
+      return values.at(Offset(i, j, k, l));
     }
 
     void Reshape(int width, int height = 1, int depth = 1, int duration = 1) {
@@ -38,12 +34,12 @@ namespace autoencoder {
       this->height = height;
       this->depth = depth;
       this->duration = duration;
-      delete [] values;
-      values = new float[width * height * depth * duration]();
+      values.clear();
+      values.resize(width * height * depth * duration);
     }
 
   public:
-    float *values;
+    std::vector<float> values;
     int width, height, depth, duration;
   };
 

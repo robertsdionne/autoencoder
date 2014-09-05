@@ -3,6 +3,7 @@
 
 #include <gflags/gflags.h>
 #include <random>
+#include <vector>
 
 #include "blob.hpp"
 #include "layer.hpp"
@@ -22,7 +23,7 @@ namespace autoencoder {
     void BackwardCpu(const Blobs &top, Blobs *bottom) override;
 
   private:
-    Values mask;
+    std::vector<Values> mask;
     float p, scale;
     std::mt19937 generator;
     std::bernoulli_distribution bernoulli;
