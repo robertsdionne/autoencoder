@@ -8,8 +8,9 @@ namespace autoencoder {
   PartOfSpeechSentenceLayer::PartOfSpeechSentenceLayer(
       float p,
       Blob &classify_weights, Blob &classify_bias,
-      Blob &combine_weights, Blob &combine_bias)
-    : p(p),
+      Blob &combine_weights, Blob &combine_bias,
+      unsigned int random_seed)
+    : p(p), random_seed(random_seed),
       classify_weights(classify_weights), classify_bias(classify_bias),
       combine_weights(combine_weights), combine_bias(combine_bias) {}
 
@@ -24,7 +25,8 @@ namespace autoencoder {
     }
 
     for (auto i = 1; i < bottom.size(); ++i) {
-      layers.emplace_back(p, classify_weights, classify_bias, combine_weights, combine_bias);
+      layers.emplace_back(
+          p, classify_weights, classify_bias, combine_weights, combine_bias, random_seed);
       recurrent_states.emplace_back(bottom.at(0)->width);
 
       auto layer_input = Blobs{&recurrent_states.at(i - 1), bottom.at(i)};

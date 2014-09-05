@@ -8,9 +8,10 @@ namespace autoencoder {
   PartOfSpeechWordLayer::PartOfSpeechWordLayer(
       float p,
       Blob &classify_weights, Blob &classify_bias,
-      Blob &combine_weights, Blob &combine_bias)
-    : concatenate(), concatenated(classify_weights.width),
-      dropout(p), corrupted(classify_weights.width),
+      Blob &combine_weights, Blob &combine_bias,
+      unsigned int random_seed)
+    : concatenate(), concatenated(combine_weights.width),
+      dropout(p, random_seed), corrupted(combine_weights.width),
       classify(classify_weights, classify_bias), classified(classify_weights.height),
       combine(combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear(), softmax() {}
