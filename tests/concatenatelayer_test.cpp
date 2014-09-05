@@ -18,6 +18,7 @@ TEST(ConcatenateLayerTest, TestForwardCpu) {
   auto output = autoencoder::Blob(10);
   auto out = autoencoder::Blobs{&output};
   layer.ForwardCpu(in, &out);
+
   EXPECT_FLOAT_EQ(1.0f, output.value(0));
   EXPECT_FLOAT_EQ(2.0f, output.value(1));
   EXPECT_FLOAT_EQ(2.0f, output.value(2));
@@ -49,6 +50,7 @@ TEST(ConcatenateLayerTest, TestBackwardCpu) {
   auto input4 = autoencoder::Blob(4);
   auto in = autoencoder::Blobs{&input1, &input2, &input3, &input4};
   layer.BackwardCpu({&output}, &in);
+
   for (auto i = 0; i < input1.width; ++i) {
     EXPECT_FLOAT_EQ(1.0f, input1.difference(i));
   }
