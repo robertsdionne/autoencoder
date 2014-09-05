@@ -9,6 +9,7 @@ add_executable(alltests
     innerproductlayer_test.cpp
     matrixmath_test.cpp
     rectifiedlinearlayer_test.cpp
+    softmaxlayer_test.cpp
     taggedsentence_test.cpp
     values_test.cpp)
 
