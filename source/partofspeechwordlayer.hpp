@@ -26,13 +26,15 @@ namespace autoencoder {
     void BackwardCpu(const Blobs &top, Blobs *bottom) override;
 
   private:
+    DropoutLayer dropout;
+    Blob corrupted_recurrent, corrupted_word;
+    InnerProductLayer classify;
+    Blob classified;
+    SoftmaxLayer softmax;
     ConcatenateLayer concatenate;
     Blob concatenated;
-    DropoutLayer dropout;
-    Blob corrupted;
-    InnerProductLayer classify, combine;
-    Blob classified, combined;
-    SoftmaxLayer softmax;
+    InnerProductLayer combine;
+    Blob combined;
     RectifiedLinearLayer rectified_linear;
   };
 

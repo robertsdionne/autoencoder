@@ -4,6 +4,8 @@
 #include "blob.hpp"
 #include "partofspeechwordlayer.hpp"
 
+constexpr auto kRandomSeed = 123;
+
 template<typename Distribution, typename Generator>
 void InitializeBlob(Distribution &distribution, Generator &generator, autoencoder::Blob *blob) {
   for (auto i = 0; i < blob->height; ++i) {
@@ -14,7 +16,6 @@ void InitializeBlob(Distribution &distribution, Generator &generator, autoencode
 }
 
 TEST(PartOfSpeechWordLayerTest, TestForwardCpu) {
-  constexpr auto kRandomSeed = 123;
   std::mt19937 generator(kRandomSeed);
   std::uniform_real_distribution<float> uniform;
   std::uniform_real_distribution<float> uniform_symmetric(-1.0f, 1.0f);
@@ -66,4 +67,36 @@ TEST(PartOfSpeechWordLayerTest, TestForwardCpu) {
 }
 
 TEST(PartOfSpeechWordLayerTest, TestBackwardCpu) {
+  std::mt19937 generator(kRandomSeed);
+  std::uniform_real_distribution<float> uniform;
+  std::uniform_real_distribution<float> uniform_symmetric(-1.0f, 1.0f);
+
+  auto recurrent_input = autoencoder::Blob(10);
+  auto word_input = autoencoder::Blob(10);
+  auto classify_weights = autoencoder::Blob(10, 5);
+  auto classify_bias = autoencoder::Blob(5);
+  auto combine_weights = autoencoder::Blob(20, 10);
+  auto combine_bias = autoencoder::Blob(10);
+
+  InitializeBlob(uniform_symmetric, generator, &recurrent_input);
+  InitializeBlob(uniform_symmetric, generator, &word_input);
+  InitializeBlob(uniform, generator, &classify_weights);
+  InitializeBlob(uniform, generator, &classify_bias);
+  InitializeBlob(uniform, generator, &combine_weights);
+  InitializeBlob(uniform, generator, &combine_bias);
+
+  auto layer = autoencoder::PartOfSpeechWordLayer(
+      0.5f, classify_weights, classify_bias, combine_weights, combine_bias, kRandomSeed);
+  auto tag_output = autoencoder::Blob(5);
+  auto recurrent_output = autoencoder::Blob(10);
+  auto in = autoencoder::Blobs{&recurrent_input, &word_input};
+  auto out = autoencoder::Blobs{&tag_output, &recurrent_output};
+  layer.ForwardCpu(in, &out);
+  for (auto i = 0; i < tag_output.width; ++i) {
+    tag_output.difference(i) = i == 2;
+  }
+  for (auto i = 0; i < recurrent_output.width; ++i) {
+    recurrent_output.difference(i) = 1.0f;
+  }
+  layer.BackwardCpu(out, &in);
 }
