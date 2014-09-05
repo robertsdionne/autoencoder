@@ -3,9 +3,11 @@
 #include <random>
 
 #include "dataloader.hpp"
+#include "lookuptable.hpp"
 #include "recurrentneuralnetworkpartofspeechtagger.hpp"
 #include "evaluator.hpp"
 
+DEFINE_double(dropout_probability, 0.5f, "the probability of masking out an input for dropout");
 DEFINE_int32(iterations, 100, "the number of training iterations");
 DEFINE_double(learning_rate, 0.01, "the learning rate");
 DEFINE_int32(random_seed, std::random_device()(), "seed the random number generator");
@@ -53,7 +55,11 @@ int main(int argument_count, char *arguments[]) {
   });
   std::cout << "Done." << std::endl<< std::endl;
 
-  auto part_of_speech_tagger = autoencoder::RecurrentNeuralNetworkPartOfSpeechTagger();
+  auto word_table = autoencoder::LookupTable();
+  auto tag_table = autoencoder::LookupTable();
+  auto generator = std::mt19937(FLAGS_random_seed);
+  auto part_of_speech_tagger = autoencoder::RecurrentNeuralNetworkPartOfSpeechTagger(
+      word_table, tag_table, FLAGS_dropout_probability, generator);
   auto evaluator = autoencoder::Evaluator();
 
   std::cout << "Evaluating on training data... ";

@@ -11,6 +11,8 @@ namespace autoencoder {
 
   class LookupTable {
   public:
+    LookupTable();
+
     LookupTable(const std::vector<std::string> &tokens, std::vector<Blob> &vectors);
 
     virtual ~LookupTable() = default;
@@ -19,7 +21,7 @@ namespace autoencoder {
 
   private:
     std::unordered_map<std::string, int> token_indices;
-    std::vector<Blob> &vectors;
+    std::vector<Blob> *vectors;
   };
 
 }  // namespace autoencoder
