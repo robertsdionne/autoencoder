@@ -24,7 +24,7 @@ TEST(DataLoaderTest, TestLoadData) {
 
   auto tags = data_loader.FindTags({
     autoencoder::FLAGS_test_filename,
-    autoencoder::FLAGS_train_filename,
+    autoencoder::FLAGS_training_filename,
     autoencoder::FLAGS_validation_in_domain_filename,
     autoencoder::FLAGS_validation_out_of_domain_filename,
   });

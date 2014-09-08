@@ -22,6 +22,8 @@ namespace autoencoder {
       rectified_linear() {}
 
   void PartOfSpeechWordLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
+    // std::cout << "corrupted_recurrent.width " << corrupted_recurrent.width << std::endl;
+    // std::cout << "corrupted_word.width " << corrupted_word.width << std::endl;
     auto dropout_output = Blobs{&corrupted_recurrent, &corrupted_word};
     auto dropout_recurrent_output = Blobs{&corrupted_recurrent};
     auto classify_output = Blobs{&classified};
@@ -36,6 +38,8 @@ namespace autoencoder {
     concatenate.ForwardCpu(dropout_output, &concatenate_output);
     combine.ForwardCpu(concatenate_output, &combine_output);
     rectified_linear.ForwardCpu(combine_output, &rectified_linear_output);
+    top->at(0)->IsValid();
+    top->at(1)->IsValid();
   }
 
   void PartOfSpeechWordLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
@@ -53,6 +57,8 @@ namespace autoencoder {
     softmax.BackwardCpu(softmax_output, &classify_output);
     classify.BackwardCpu(classify_output, &dropout_recurrent_output);
     dropout.BackwardCpu(dropout_output, bottom);
+    bottom->at(0)->IsValid();
+    bottom->at(1)->IsValid();
   }
 
 }  // namespace autoencoder

@@ -1,9 +1,14 @@
 #ifndef AUTOENCODER_DUMBPARTOFSPEECHTAGGER_HPP_
 #define AUTOENCODER_DUMBPARTOFSPEECHTAGGER_HPP_
 
+#include <vector>
+#include <unordered_set>
+
 #include "partofspeechtagger.hpp"
 
 namespace autoencoder {
+
+  class Evaluator;
 
   class DumbPartOfSpeechTagger : public PartOfSpeechTagger {
   public:
@@ -14,11 +19,14 @@ namespace autoencoder {
     void Train(
         const std::vector<TaggedSentence> &tagged_sentences,
         float learning_rate,
-        int iterations) override;
+        int iterations,
+        Evaluator &evaluator,
+        const std::vector<TaggedSentence> &validation_sentences,
+        const std::unordered_set<std::string> &training_vocabulary) override;
 
     void Validate(const std::vector<TaggedSentence> &tagged_sentences) const override;
 
-    std::vector<std::string> Tag(const std::vector<std::string> &sentence) const override;
+    std::vector<std::string> Tag(const std::vector<std::string> &sentence) override;
 
     float ScoreTagging(const TaggedSentence &tagged_sentence) const override;
   };

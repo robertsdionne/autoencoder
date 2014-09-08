@@ -14,7 +14,11 @@ namespace autoencoder {
 
   DECLARE_string(test_filename);
 
-  DECLARE_string(train_filename);
+  DECLARE_int32(test_sentences);
+
+  DECLARE_string(training_filename);
+
+  DECLARE_int32(training_sentences);
   
   DECLARE_string(validation_in_domain_filename);
   
@@ -33,7 +37,8 @@ namespace autoencoder {
     std::unordered_set<std::string> FindVocabulary(
         const std::vector<TaggedSentence> &sentences) const;
 
-    std::vector<TaggedSentence> ReadTaggedSentences(const std::string &filename) const;
+    std::vector<TaggedSentence> ReadTaggedSentences(
+        const std::string &filename, long amount = -1) const;
 
     std::string TokenizeNumbers(const std::string &input) const;
   };

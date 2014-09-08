@@ -28,6 +28,15 @@ namespace autoencoder {
       return values.value(i, j, k, l);
     }
 
+    inline bool IsFinite() const {
+      return values.IsFinite() && differences.IsFinite();
+    }
+
+    inline void IsValid() const {
+      values.IsValid();
+      differences.IsValid();
+    }
+
     void Reshape(int width, int height = 1, int depth = 1, int duration = 1) {
       this->width = width;
       this->height = height;
@@ -35,6 +44,18 @@ namespace autoencoder {
       this->duration = duration;
       values.Reshape(width, height, depth, duration);
       differences.Reshape(width, height, depth, duration);
+    }
+
+    inline void Update(float learning_rate) {
+      for (auto i = 0; i < width; ++i) {
+        for (auto j = 0; j < height; ++j) {
+          for (auto k = 0; k < depth; ++k) {
+            for (auto l = 0; l < duration; ++l) {
+              value(i, j, k, l) -= learning_rate * difference(i, j, k, l);
+            }
+          }
+        }
+      }
     }
 
   public:

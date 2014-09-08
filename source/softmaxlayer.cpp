@@ -12,13 +12,15 @@ namespace autoencoder {
     for (auto i = 0; i < bottom.at(0)->width; ++i) {
       maximum = std::max(maximum, bottom.at(0)->value(i));
     }
-    auto sum = 0.0f;
+    auto sum = std::numeric_limits<float>::epsilon();
     for (auto i = 0; i < bottom.at(0)->width; ++i) {
       sum += exp(bottom.at(0)->value(i) - maximum);
     }
     for (auto i = 0; i < top->at(0)->width; ++i) {
-      top->at(0)->value(i) = exp(bottom.at(0)->value(i) - maximum) / sum;
+      top->at(0)->value(i) =
+          (exp(bottom.at(0)->value(i) - maximum) + std::numeric_limits<float>::epsilon()) / sum;
     }
+    top->at(0)->IsValid();
   }
 
   void SoftmaxLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
@@ -29,6 +31,7 @@ namespace autoencoder {
             top.at(0)->difference(j) * top.at(0)->value(j) * ((i == j) - top.at(0)->value(i));
       }
     }
+    bottom->at(0)->IsValid();
   }
 
 }  // namespace autoencoder

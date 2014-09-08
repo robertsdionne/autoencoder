@@ -11,6 +11,7 @@ namespace autoencoder {
       }
       offset += bottom.at(i)->width;
     }
+    top->at(0)->IsValid();
   }
 
   void ConcatenateLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
@@ -20,6 +21,7 @@ namespace autoencoder {
         bottom->at(i)->difference(j) = top.at(0)->difference(j + offset);
       }
       offset += bottom->at(i)->width;
+      bottom->at(i)->IsValid();
     }
   }
 

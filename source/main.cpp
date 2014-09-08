@@ -1,20 +1,30 @@
 #include <gflags/gflags.h>
 #include <iostream>
 #include <random>
+#include <set>
+#include <vector>
 
+#include "blob.hpp"
 #include "dataloader.hpp"
 #include "lookuptable.hpp"
 #include "recurrentneuralnetworkpartofspeechtagger.hpp"
 #include "evaluator.hpp"
 
-DEFINE_double(dropout_probability, 0.5f, "the probability of masking out an input for dropout");
-DEFINE_int32(iterations, 100, "the number of training iterations");
-DEFINE_double(learning_rate, 0.01, "the learning rate");
-DEFINE_int32(random_seed, std::random_device()(), "seed the random number generator");
-DEFINE_int32(recurrent_state_dimension, 50, "the recurrent state dimension");
-DEFINE_bool(test, false, "whether to evaluate on the test data");
-DEFINE_int32(test_sentences, -1, "the number of test sentences to use");
-DEFINE_int32(training_sentences, -1, "the number of training sentences to use");
+namespace autoencoder {
+
+  DEFINE_double(dropout_probability, 0.5f, "the probability of masking out an input for dropout");
+
+  DEFINE_int32(iterations, 100, "the number of training iterations");
+
+  DEFINE_double(learning_rate, 0.01, "the learning rate");
+
+  DEFINE_int32(random_seed, std::random_device()(), "seed the random number generator");
+
+  DEFINE_int32(recurrent_state_dimension, 50, "the recurrent state dimension");
+
+  DEFINE_bool(test, false, "whether to evaluate on the test data");
+
+}  // namespace autoencoder
 
 int main(int argument_count, char *arguments[]) {
   gflags::SetUsageMessage("Part-of-speech tagger implemented with a recurrent neural network.");
@@ -24,12 +34,14 @@ int main(int argument_count, char *arguments[]) {
 
   std::cout << "Loading test sentences... ";
   std::cout.flush();
-  auto test_sentences = data_loader.ReadTaggedSentences(autoencoder::FLAGS_test_filename);
+  auto test_sentences = data_loader.ReadTaggedSentences(
+      autoencoder::FLAGS_test_filename, autoencoder::FLAGS_test_sentences);
   std::cout << "Done." << std::endl;
 
   std::cout << "Loading training sentences and vocabulary... ";
   std::cout.flush();
-  auto training_sentences = data_loader.ReadTaggedSentences(autoencoder::FLAGS_train_filename);
+  auto training_sentences = data_loader.ReadTaggedSentences(
+      autoencoder::FLAGS_training_filename, autoencoder::FLAGS_training_sentences);
   auto training_vocabulary = data_loader.FindVocabulary(training_sentences);
   std::cout << "Done." << std::endl;
 
@@ -47,20 +59,33 @@ int main(int argument_count, char *arguments[]) {
 
   std::cout << "Loading overall tag set... ";
   std::cout.flush();
-  auto tags = data_loader.FindTags({
+  auto tag_set = data_loader.FindTags({
     autoencoder::FLAGS_test_filename,
-    autoencoder::FLAGS_train_filename,
+    autoencoder::FLAGS_training_filename,
     autoencoder::FLAGS_validation_in_domain_filename,
     autoencoder::FLAGS_validation_out_of_domain_filename,
   });
-  std::cout << "Done." << std::endl<< std::endl;
+  auto tags = std::vector<std::string>(tag_set.begin(), tag_set.end());
+  tags.insert(tags.begin(), "<START>");
+  std::cout << "Done." << std::endl << std::endl;
 
-  auto word_table = autoencoder::LookupTable();
-  auto tag_table = autoencoder::LookupTable();
-  auto generator = std::mt19937(FLAGS_random_seed);
+  auto generator = std::mt19937(autoencoder::FLAGS_random_seed);
+  auto word_table = autoencoder::LookupTable::Load(
+      generator, autoencoder::FLAGS_words_filename, autoencoder::FLAGS_vectors_filename);
+  auto tag_vectors = std::vector<autoencoder::Blob>(tags.size(), autoencoder::Blob(tags.size()));
+  for (auto i = 0; i < tags.size(); ++i) {
+    tag_vectors.at(i).value(i) = 1.0f;
+  }
+  auto tag_table = autoencoder::LookupTable(generator, tags, tag_vectors);
   auto part_of_speech_tagger = autoencoder::RecurrentNeuralNetworkPartOfSpeechTagger(
-      word_table, tag_table, FLAGS_dropout_probability, generator);
+      word_table, tag_table, autoencoder::FLAGS_dropout_probability, generator,
+      autoencoder::FLAGS_recurrent_state_dimension, tags.size(),
+      autoencoder::FLAGS_word_representation_dimension);
   auto evaluator = autoencoder::Evaluator();
+
+  part_of_speech_tagger.Train(
+      training_sentences, autoencoder::FLAGS_learning_rate, autoencoder::FLAGS_iterations,
+      evaluator, validation_in_domain_sentences, training_vocabulary);
 
   std::cout << "Evaluating on training data... ";
   std::cout.flush();
@@ -83,7 +108,7 @@ int main(int argument_count, char *arguments[]) {
   std::cout << "Done." << std::endl;
   std::cout << validation_out_of_domain_report << std::endl<< std::endl;
 
-  if (FLAGS_test) {
+  if (autoencoder::FLAGS_test) {
     std::cout << "Evaluating on test data!!! ";
     std::cout.flush();
     auto test_report = evaluator.Evaluate(

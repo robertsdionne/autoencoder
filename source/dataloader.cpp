@@ -16,7 +16,11 @@ namespace autoencoder {
 
   DEFINE_string(test_filename, "data/en-web-test.tagged", "The test data.");
 
-  DEFINE_string(train_filename, "data/en-wsj-train.pos", "The training data.");
+  DEFINE_int32(test_sentences, -1, "the number of test sentences to use");
+
+  DEFINE_string(training_filename, "data/en-wsj-train.pos", "The training data.");
+
+  DEFINE_int32(training_sentences, -1, "the number of training sentences to use");
 
   DEFINE_string(
       validation_in_domain_filename, "data/en-wsj-dev.pos", "The in-domain validation data.");
@@ -65,13 +69,15 @@ namespace autoencoder {
     return vocabulary;
   }
 
-  std::vector<TaggedSentence> DataLoader::ReadTaggedSentences(const std::string &filename) const {
+  std::vector<TaggedSentence> DataLoader::ReadTaggedSentences(
+      const std::string &filename, long amount) const {
     std::ifstream in(filename);
     assert(in);
     auto tagged_sentences = std::vector<TaggedSentence>();
     auto words = std::vector<std::string>();
     auto tags = std::vector<std::string>();
     auto line = std::string();
+    auto sentences = 0L;
     while (std::getline(in, line)) {
       if (line.size() > 0) {
         std::istringstream line_in(line);
@@ -93,6 +99,10 @@ namespace autoencoder {
         tagged_sentences.push_back(TaggedSentence(words, tags));
         words.clear();
         tags.clear();
+        sentences += 1;
+      }
+      if (amount > -1 && sentences >= amount) {
+        break;
       }
     }
     return tagged_sentences;

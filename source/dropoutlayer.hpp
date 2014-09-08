@@ -1,14 +1,11 @@
 #ifndef AUTOENCODER_DROPOUTLAYER_HPP_
 #define AUTOENCODER_DROPOUTLAYER_HPP_
 
-#include <gflags/gflags.h>
 #include <random>
 #include <vector>
 
 #include "blob.hpp"
 #include "layer.hpp"
-
-DECLARE_int32(random_seed);
 
 namespace autoencoder {
 
