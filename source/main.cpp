@@ -16,7 +16,7 @@ namespace autoencoder {
 
   DEFINE_int32(iterations, 100, "the number of training iterations");
 
-  DEFINE_double(learning_rate, 0.01, "the learning rate");
+  DEFINE_double(learning_rate, 1e-6, "the learning rate");
 
   DEFINE_int32(random_seed, std::random_device()(), "seed the random number generator");
 
