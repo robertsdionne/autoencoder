@@ -21,7 +21,7 @@ namespace autoencoder {
       combine(combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear() {}
 
-  void PartOfSpeechWordLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
+  void PartOfSpeechWordLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     // std::cout << "corrupted_recurrent.width " << corrupted_recurrent.width << std::endl;
     // std::cout << "corrupted_word.width " << corrupted_word.width << std::endl;
     auto dropout_output = Blobs{&corrupted_recurrent, &corrupted_word};
@@ -32,12 +32,12 @@ namespace autoencoder {
     auto combine_output = Blobs{&combined};
     auto rectified_linear_output = Blobs{top->at(1)};
 
-    dropout.ForwardCpu(bottom, &dropout_output);
-    classify.ForwardCpu(dropout_recurrent_output, &classify_output);
-    softmax.ForwardCpu(classify_output, &softmax_output);
-    concatenate.ForwardCpu(dropout_output, &concatenate_output);
-    combine.ForwardCpu(concatenate_output, &combine_output);
-    rectified_linear.ForwardCpu(combine_output, &rectified_linear_output);
+    dropout.ForwardCpu(mode, bottom, &dropout_output);
+    classify.ForwardCpu(mode, dropout_recurrent_output, &classify_output);
+    softmax.ForwardCpu(mode, classify_output, &softmax_output);
+    concatenate.ForwardCpu(mode, dropout_output, &concatenate_output);
+    combine.ForwardCpu(mode, concatenate_output, &combine_output);
+    rectified_linear.ForwardCpu(mode, combine_output, &rectified_linear_output);
     top->at(0)->IsValid();
     top->at(1)->IsValid();
   }

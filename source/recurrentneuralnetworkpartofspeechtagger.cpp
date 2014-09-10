@@ -55,7 +55,7 @@ namespace autoencoder {
     }
     output.push_back(&recurrent_state_output);
 
-    part_of_speech_sentence.ForwardCpu(input, &output);
+    part_of_speech_sentence.ForwardCpu(Layer::Mode::kTest, input, &output);
 
     for (auto i = 0; i < output.size(); ++i) {
       output.at(i)->IsValid();
@@ -100,7 +100,7 @@ namespace autoencoder {
     }
     output.push_back(&recurrent_state_output);
 
-    part_of_speech_sentence.ForwardCpu(input, &output);
+    part_of_speech_sentence.ForwardCpu(Layer::Mode::kTrain, input, &output);
 
     auto output_and_target = Blobs{};
     for (auto i = 0; i < target.size(); ++i) {
@@ -114,7 +114,7 @@ namespace autoencoder {
       loss_output.push_back(&loss);
     }
 
-    loss.ForwardCpu(output_and_target, &loss_output);
+    loss.ForwardCpu(Layer::Mode::kTrain, output_and_target, &loss_output);
 
     for (auto &loss : losses) {
       loss.IsValid();
@@ -127,6 +127,7 @@ namespace autoencoder {
   void RecurrentNeuralNetworkPartOfSpeechTagger::Train(
       const std::vector<TaggedSentence> &tagged_sentences,
       float learning_rate,
+      float momentum,
       int iterations,
       Evaluator &evaluator,
       const std::vector<TaggedSentence> &validation_sentences,
@@ -136,33 +137,44 @@ namespace autoencoder {
     InitializeBlob(uniform_symmetric, generator, &classify_weights);
     InitializeBlob(uniform_symmetric, generator, &combine_weights);
 
-    std::cout << "Training... " << std::endl;
+    std::cout << "Training... " << std::endl << std::endl;
     for (auto i = 0; i < iterations; ++i) {
-      std::cout << "Starting iteration " << i << "... " << std::endl << std::endl;
       std::cout << "Evaluating on validation data... ";
       std::cout.flush();
-      auto validation_report = evaluator.Evaluate(*this, validation_sentences, training_vocabulary);
+      auto validation_report = evaluator.Evaluate(
+          *this, validation_sentences, training_vocabulary);
       std::cout << "Done." << std::endl;
       std::cout << validation_report << std::endl<< std::endl;
+      std::cout << "Starting iteration " << i << "... " << std::endl << std::endl;
       // std::cout << classify_weights.values << std::endl;
       // std::cout << classify_bias.values << std::endl;
       // std::cout << combine_weights.values << std::endl;
       // std::cout << combine_bias.values << std::endl;
       
       for (auto j = 0; j < tagged_sentences.size(); ++j) {
+        ForwardBackwardCpu(tagged_sentences.at(j));
+
+        // recurrent_state_input.Update(learning_rate, momentum);
+        classify_weights.Update(learning_rate, momentum);
+        classify_bias.Update(learning_rate, momentum);
+        combine_weights.Update(learning_rate, momentum);
+        combine_bias.Update(learning_rate, momentum);
+
         if (j > 0 && j % 100 == 0) {
           std::cout << "Finished " << j << " sentences." << std::endl;
           // std::cout << to_string(tagged_sentences.at(j)) << std::endl;
         }
-        ForwardBackwardCpu(tagged_sentences.at(j));
 
-        recurrent_state_input.Update(learning_rate);
-        classify_weights.Update(learning_rate);
-        classify_bias.Update(learning_rate);
-        combine_weights.Update(learning_rate);
-        combine_bias.Update(learning_rate);
+        if (j > 0 && j + 1 < tagged_sentences.size() && j % 1000 == 0) {
+          std::cout << std::endl << "Evaluating on validation data... ";
+          std::cout.flush();
+          auto validation_report = evaluator.Evaluate(
+              *this, validation_sentences, training_vocabulary);
+          std::cout << "Done." << std::endl;
+          std::cout << validation_report << std::endl<< std::endl;
+        }
       }
-      std::cout << "Done." << std::endl << std::endl << std::endl;
+      std::cout << "Done." << std::endl << std::endl;
     }
     std::cout << "Done." << std::endl << std::endl;
   }

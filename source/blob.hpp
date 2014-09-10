@@ -10,6 +10,7 @@ namespace autoencoder {
   struct Blob {
     Blob(int width = 1, int height = 1, int depth = 1, int duration = 1)
     : values(width, height, depth, duration), differences(width, height, depth, duration),
+      velocities(width, height, depth, duration),
       width(width), height(height), depth(depth), duration(duration) {}
 
     float difference(int i, int j = 0, int k = 0, int l = 0) const {
@@ -28,6 +29,14 @@ namespace autoencoder {
       return values.value(i, j, k, l);
     }
 
+    float velocity(int i, int j = 0, int k = 0, int l = 0) const {
+      return velocities.value(i, j, k, l);
+    }
+
+    float &velocity(int i, int j = 0, int k = 0, int l = 0) {
+      return velocities.value(i, j, k, l);
+    }
+
     inline bool IsFinite() const {
       return values.IsFinite() && differences.IsFinite();
     }
@@ -44,14 +53,17 @@ namespace autoencoder {
       this->duration = duration;
       values.Reshape(width, height, depth, duration);
       differences.Reshape(width, height, depth, duration);
+      velocities.Reshape(width, height, depth, duration);
     }
 
-    inline void Update(float learning_rate) {
+    inline void Update(float learning_rate, float momentum = 0.0f) {
       for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
           for (auto k = 0; k < depth; ++k) {
             for (auto l = 0; l < duration; ++l) {
-              value(i, j, k, l) -= learning_rate * difference(i, j, k, l);
+              velocity(i, j, k, l) =
+                  momentum * velocity(i, j, k, l) - learning_rate * difference(i, j, k, l);
+              value(i, j, k, l) += velocity(i, j, k, l);
             }
           }
         }
@@ -59,7 +71,7 @@ namespace autoencoder {
     }
 
   public:
-    Values values, differences;
+    Values values, differences, velocities;
     int width, height, depth, duration;
   };
 

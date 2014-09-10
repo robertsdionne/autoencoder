@@ -12,6 +12,7 @@ namespace autoencoder {
   void DumbPartOfSpeechTagger::Train(
         const std::vector<TaggedSentence> &tagged_sentences,
         float learning_rate,
+        float momentum,
         int iterations,
         Evaluator &evaluator,
         const std::vector<TaggedSentence> &validation_sentences,

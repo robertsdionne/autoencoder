@@ -6,7 +6,7 @@
 
 namespace autoencoder {
 
-  void EuclideanLossLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
+  void EuclideanLossLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     // std::cout << bottom.size() << " " << top->size() << std::endl;
     for (auto i = 0; i < bottom.size(); i += 2) {
       for (auto j = 0; j < bottom.at(i)->width; ++j) {

@@ -21,7 +21,7 @@ TEST(InnerProductLayerTest, TestForwardCpu) {
   auto layer = autoencoder::InnerProductLayer(weights, bias);
   auto output = autoencoder::Blob(3);
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu({&input}, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input}, &out);
 
   EXPECT_FLOAT_EQ(14.0f, output.value(0));
   EXPECT_FLOAT_EQ(21.0f, output.value(1));
@@ -47,7 +47,7 @@ TEST(InnerProductLayerTest, TestBackwardCpu) {
   auto output = autoencoder::Blob(3);
   auto in = autoencoder::Blobs{&input};
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(in, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }

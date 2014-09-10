@@ -11,25 +11,33 @@ namespace autoencoder {
     assert(0.0f <= p <= 1.0f);
   }
 
-  void DropoutLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
-    mask.clear();
-    for (auto i = 0; i < bottom.size(); ++i) {
-      mask.emplace_back(bottom.at(i)->width);
-      for (auto j = 0; j < bottom.at(i)->width; ++j) {
-        mask.at(i).value(j) = bernoulli(generator);
-        assert(std::isfinite(bottom.at(i)->value(j)));
-        assert(std::isfinite(mask.at(i).value(j)));
+  void DropoutLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+    if (Mode::kTrain == mode) {
+      mask.clear();
+      for (auto i = 0; i < bottom.size(); ++i) {
+        mask.emplace_back(bottom.at(i)->width);
+        for (auto j = 0; j < bottom.at(i)->width; ++j) {
+          mask.at(i).value(j) = bernoulli(generator);
+          assert(std::isfinite(bottom.at(i)->value(j)));
+          assert(std::isfinite(mask.at(i).value(j)));
+          assert(std::isfinite(scale));
+          assert(std::isfinite(mask.at(i).value(j) * scale));
+          assert(std::isfinite(bottom.at(i)->value(j) * scale));
+          assert(std::isfinite(bottom.at(i)->value(j) * mask.at(i).value(j)));
+          assert(std::isfinite(bottom.at(i)->value(j) * mask.at(i).value(j) * scale));
+          top->at(i)->value(j) = bottom.at(i)->value(j) * mask.at(i).value(j) * scale;
+        }
+        bottom.at(i)->IsValid();
+        mask.at(i).IsValid();
         assert(std::isfinite(scale));
-        assert(std::isfinite(mask.at(i).value(j) * scale));
-        assert(std::isfinite(bottom.at(i)->value(j) * scale));
-        assert(std::isfinite(bottom.at(i)->value(j) * mask.at(i).value(j)));
-        assert(std::isfinite(bottom.at(i)->value(j) * mask.at(i).value(j) * scale));
-        top->at(i)->value(j) = bottom.at(i)->value(j) * mask.at(i).value(j) * scale;
+        top->at(i)->IsValid();
       }
-      bottom.at(i)->IsValid();
-      mask.at(i).IsValid();
-      assert(std::isfinite(scale));
-      top->at(i)->IsValid();
+    } else {
+      for (auto i = 0; i < bottom.size(); ++i) {
+        for (auto j = 0; j < bottom.at(i)->width; ++j) {
+          top->at(i)->value(j) = bottom.at(i)->value(j);
+        }
+      }
     }
   }
 

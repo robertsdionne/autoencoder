@@ -3,7 +3,7 @@
 
 namespace autoencoder {
 
-  void RectifiedLinearLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
+  void RectifiedLinearLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     for (auto i = 0; i < top->at(0)->width; ++i) {
       top->at(0)->value(i) = std::max(0.0f, bottom.at(0)->value(i));
     }

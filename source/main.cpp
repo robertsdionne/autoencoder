@@ -18,6 +18,8 @@ namespace autoencoder {
 
   DEFINE_double(learning_rate, 1e-6, "the learning rate");
 
+  DEFINE_double(momentum, 0.0f, "the momentum");
+
   DEFINE_int32(random_seed, std::random_device()(), "seed the random number generator");
 
   DEFINE_int32(recurrent_state_dimension, 50, "the recurrent state dimension");
@@ -84,8 +86,9 @@ int main(int argument_count, char *arguments[]) {
   auto evaluator = autoencoder::Evaluator();
 
   part_of_speech_tagger.Train(
-      training_sentences, autoencoder::FLAGS_learning_rate, autoencoder::FLAGS_iterations,
-      evaluator, validation_in_domain_sentences, training_vocabulary);
+      training_sentences, autoencoder::FLAGS_learning_rate, autoencoder::FLAGS_momentum,
+      autoencoder::FLAGS_iterations, evaluator, validation_in_domain_sentences,
+      training_vocabulary);
 
   std::cout << "Evaluating on training data... ";
   std::cout.flush();

@@ -15,7 +15,7 @@ namespace autoencoder {
 
     virtual ~DropoutLayer() = default;
 
-    void ForwardCpu(const Blobs &bottom, Blobs *top) override;
+    void ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
 
     void BackwardCpu(const Blobs &top, Blobs *bottom) override;
 

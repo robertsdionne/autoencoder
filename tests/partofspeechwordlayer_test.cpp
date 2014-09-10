@@ -39,7 +39,7 @@ TEST(PartOfSpeechWordLayerTest, TestForwardCpu) {
   auto tag_output = autoencoder::Blob(5);
   auto recurrent_output = autoencoder::Blob(10);
   auto out = autoencoder::Blobs{&tag_output, &recurrent_output};
-  layer.ForwardCpu({&recurrent_input, &word_input}, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&recurrent_input, &word_input}, &out);
 
   auto sum = 0.0f;
   for (auto i = 0; i < tag_output.width; ++i) {
@@ -91,7 +91,7 @@ TEST(PartOfSpeechWordLayerTest, TestBackwardCpu) {
   auto recurrent_output = autoencoder::Blob(10);
   auto in = autoencoder::Blobs{&recurrent_input, &word_input};
   auto out = autoencoder::Blobs{&tag_output, &recurrent_output};
-  layer.ForwardCpu(in, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < tag_output.width; ++i) {
     tag_output.difference(i) = i == 2;
   }

@@ -17,7 +17,7 @@ TEST(ConcatenateLayerTest, TestForwardCpu) {
   auto layer = autoencoder::ConcatenateLayer();
   auto output = autoencoder::Blob(10);
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(in, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
 
   EXPECT_FLOAT_EQ(1.0f, output.value(0));
   EXPECT_FLOAT_EQ(2.0f, output.value(1));

@@ -15,7 +15,7 @@ namespace autoencoder {
       classify_weights(classify_weights), classify_bias(classify_bias),
       combine_weights(combine_weights), combine_bias(combine_bias) {}
 
-  void PartOfSpeechSentenceLayer::ForwardCpu(const Blobs &bottom, Blobs *top) {
+  void PartOfSpeechSentenceLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     layers.clear();
     recurrent_states.clear();
 
@@ -34,7 +34,7 @@ namespace autoencoder {
       auto layer_output = Blobs{top->at(i - 1), &recurrent_states.at(i)};
 
       // std::cout << "layers.at(" << i << " - 1).ForwardCpu" << std::endl;
-      layers.at(i - 1).ForwardCpu(layer_input, &layer_output);
+      layers.at(i - 1).ForwardCpu(mode, layer_input, &layer_output);
       top->at(i - 1)->IsValid();
     }
 

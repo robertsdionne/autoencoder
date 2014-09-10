@@ -12,7 +12,7 @@ TEST(SoftmaxLayerTest, TestForwardCpu) {
   auto layer = autoencoder::SoftmaxLayer();
   auto output = autoencoder::Blob(8);
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu({&input}, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input}, &out);
 
   EXPECT_FLOAT_EQ(0.00057661277f, output.value(0));
   EXPECT_FLOAT_EQ(0.0015673961f, output.value(1));
@@ -39,7 +39,7 @@ TEST(SoftmaxLayerTest, TestBackwardCpu) {
   auto output = autoencoder::Blob(8);
   auto in = autoencoder::Blobs{&input};
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(in, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = (i == 2);
   }

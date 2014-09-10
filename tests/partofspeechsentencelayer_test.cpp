@@ -56,7 +56,7 @@ TEST(PartOfSpeechSentenceLayerTest, TestForwardCpu) {
   auto out = autoencoder::Blobs{
     &tag_output0, &tag_output1, &tag_output2, &tag_output3, &tag_output4, &recurrent_output
   };
-  layer.ForwardCpu(in, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
 
   for (auto &tag_output : {tag_output0, tag_output1, tag_output2, tag_output3, tag_output4}) {
     auto sum = 0.0f;
@@ -150,7 +150,7 @@ TEST(PartOfSpeechSentenceLayerTest, TestBackwardCpu) {
   auto out = autoencoder::Blobs{
     &tag_output0, &tag_output1, &tag_output2, &tag_output3, &tag_output4, &recurrent_output
   };
-  layer.ForwardCpu(in, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
 
   {
     auto i = 0;

@@ -13,7 +13,7 @@ TEST(DropoutLayerTest, TestForwardCpu) {
   auto layer = autoencoder::DropoutLayer(0.5f, generator);
   auto output = autoencoder::Blob(10);
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu({&input}, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input}, &out);
 
   // TODO(robertsdionne): remove dependency upon random number generator code with a mock.
   EXPECT_FLOAT_EQ(0.0f, output.value(0));
@@ -38,7 +38,7 @@ TEST(DropoutLayerTest, TestBackwardCpu) {
   auto output = autoencoder::Blob(10);
   auto in = autoencoder::Blobs{&input};
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(in, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }

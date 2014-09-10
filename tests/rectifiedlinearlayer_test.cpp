@@ -12,7 +12,7 @@ TEST(RectifiedLinearLayerTest, TestForwardCpu) {
   auto layer = autoencoder::RectifiedLinearLayer();
   auto output = autoencoder::Blob(10);
   auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu({&input}, &out);
+  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input}, &out);
 
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));
