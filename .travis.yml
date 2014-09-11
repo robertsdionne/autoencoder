@@ -8,5 +8,6 @@ before_install:
   - sudo apt-get install -qq cmake fglrx gfortran opencl-headers
 script:
   - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
+  - find . -name CMakeOutput.log
   - cat CMakeFiles/CMakeOutput.log
   - make -j8
