@@ -3,7 +3,7 @@ compiler:
   - clang
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq svn
+  - sudo apt-get install -qq subversion
   - svn co http://llvm.org/svn/llvm-project/libcxx/tags/RELEASE_34/final/ libcxx
   - mkdir -p build_libcxx
   - cd build_libcxx
