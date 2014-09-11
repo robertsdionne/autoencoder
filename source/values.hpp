@@ -97,7 +97,7 @@ namespace autoencoder {
         }
       }
     }
-    out << std::endl << std::defaultfloat << std::setprecision(precision) << std::setw(width);
+    out << std::endl << std::fixed << std::setprecision(precision) << std::setw(width);
     return out;
   }
 
