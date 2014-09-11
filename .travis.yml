@@ -9,7 +9,7 @@ before_install:
   - svn co -q http://llvm.org/svn/llvm-project/libcxx/tags/RELEASE_34/final/ libcxx
   - mkdir -p build_libcxx
   - cd build_libcxx
-  - cmake -DLIBCXXABI_LIBCXX_INCLUDE_PATHS=../libcxx/include -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ../libcxxabi
+# - cmake -DLIBCXXABI_LIBCXX_INCLUDE_PATHS=../libcxx/include -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ../libcxxabi
   - cmake -DLIBCXX_CXX_ABI=libcxxabi -DLIBCXX_LIBCXXABI_INCLUDE_PATHS=../libcxxabi/include -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ../libcxx
   - make -j8
   - sudo make install
