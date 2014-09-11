@@ -2,8 +2,9 @@ language: cpp
 compiler:
   - clang
 before_install:
+  - sudo add-apt-repository ppa:kalakris/cmake -y
   - sudo apt-get update -qq
-  - sudo apt-get install -qq subversion
+  - sudo apt-get install -qq cmake subversion
   - svn co -q http://llvm.org/svn/llvm-project/libcxxabi/tags/RELEASE_350/final/ libcxxabi
   - svn co -q http://llvm.org/svn/llvm-project/libcxx/tags/RELEASE_34/final/ libcxx
   - mkdir -p build_libcxx
