@@ -4,7 +4,7 @@ compiler:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq subversion
-  - svn co http://llvm.org/svn/llvm-project/libcxx/tags/RELEASE_34/final/ libcxx
+  - svn co -q http://llvm.org/svn/llvm-project/libcxx/tags/RELEASE_34/final/ libcxx
   - mkdir -p build_libcxx
   - cd build_libcxx
   - CC=clang CXX=clang++ cmake -G "Unix Makefiles" -DLIBCXX_CXX_ABI=libsupc++ -DLIBCXX_LIBSUPCXX_INCLUDE_PATHS="/usr/include/c++/4.6/;/usr/include/c++/4.6/x86_64-linux-gnu/" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ../libcxx
