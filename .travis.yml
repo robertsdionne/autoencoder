@@ -4,6 +4,9 @@ compiler:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq fglrx gfortran opencl-headers
+  - ls /usr/include/
+  - ls /usr/include/c++/4.6/
+  - ls /usr/include/sys/
 script:
   - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
   - make -j8
