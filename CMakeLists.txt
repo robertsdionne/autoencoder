@@ -3,7 +3,7 @@ project(autoencoder CXX)
 
 if (NOT WIN32)
 #  add_definitions(-std=c++11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ -static-libstdc++")
 endif()
 
 add_subdirectory(libraries/clBLAS/src EXCLUDE_FROM_ALL)
