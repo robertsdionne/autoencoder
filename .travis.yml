@@ -10,6 +10,7 @@ before_install:
   - CC=clang CXX=clang++ cmake -G "Unix Makefiles" -DLIBCXX_CXX_ABI=libsupc++ -DLIBCXX_LIBSUPCXX_INCLUDE_PATHS="/usr/include/c++/4.6/;/usr/include/c++/4.6/x86_64-linux-gnu/" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ../libcxx
   - make -j8
   - sudo make install
+  - cd ..
   - sudo apt-get install -qq fglrx gfortran opencl-headers
 script:
   - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
