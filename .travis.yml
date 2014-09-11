@@ -2,8 +2,9 @@ language: cpp
 compiler:
   - gcc
 before_install:
+  - sudo apt-add-repository --yes ppa:kalakris/cmake
   - sudo apt-get update -qq
-  - sudo apt-get install -qq fglrx gfortran opencl-headers
+  - sudo apt-get install -qq cmake fglrx gfortran opencl-headers
   - ls /usr/include/
   - ls /usr/include/c++/4.6/
 script:
