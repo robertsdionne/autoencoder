@@ -14,6 +14,8 @@ Makefile
 [Dd]ebug/
 libraries/OpenBLAS-0.2.11/src/
 libraries/OpenBLAS-0.2.11/tmp/
+libraries/clBLAS/src/library/*.pc
+libraries/clFFT/src/library/*.pc
 source/autoencoder
 source/clblas
 source/clfft

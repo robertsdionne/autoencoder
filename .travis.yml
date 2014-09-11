@@ -4,7 +4,7 @@ compiler:
 before_install:
   - sudo apt-add-repository --yes ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
-  - sudo apt-get install -qq fglrx g++-4.9 gfortran opencl-headers
+  - sudo apt-get install -qq fglrx gfortran opencl-headers
 script:
   - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
   - make -j8

@@ -3,14 +3,14 @@ project(autoencoder CXX)
 
 if (NOT WIN32)
 #  add_definitions(-std=c++11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
 add_subdirectory(libraries/clBLAS/src EXCLUDE_FROM_ALL)
 add_subdirectory(libraries/clFFT/src EXCLUDE_FROM_ALL)
 
-#add_subdirectory(libraries/gflags-2.1.1)
-#add_subdirectory(libraries/gtest-1.7.0)
+add_subdirectory(libraries/gflags-2.1.1)
+add_subdirectory(libraries/gtest-1.7.0)
 
 # Disable client, kernel tests and tests for clBLAS and clFFT to avoid depending upon Boost.
 set(BUILD_CLIENT OFF)
@@ -29,24 +29,24 @@ if (APPLE)
   set(BLAS_TARGET AccelerateBlas)
   set(BLAS_HEADER <Accelerate/Accelerate.h>)
 else (APPLE)
-# include(ExternalProject)
+ include(ExternalProject)
 
-# ExternalProject_Add(OpenBLAS
-#     PREFIX libraries/OpenBLAS-0.2.11
-#     SOURCE_DIR libraries/OpenBLAS-0.2.11
-#     CONFIGURE_COMMAND true
-#     BINARY_DIR libraries/OpenBLAS-0.2.11
-#     BUILD_COMMAND CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} $(MAKE)
-#     INSTALL_COMMAND true)
+ ExternalProject_Add(OpenBLAS
+     PREFIX libraries/OpenBLAS-0.2.11
+     SOURCE_DIR libraries/OpenBLAS-0.2.11
+     CONFIGURE_COMMAND true
+     BINARY_DIR libraries/OpenBLAS-0.2.11
+     BUILD_COMMAND CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} $(MAKE)
+     INSTALL_COMMAND true)
 
-# include_directories(libraries/OpenBLAS-0.2.11)
+ include_directories(libraries/OpenBLAS-0.2.11)
 
-# set(BLAS_LIBRARY openblas)
-# set(BLAS_TARGET OpenBLAS)
-# set(BLAS_HEADER <cblas.h>)
+ set(BLAS_LIBRARY openblas)
+ set(BLAS_TARGET OpenBLAS)
+ set(BLAS_HEADER <cblas.h>)
 endif (APPLE)
 
-#add_definitions(-DBLAS_HEADER=${BLAS_HEADER})
+add_definitions(-DBLAS_HEADER=${BLAS_HEADER})
 
 include_directories(
     SYSTEM
@@ -58,4 +58,4 @@ include_directories(
     libraries/opencl/include)
 
 add_subdirectory(source)
-#add_subdirectory(tests)
+add_subdirectory(tests)
