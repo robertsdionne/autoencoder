@@ -1,17 +1,18 @@
 #include <cassert>
 #include <clFFT.h>
 #include <cmath>
-#include <gflags/gflags.h>
+//#include <gflags/gflags.h>
 #include <iostream>
 #include <string>
 
 constexpr size_t kN = 16;
 
-DEFINE_string(target_gpu, "GeForce", "The OpenCL GPU device name");
+//DEFINE_string(target_gpu, "GeForce", "The OpenCL GPU device name");
+constexpr const char *FLAGS_target_gpu = "GeForce";
 
 int main(int argument_count, char *arguments[]) {
-  gflags::SetUsageMessage("clFFT demo program.");
-  gflags::ParseCommandLineFlags(&argument_count, &arguments, true);
+  //gflags::SetUsageMessage("clFFT demo program.");
+  //gflags::ParseCommandLineFlags(&argument_count, &arguments, true);
 
   cl_platform_id platform = 0;
   assert(CL_SUCCESS == clGetPlatformIDs(1, &platform, nullptr));

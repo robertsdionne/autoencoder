@@ -1,7 +1,7 @@
 #include <cassert>
 #include <clBLAS.h>
 #include <cstdio>
-#include <gflags/gflags.h>
+//#include <gflags/gflags.h>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -42,11 +42,12 @@ constexpr size_t kLdc = kN;
 
 static float result[kM * kN];
 
-DEFINE_string(target_gpu, "GeForce", "The OpenCL GPU device name");
+//DEFINE_string(target_gpu, "GeForce", "The OpenCL GPU device name");
+constexpr const char *FLAGS_target_gpu = "GeForce";
 
 int main(int argument_count, char *arguments[]) {
-  gflags::SetUsageMessage("clBLAS demo program.");
-  gflags::ParseCommandLineFlags(&argument_count, &arguments, true);
+  //gflags::SetUsageMessage("clBLAS demo program.");
+  //gflags::ParseCommandLineFlags(&argument_count, &arguments, true);
 
   cl_platform_id platform = 0;
   assert(CL_SUCCESS == clGetPlatformIDs(1, &platform, nullptr));
