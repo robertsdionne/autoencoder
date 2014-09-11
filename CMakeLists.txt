@@ -6,8 +6,8 @@ if (NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
-#add_subdirectory(libraries/clBLAS/src)
-#add_subdirectory(libraries/clFFT/src)
+add_subdirectory(libraries/clBLAS/src)
+add_subdirectory(libraries/clFFT/src)
 
 #add_subdirectory(libraries/gflags-2.1.1)
 #add_subdirectory(libraries/gtest-1.7.0)
@@ -57,5 +57,5 @@ include_directories(
     libraries/gtest-1.7.0/include
     libraries/opencl/include)
 
-#add_subdirectory(source)
+add_subdirectory(source)
 #add_subdirectory(tests)
