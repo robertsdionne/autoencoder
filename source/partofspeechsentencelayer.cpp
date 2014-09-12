@@ -15,7 +15,7 @@ namespace autoencoder {
       classify_weights(classify_weights), classify_bias(classify_bias),
       combine_weights(combine_weights), combine_bias(combine_bias) {}
 
-  void PartOfSpeechSentenceLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float PartOfSpeechSentenceLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     layers.clear();
     recurrent_states.clear();
 
@@ -42,6 +42,7 @@ namespace autoencoder {
       top->back()->value(i) = recurrent_states.back().value(i);
     }
     top->back()->IsValid();
+    return 0.0f;
   }
 
   void PartOfSpeechSentenceLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {

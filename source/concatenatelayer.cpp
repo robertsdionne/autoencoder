@@ -3,7 +3,7 @@
 
 namespace autoencoder {
 
-  void ConcatenateLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float ConcatenateLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     auto offset = 0;
     for (auto i = 0; i < bottom.size(); ++i) {
       for (auto j = 0; j < bottom.at(i)->width; ++j) {
@@ -12,6 +12,7 @@ namespace autoencoder {
       offset += bottom.at(i)->width;
     }
     top->at(0)->IsValid();
+    return 0.0f;
   }
 
   void ConcatenateLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {

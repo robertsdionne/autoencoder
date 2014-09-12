@@ -66,29 +66,11 @@ namespace autoencoder {
     }
   }
 
-  void RecurrentNeuralNetworkPartOfSpeechTagger::ForwardBackwardCpu(
+  float RecurrentNeuralNetworkPartOfSpeechTagger::ForwardBackwardCpu(
       const TaggedSentence &tagged_sentence) {
-    // std::cout << to_string(tagged_sentence) << std::endl;
     auto input = Blobs{};
     word_table.ForwardCpu(tagged_sentence.words, &input);
     input.insert(input.begin(), &recurrent_state_input);
-
-    // std::cout << "input.size " << input.size() << std::endl;
-    // for (auto i = 1; i < input.size(); ++i) {
-    //   std::cout << tagged_sentence.words.at(i - 1) << "_" << tagged_sentence.tags.at(i - 1) << std::endl;
-    //   std::cout << "known " << word_table.known(tagged_sentence.words.at(i - 1)) << std::endl;
-    //   std::cout << "known index " << word_table.known_index(tagged_sentence.words.at(i - 1)) << std::endl;
-    //   std::cout << "unknown " << word_table.unknown(tagged_sentence.words.at(i - 1)) << std::endl;
-    //   std::cout << "unknown index " << word_table.unknown_index(tagged_sentence.words.at(i - 1)) << std::endl;
-    //   std::cout << "input.at(i) " << input.at(i) << std::endl;
-    //   std::cout << "input.at(i).width " << input.at(i)->width << std::endl;
-    //   std::cout << "input.at(i).values.width " << input.at(i)->values.width << std::endl;
-    //   std::cout << "input.at(i).differences.width " << input.at(i)->differences.width << std::endl;
-    //   std::cout << "input.at(i).values.size " << input.at(i)->values.values.size() << std::endl;
-    //   std::cout << "input.at(i).differences.size " << input.at(i)->differences.values.size() << std::endl;
-    //   std::cout << "i " << i << std::endl;
-    //   std::cout << std::endl;
-    // }
 
     auto target = Blobs{};
     tag_table.ForwardCpu(tagged_sentence.tags, &target);
@@ -114,7 +96,7 @@ namespace autoencoder {
       loss_output.push_back(&loss);
     }
 
-    loss.ForwardCpu(Layer::Mode::kTrain, output_and_target, &loss_output);
+    auto result = loss.ForwardCpu(Layer::Mode::kTrain, output_and_target, &loss_output);
 
     for (auto &loss : losses) {
       loss.IsValid();
@@ -122,6 +104,8 @@ namespace autoencoder {
 
     loss.BackwardCpu(loss_output, &output_and_target);
     part_of_speech_sentence.BackwardCpu(output, &input);
+
+    return result;
   }
 
   void RecurrentNeuralNetworkPartOfSpeechTagger::Train(
@@ -146,15 +130,10 @@ namespace autoencoder {
       std::cout << "Done." << std::endl;
       std::cout << validation_report << std::endl<< std::endl;
       std::cout << "Starting iteration " << i << "... " << std::endl << std::endl;
-      // std::cout << classify_weights.values << std::endl;
-      // std::cout << classify_bias.values << std::endl;
-      // std::cout << combine_weights.values << std::endl;
-      // std::cout << combine_bias.values << std::endl;
       
       for (auto j = 0; j < tagged_sentences.size(); ++j) {
         ForwardBackwardCpu(tagged_sentences.at(j));
 
-        // recurrent_state_input.Update(learning_rate, momentum);
         classify_weights.Update(learning_rate, momentum);
         classify_bias.Update(learning_rate, momentum);
         combine_weights.Update(learning_rate, momentum);
@@ -162,7 +141,6 @@ namespace autoencoder {
 
         if (j > 0 && j % 100 == 0) {
           std::cout << "Finished " << j << " sentences." << std::endl;
-          // std::cout << to_string(tagged_sentences.at(j)) << std::endl;
         }
 
         if (j > 0 && j + 1 < tagged_sentences.size() && j % 1000 == 0) {

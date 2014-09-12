@@ -7,7 +7,7 @@ namespace autoencoder {
   InnerProductLayer::InnerProductLayer(Blob &weights, Blob &bias)
   : weights(weights), bias(bias) {}
 
-  void InnerProductLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float InnerProductLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     top->at(0)->IsValid();
     Saxpby(1.0f, bias.values, 0.0f, &top->at(0)->values);
     Sgemv(1.0f, weights.values, bottom.at(0)->values, 1.0f, &top->at(0)->values);
@@ -17,6 +17,7 @@ namespace autoencoder {
       std::cout << "top " << top->at(0)->values << std::endl;
     }
     top->at(0)->IsValid();
+    return 0.0f;
   }
 
   void InnerProductLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {

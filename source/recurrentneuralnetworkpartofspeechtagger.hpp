@@ -29,7 +29,7 @@ namespace autoencoder {
 
     void ForwardCpu(const std::vector<std::string> &sentence, std::vector<std::string> *tags);
 
-    void ForwardBackwardCpu(const TaggedSentence &tagged_sentence);
+    float ForwardBackwardCpu(const TaggedSentence &tagged_sentence);
 
     void Train(
         const std::vector<TaggedSentence> &tagged_sentences,

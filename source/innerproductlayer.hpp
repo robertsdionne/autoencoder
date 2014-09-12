@@ -12,7 +12,7 @@ namespace autoencoder {
 
     virtual ~InnerProductLayer() = default;
 
-    void ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
+    float ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
 
     void BackwardCpu(const Blobs &top, Blobs *bottom) override;
 

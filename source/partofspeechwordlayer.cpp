@@ -21,7 +21,7 @@ namespace autoencoder {
       combine(combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear() {}
 
-  void PartOfSpeechWordLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float PartOfSpeechWordLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
     // std::cout << "corrupted_recurrent.width " << corrupted_recurrent.width << std::endl;
     // std::cout << "corrupted_word.width " << corrupted_word.width << std::endl;
     auto dropout_output = Blobs{&corrupted_recurrent, &corrupted_word};
@@ -40,6 +40,7 @@ namespace autoencoder {
     rectified_linear.ForwardCpu(mode, combine_output, &rectified_linear_output);
     top->at(0)->IsValid();
     top->at(1)->IsValid();
+    return 0.0f;
   }
 
   void PartOfSpeechWordLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {

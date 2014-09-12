@@ -10,7 +10,7 @@ namespace autoencoder {
   public:
     virtual ~SoftmaxLayer() = default;
 
-    void ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
+    float ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
 
     void BackwardCpu(const Blobs &top, Blobs *bottom) override;
   };
