@@ -15,6 +15,7 @@ install:
   - if [ "$CXX" == "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
   - if [ "$CXX" == "clang++" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
   - if [ "$CXX" == "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
+  - if [ "$CXX" == "clang++" ]; then ls /usr/include/c++; fi
   - sudo apt-get install -qq cmake fglrx gfortran-4.8 opencl-headers
 script:
   - $CXX --version
