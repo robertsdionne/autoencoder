@@ -9,7 +9,7 @@ before_install:
 install:
   - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; export CXX="g++-4.8"; fi
   - if [ "$CSS" == "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
-  - if [ "$CSS" == "clang++" ]; then cd libcxx/lib && bash buildit; fi
+  - if [ "$CSS" == "clang++" ]; then cd libcxx/lib && bash buildit && ls; fi
   - sudo apt-get install -qq cmake fglrx gfortran-4.8 opencl-headers
 script:
   - $CXX --version
