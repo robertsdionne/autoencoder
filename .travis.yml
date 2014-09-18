@@ -11,7 +11,8 @@ install:
   - if [ "$CXX" == "clang++" ]; then sudo apt-get install -qq clang-3.4; fi
   - sudo apt-get install -qq cmake fglrx gfortran-4.8 opencl-headers
 script:
-  - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
-  - find . -name CMakeOutput.log
-  - cat CMakeFiles/CMakeOutput.log
-  - make -j8
+  - $CXX --version
+  # - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
+  # - find . -name CMakeOutput.log
+  # - cat CMakeFiles/CMakeOutput.log
+  # - make -j8
