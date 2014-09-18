@@ -20,6 +20,4 @@ install:
 script:
   - $CXX --version
   - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
-  - find . -name CMakeOutput.log
-  - cat CMakeFiles/CMakeOutput.log
   - make -j8
