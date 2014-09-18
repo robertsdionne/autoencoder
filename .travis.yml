@@ -19,7 +19,7 @@ install:
   - sudo apt-get install -qq cmake fglrx gfortran-4.8 opencl-headers
 script:
   - $CXX --version
-  # - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
-  # - find . -name CMakeOutput.log
-  # - cat CMakeFiles/CMakeOutput.log
-  # - make -j8
+  - cmake -DBUILD_CLIENT=OFF -DBUILD_KTEST=OFF -DBUILD_TEST=OFF .
+  - find . -name CMakeOutput.log
+  - cat CMakeFiles/CMakeOutput.log
+  - make -j8
