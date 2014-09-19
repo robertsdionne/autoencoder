@@ -89,8 +89,8 @@ TEST(ConcatenateLayerTest, TestGradient) {
       auto out = autoencoder::Blobs{&output};
       auto losses = autoencoder::Blob(10);
       auto target = autoencoder::Blob(10);
-      for (auto i = 0; i < target.width; ++i) {
-        target.value(i) = 1.0f;
+      for (auto j = 0; j < target.width; ++j) {
+        target.value(j) = 1.0f;
       }
       auto loss_in = autoencoder::Blobs{&output, &target};
       auto loss_out = autoencoder::Blobs{&losses};
