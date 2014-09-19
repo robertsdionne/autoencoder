@@ -8,7 +8,7 @@
 using namespace autoencoder;
 
 TEST(ValuesTest, TestConstruction) {
-  auto vector = Values(10);
+  auto vector = Values<float>(10);
   EXPECT_EQ(10, vector.width);
   for (auto i = 0; i < vector.width; ++i) {
     EXPECT_FLOAT_EQ(0.0f, vector.value(i));
@@ -16,7 +16,7 @@ TEST(ValuesTest, TestConstruction) {
 }
 
 TEST(ValuesTest, TestElementAccess) {
-  auto vector = Values(10);
+  auto vector = Values<float>(10);
   for (auto i = 0; i < vector.width; ++i) {
     vector.value(i) = i;
   }
@@ -26,7 +26,7 @@ TEST(ValuesTest, TestElementAccess) {
 }
 
 TEST(ValuesTest, TestElementAccessMultidimensional) {
-  auto vector = Values(4, 4);
+  auto vector = Values<float>(4, 4);
   for (auto i = 0; i < vector.width; ++i) {
     for (auto j = 0; j < vector.height; ++j) {
       vector.value(i, j) = (i < j ? -1.0f : 1.0f) * i * j;
@@ -41,6 +41,6 @@ TEST(ValuesTest, TestElementAccessMultidimensional) {
 
 TEST(ValuesTest, TestPrinting) {
   std::ostringstream out;
-  out << Values(5);
+  out << Values<float>(5);
   EXPECT_EQ("  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00\n", out.str());
 }

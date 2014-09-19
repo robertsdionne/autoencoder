@@ -144,7 +144,7 @@ namespace autoencoder {
     }
 
   public:
-    Values values, differences, velocities, accelerations;
+    Values<float> values, differences, velocities, accelerations;
     int width, height, depth, duration;
   };
 

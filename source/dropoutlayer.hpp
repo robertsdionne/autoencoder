@@ -20,7 +20,7 @@ namespace autoencoder {
     void BackwardCpu(const Blobs &top, Blobs *bottom) override;
 
   private:
-    std::vector<Values> mask;
+    std::vector<Values<float>> mask;
     float p, scale;
     std::mt19937 &generator;
     std::bernoulli_distribution bernoulli;

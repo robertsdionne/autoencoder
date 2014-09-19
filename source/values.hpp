@@ -11,6 +11,7 @@
 
 namespace autoencoder {
 
+  template <typename F>
   struct Values {
     Values(int width = 1, int height = 1, int depth = 1, int duration = 1)
     : width(width), height(height), depth(depth), duration(duration),
@@ -24,16 +25,16 @@ namespace autoencoder {
       return ((i * height + j) * depth + k) * duration + l;
     }
 
-    float value(int i, int j = 0, int k = 0, int l = 0) const {
+    F value(int i, int j = 0, int k = 0, int l = 0) const {
       return values.at(Offset(i, j, k, l));
     }
 
-    float &value(int i, int j = 0, int k = 0, int l = 0) {
+    F &value(int i, int j = 0, int k = 0, int l = 0) {
       return values.at(Offset(i, j, k, l));
     }
 
     inline int Argmax() const {
-      auto maximum = -std::numeric_limits<float>::infinity();
+      auto maximum = -std::numeric_limits<F>::infinity();
       auto argmax = 0;
       for (auto i = 0; i < width; ++i) {
         if (maximum < value(i)) {
@@ -80,11 +81,12 @@ namespace autoencoder {
     }
 
   public:
-    std::vector<float> values;
+    std::vector<F> values;
     int width, height, depth, duration;
   };
 
-  static std::ostream &operator <<(std::ostream &out, const Values &vector) {
+  template <typename F>
+  static std::ostream &operator <<(std::ostream &out, const Values<F> &vector) {
     auto precision = out.precision();
     auto width = out.width();
     out << std::scientific << std::setprecision(2);
