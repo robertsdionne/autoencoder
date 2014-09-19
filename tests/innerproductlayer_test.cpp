@@ -98,7 +98,8 @@ TEST(InnerProductLayerTest, TestGradient) {
   auto layer = InnerProductLayer(weights, bias);
   auto loss_layer = EuclideanLossLayer();
 
-  constexpr float kEpsilon = 1e-4;
+  constexpr float kEpsilon = 1e-2;
+  constexpr float kTolerance = 3e-3;
 
   for (auto i = 0; i < input.width; ++i) {
     auto output = Blob(3);
@@ -133,7 +134,7 @@ TEST(InnerProductLayerTest, TestGradient) {
     auto expected_partial_error_with_respect_to_input_i = (loss_1 - loss_0) / (2.0f * kEpsilon);
 
     EXPECT_NEAR(expected_partial_error_with_respect_to_input_i,
-      actual_partial_error_with_respect_to_input_i, 4e-1);
+      actual_partial_error_with_respect_to_input_i, kTolerance);
   }
 
   for (auto i = 0; i < weights.height; ++i) {
@@ -172,7 +173,7 @@ TEST(InnerProductLayerTest, TestGradient) {
       auto expected_partial_error_with_respect_to_weight_ij = (loss_1 - loss_0) / (2.0f * kEpsilon);
 
       EXPECT_NEAR(expected_partial_error_with_respect_to_weight_ij,
-        actual_partial_error_with_respect_to_weight_ij, 3e-1);
+        actual_partial_error_with_respect_to_weight_ij, kTolerance);
     }
   }
 
@@ -209,6 +210,6 @@ TEST(InnerProductLayerTest, TestGradient) {
     auto expected_partial_error_with_respect_to_bias_i = (loss_1 - loss_0) / (2.0f * kEpsilon);
 
     EXPECT_NEAR(expected_partial_error_with_respect_to_bias_i,
-      actual_partial_error_with_respect_to_bias_i, 3e-1);
+      actual_partial_error_with_respect_to_bias_i, kTolerance);
   }
 }

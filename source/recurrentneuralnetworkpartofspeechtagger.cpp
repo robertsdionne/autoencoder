@@ -134,10 +134,19 @@ namespace autoencoder {
       for (auto j = 0; j < tagged_sentences.size(); ++j) {
         ForwardBackwardCpu(tagged_sentences.at(j));
 
-        classify_weights.Update(learning_rate, momentum);
-        classify_bias.Update(learning_rate, momentum);
-        combine_weights.Update(learning_rate, momentum);
-        combine_bias.Update(learning_rate, momentum);
+        auto square_magnitude =
+            classify_weights.SquareMagnitude() + classify_weights.SquareMagnitude()
+            + combine_weights.SquareMagnitude() + combine_bias.SquareMagnitude();
+
+        classify_weights.ClipGradient(square_magnitude);
+        classify_bias.ClipGradient(square_magnitude);
+        combine_weights.ClipGradient(square_magnitude);
+        combine_bias.ClipGradient(square_magnitude);
+
+        classify_weights.UpdateAdaDelta(learning_rate, 0.5);
+        classify_bias.UpdateAdaDelta(learning_rate, 0.5);
+        combine_weights.UpdateAdaDelta(learning_rate, 0.5);
+        combine_bias.UpdateAdaDelta(learning_rate, 0.5);
 
         if (j > 0 && j % 100 == 0) {
           std::cout << "Finished " << j << " sentences." << std::endl;
