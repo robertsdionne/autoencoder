@@ -5,16 +5,18 @@
 #include "dropoutlayer.hpp"
 #include "euclideanlosslayer.hpp"
 
+using namespace autoencoder;
+
 TEST(DropoutLayerTest, TestForwardCpu) {
-  auto input = autoencoder::Blob(10);
+  auto input = Blob(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
   auto generator = std::mt19937(123);
-  auto layer = autoencoder::DropoutLayer(0.5f, generator);
-  auto output = autoencoder::Blob(10);
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input}, &out);
+  auto layer = DropoutLayer(0.5f, generator);
+  auto output = Blob(10);
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, {&input}, &out);
 
   // TODO(robertsdionne): remove dependency upon random number generator code with a mock.
   EXPECT_FLOAT_EQ(0.0f, output.value(0));
@@ -30,16 +32,16 @@ TEST(DropoutLayerTest, TestForwardCpu) {
 }
 
 TEST(DropoutLayerTest, TestBackwardCpu) {
-  auto input = autoencoder::Blob(10);
+  auto input = Blob(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
   auto generator = std::mt19937(123);
-  auto layer = autoencoder::DropoutLayer(0.5f, generator);
-  auto output = autoencoder::Blob(10);
-  auto in = autoencoder::Blobs{&input};
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
+  auto layer = DropoutLayer(0.5f, generator);
+  auto output = Blob(10);
+  auto in = Blobs{&input};
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }
@@ -59,31 +61,31 @@ TEST(DropoutLayerTest, TestBackwardCpu) {
 }
 
 TEST(DropoutLayerTest, TestGradient) {
-  auto input = autoencoder::Blob(10);
+  auto input = Blob(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
   auto generator = std::mt19937(123);
-  auto layer = autoencoder::DropoutLayer(0.5f, generator);
-  auto loss_layer = autoencoder::EuclideanLossLayer();
-  auto in = autoencoder::Blobs{&input};
+  auto layer = DropoutLayer(0.5f, generator);
+  auto loss_layer = EuclideanLossLayer();
+  auto in = Blobs{&input};
 
   constexpr float kEpsilon = 1e-4;
 
   for (auto i = 0; i < input.width; ++i) {
-    auto output = autoencoder::Blob(10);
-    auto out = autoencoder::Blobs{&output};
-    auto losses = autoencoder::Blob(10);
-    auto target = autoencoder::Blob(10);
+    auto output = Blob(10);
+    auto out = Blobs{&output};
+    auto losses = Blob(10);
+    auto target = Blob(10);
     for (auto j = 0; j < target.width; ++j) {
       target.value(j) = 1.0;
     }
-    auto loss_in = autoencoder::Blobs{&output, &target};
-    auto loss_out = autoencoder::Blobs{&losses};
+    auto loss_in = Blobs{&output, &target};
+    auto loss_out = Blobs{&losses};
 
     generator.seed(123);
-    layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
-    loss_layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+    loss_layer.ForwardCpu(Layer::Mode::kTrain, loss_in, &loss_out);
     loss_layer.BackwardCpu(loss_out, &loss_in);
     layer.Backward(out, &in);
 
@@ -93,13 +95,13 @@ TEST(DropoutLayerTest, TestGradient) {
 
     input.value(i) = original_input_i + kEpsilon;
     generator.seed(123);
-    layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
-    auto loss_1 = loss_layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+    auto loss_1 = loss_layer.ForwardCpu(Layer::Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i - kEpsilon;
     generator.seed(123);
-    layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
-    auto loss_0 = loss_layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, loss_in, &loss_out);    
+    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+    auto loss_0 = loss_layer.ForwardCpu(Layer::Mode::kTrain, loss_in, &loss_out);    
 
     input.value(i) = original_input_i;
 

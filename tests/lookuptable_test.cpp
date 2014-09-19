@@ -4,18 +4,20 @@
 #include "blob.hpp"
 #include "lookuptable.hpp"
 
+using namespace autoencoder;
+
 TEST(LookupTableTest, TestForwardCpu) {
   auto words = std::vector<std::string>{"one", "two", "three", "four", "five"};
-  auto vectors = std::vector<autoencoder::Blob>(5, autoencoder::Blob(10));
+  auto vectors = std::vector<Blob>(5, Blob(10));
   for (auto i = 0; i < vectors.size(); ++i) {
     for (auto j = 0; j < vectors.at(0).width; ++j) {
       vectors.at(i).value(j) = i + 1;
     }
   }
   auto generator = std::mt19937(123);
-  auto table = autoencoder::LookupTable(generator, words, vectors);
+  auto table = LookupTable(generator, words, vectors);
   auto input = std::vector<std::string>{"one", "three", "five"};
-  auto output = autoencoder::Blobs{};
+  auto output = Blobs{};
   table.ForwardCpu(input, &output);
 
   EXPECT_EQ(3, output.size());

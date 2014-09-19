@@ -3,22 +3,24 @@
 #include "matrixmath.hpp"
 #include "values.hpp"
 
+using namespace autoencoder;
+
 TEST(MatrixMathTest, TestSgemm) {
   constexpr auto kM = 3, kK = 4, kN = 5;
-  auto A = autoencoder::Values(kK, kM);
+  auto A = Values(kK, kM);
   for (auto i = 0; i < A.height; ++i) {
     for (auto j = 0; j < A.width; ++j) {
       A.value(j, i) = i + j;
     }
   }
-  auto B = autoencoder::Values(kN, kK);
+  auto B = Values(kN, kK);
   for (auto i = 0; i < B.height; ++i) {
     for (auto j = 0; j < B.width; ++j) {
       B.value(j, i) = i + j;
     }
   }
-  auto C = autoencoder::Values(kN, kM);
-  autoencoder::Sgemm(1.0f, A, B, 0.0f, &C);
+  auto C = Values(kN, kM);
+  Sgemm(1.0f, A, B, 0.0f, &C);
 
   EXPECT_FLOAT_EQ(14.0f, C.value(0, 0));
   EXPECT_FLOAT_EQ(20.0f, C.value(0, 1));

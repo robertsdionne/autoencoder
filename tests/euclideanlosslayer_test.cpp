@@ -3,16 +3,18 @@
 #include "blob.hpp"
 #include "euclideanlosslayer.hpp"
 
+using namespace autoencoder;
+
 TEST(EuclideanLossLayerTest, TestForwardCpu) {
-  auto input = autoencoder::Blob(10);
-  auto target = autoencoder::Blob(10);
+  auto input = Blob(10);
+  auto target = Blob(10);
   for (auto i = 0; i < target.width; ++i) {
     target.value(i) = 1.0f;
   }
-  auto layer = autoencoder::EuclideanLossLayer();
-  auto output = autoencoder::Blob(10);
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input, &target}, &out);
+  auto layer = EuclideanLossLayer();
+  auto output = Blob(10);
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, {&input, &target}, &out);
 
   for (auto i = 0; i < output.width; ++i) {
     EXPECT_FLOAT_EQ(0.5f, output.value(i));
@@ -21,16 +23,16 @@ TEST(EuclideanLossLayerTest, TestForwardCpu) {
 }
 
 TEST(EuclideanLossLayerTest, TestBackwardCpu) {
-  auto input = autoencoder::Blob(10);
-  auto target = autoencoder::Blob(10);
+  auto input = Blob(10);
+  auto target = Blob(10);
   for (auto i = 0; i < target.width; ++i) {
     target.value(i) = 1.0f;
   }
-  auto layer = autoencoder::EuclideanLossLayer();
-  auto output = autoencoder::Blob(10);
-  auto in = autoencoder::Blobs{&input, &target};
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
+  auto layer = EuclideanLossLayer();
+  auto output = Blob(10);
+  auto in = Blobs{&input, &target};
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
   layer.BackwardCpu(out, &in);
 
   for (auto i = 0; i < input.width; ++i) {

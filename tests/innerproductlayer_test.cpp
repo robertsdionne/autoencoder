@@ -3,25 +3,27 @@
 #include "blob.hpp"
 #include "innerproductlayer.hpp"
 
+using namespace autoencoder;
+
 TEST(InnerProductLayerTest, TestForwardCpu) {
-  auto input = autoencoder::Blob(4);
+  auto input = Blob(4);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
-  auto weights = autoencoder::Blob(4, 3);
+  auto weights = Blob(4, 3);
   for (auto i = 0; i < weights.height; ++i) {
     for (auto j = 0; j < weights.width; ++j) {
       weights.value(j, i) = i + j;
     }
   }
-  auto bias = autoencoder::Blob(3);
+  auto bias = Blob(3);
   for (auto i = 0; i < bias.width; ++i) {
     bias.value(i) = i;
   }
-  auto layer = autoencoder::InnerProductLayer(weights, bias);
-  auto output = autoencoder::Blob(3);
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input}, &out);
+  auto layer = InnerProductLayer(weights, bias);
+  auto output = Blob(3);
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, {&input}, &out);
 
   EXPECT_FLOAT_EQ(14.0f, output.value(0));
   EXPECT_FLOAT_EQ(21.0f, output.value(1));
@@ -29,25 +31,25 @@ TEST(InnerProductLayerTest, TestForwardCpu) {
 }
 
 TEST(InnerProductLayerTest, TestBackwardCpu) {
-  auto input = autoencoder::Blob(4);
+  auto input = Blob(4);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
-  auto weights = autoencoder::Blob(4, 3);
+  auto weights = Blob(4, 3);
   for (auto i = 0; i < weights.height; ++i) {
     for (auto j = 0; j < weights.width; ++j) {
       weights.value(j, i) = i + j;
     }
   }
-  auto bias = autoencoder::Blob(3);
+  auto bias = Blob(3);
   for (auto i = 0; i < bias.width; ++i) {
     bias.value(i) = i;
   }
-  auto layer = autoencoder::InnerProductLayer(weights, bias);
-  auto output = autoencoder::Blob(3);
-  auto in = autoencoder::Blobs{&input};
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
+  auto layer = InnerProductLayer(weights, bias);
+  auto output = Blob(3);
+  auto in = Blobs{&input};
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }

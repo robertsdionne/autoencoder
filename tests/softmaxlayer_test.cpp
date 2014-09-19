@@ -5,15 +5,17 @@
 #include "euclideanlosslayer.hpp"
 #include "softmaxlayer.hpp"
 
+using namespace autoencoder;
+
 TEST(SoftmaxLayerTest, TestForwardCpu) {
-  auto input = autoencoder::Blob(8);
+  auto input = Blob(8);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
-  auto layer = autoencoder::SoftmaxLayer();
-  auto output = autoencoder::Blob(8);
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, {&input}, &out);
+  auto layer = SoftmaxLayer();
+  auto output = Blob(8);
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, {&input}, &out);
 
   EXPECT_FLOAT_EQ(0.00057668809f, output.value(0));
   EXPECT_FLOAT_EQ(0.0015674712f, output.value(1));
@@ -32,15 +34,15 @@ TEST(SoftmaxLayerTest, TestForwardCpu) {
 }
 
 TEST(SoftmaxLayerTest, TestBackwardCpu) {
-  auto input = autoencoder::Blob(8);
+  auto input = Blob(8);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
-  auto layer = autoencoder::SoftmaxLayer();
-  auto output = autoencoder::Blob(8);
-  auto in = autoencoder::Blobs{&input};
-  auto out = autoencoder::Blobs{&output};
-  layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
+  auto layer = SoftmaxLayer();
+  auto output = Blob(8);
+  auto in = Blobs{&input};
+  auto out = Blobs{&output};
+  layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = (i == 2);
   }
@@ -57,29 +59,29 @@ TEST(SoftmaxLayerTest, TestBackwardCpu) {
 }
 
 TEST(SoftmaxLayerTest, TestGradient) {
-  auto input = autoencoder::Blob(8);
+  auto input = Blob(8);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
-  auto in = autoencoder::Blobs{&input};
-  auto layer = autoencoder::SoftmaxLayer();
-  auto loss_layer = autoencoder::EuclideanLossLayer();
+  auto in = Blobs{&input};
+  auto layer = SoftmaxLayer();
+  auto loss_layer = EuclideanLossLayer();
 
   constexpr float kEpsilon = 1e-4;
 
   for (auto i = 0; i < input.width; ++i) {
-    auto output = autoencoder::Blob(8);
-    auto out = autoencoder::Blobs{&output};
-    auto losses = autoencoder::Blob(8);
-    auto target = autoencoder::Blob(8);
+    auto output = Blob(8);
+    auto out = Blobs{&output};
+    auto losses = Blob(8);
+    auto target = Blob(8);
     for (auto j = 0; j < input.width; ++j) {
       input.difference(j) = 0.0;
     }
-    auto loss_in = autoencoder::Blobs{&output, &target};
-    auto loss_out = autoencoder::Blobs{&losses};
+    auto loss_in = Blobs{&output, &target};
+    auto loss_out = Blobs{&losses};
 
-    layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
-    loss_layer.Forward(autoencoder::Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+    loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
     layer.BackwardCpu(out, &in);
 
@@ -88,12 +90,12 @@ TEST(SoftmaxLayerTest, TestGradient) {
     auto original_input_i = input.value(i);
 
     input.value(i) = original_input_i + kEpsilon;
-    layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
-    auto loss_1 = loss_layer.Forward(autoencoder::Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+    auto loss_1 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i - kEpsilon;
-    layer.ForwardCpu(autoencoder::Layer::Mode::kTrain, in, &out);
-    auto loss_0 = loss_layer.Forward(autoencoder::Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+    auto loss_0 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i;
 

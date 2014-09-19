@@ -2,10 +2,12 @@
 
 #include "dataloader.hpp"
 
+using namespace autoencoder;
+
 TEST(DataLoaderTest, TestLoadData) {
-  auto data_loader = autoencoder::DataLoader();
+  auto data_loader = DataLoader();
   auto tagged_sentences = data_loader.ReadTaggedSentences(
-      autoencoder::FLAGS_validation_in_domain_filename);
+      FLAGS_validation_in_domain_filename);
 
   EXPECT_EQ(1700, tagged_sentences.size());
 
@@ -15,18 +17,18 @@ TEST(DataLoaderTest, TestLoadData) {
       "new_JJ savings_NNS -_HYPH and_CC -_HYPH loan_NN bailout_NN agency_NN can_MD raise_VB "
       "capital_NN ,_, creating_VBG another_DT potential_JJ obstacle_NN to_IN the_DT government_NN "
       "\'s_POS sale_NN of_IN sick_JJ thrifts_NNS ._.",
-      autoencoder::to_string(tagged_sentences.at(0)));
+      to_string(tagged_sentences.at(0)));
   EXPECT_EQ(
       "that_DT debt_NN would_MD be_VB paid_VBN off_RP as_IN the_DT assets_NNS are_VBP sold_VBN ,_, "
       "leaving_VBG the_DT total_JJ spending_NN for_IN the_DT bailout_NN at_IN $_$ 0_CD billion_CD "
       ",_, or_CC $_$ 0_CD billion_CD including_VBG interest_NN over_IN 0_CD years_NNS ._.",
-      autoencoder::to_string(tagged_sentences.at(8)));
+      to_string(tagged_sentences.at(8)));
 
   auto tags = data_loader.FindTags({
-    autoencoder::FLAGS_test_filename,
-    autoencoder::FLAGS_training_filename,
-    autoencoder::FLAGS_validation_in_domain_filename,
-    autoencoder::FLAGS_validation_out_of_domain_filename,
+    FLAGS_test_filename,
+    FLAGS_training_filename,
+    FLAGS_validation_in_domain_filename,
+    FLAGS_validation_out_of_domain_filename,
   });
 
   EXPECT_EQ(47, tags.size());
@@ -37,7 +39,7 @@ TEST(DataLoaderTest, TestLoadData) {
 }
 
 TEST(DataLoaderTest, TestTokenizeNumbers) {
-  auto data_loader = autoencoder::DataLoader();
+  auto data_loader = DataLoader();
   EXPECT_EQ(
       "0/0/0", data_loader.TokenizeNumbers("+123.456,999.123/-123.123,999,123/+333.9999,888"));
   EXPECT_EQ("0", data_loader.TokenizeNumbers("50,000"));
