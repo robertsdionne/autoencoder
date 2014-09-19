@@ -14,23 +14,23 @@ namespace autoencoder {
 
     virtual ~Layer() = default;
 
-    inline float Forward(Mode mode, const Blobs &bottom, Blobs *top) {
+    inline float Forward(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
       return ForwardCpu(mode, bottom, top);
     }
 
-    inline void Backward(const Blobs &top, Blobs *bottom) {
+    inline void Backward(const Blobs<float> &top, Blobs<float> *bottom) {
       BackwardCpu(top, bottom);
     }
 
-    virtual float ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) = 0;
+    virtual float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) = 0;
 
-    virtual float ForwardGpu(Mode mode, const Blobs &bottom, Blobs *top) {
+    virtual float ForwardGpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
       return ForwardCpu(mode, bottom, top);
     }
 
-    virtual void BackwardCpu(const Blobs &top, Blobs *bottom) = 0;
+    virtual void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) = 0;
 
-    virtual void BackwardGpu(const Blobs &top, Blobs *bottom) {
+    virtual void BackwardGpu(const Blobs<float> &top, Blobs<float> *bottom) {
       BackwardCpu(top, bottom);
     }
   };

@@ -8,7 +8,7 @@ using namespace autoencoder;
 
 TEST(LookupTableTest, TestForwardCpu) {
   auto words = std::vector<std::string>{"one", "two", "three", "four", "five"};
-  auto vectors = std::vector<Blob>(5, Blob(10));
+  auto vectors = std::vector<Blob<float>>(5, Blob<float>(10));
   for (auto i = 0; i < vectors.size(); ++i) {
     for (auto j = 0; j < vectors.at(0).width; ++j) {
       vectors.at(i).value(j) = i + 1;
@@ -17,7 +17,7 @@ TEST(LookupTableTest, TestForwardCpu) {
   auto generator = std::mt19937(123);
   auto table = LookupTable(generator, words, vectors);
   auto input = std::vector<std::string>{"one", "three", "five"};
-  auto output = Blobs{};
+  auto output = Blobs<float>{};
   table.ForwardCpu(input, &output);
 
   EXPECT_EQ(3, output.size());

@@ -8,14 +8,14 @@
 using namespace autoencoder;
 
 TEST(DropoutLayerTest, TestForwardCpu) {
-  auto input = Blob(10);
+  auto input = Blob<float>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
   auto generator = std::mt19937(123);
   auto layer = DropoutLayer(0.5f, generator);
-  auto output = Blob(10);
-  auto out = Blobs{&output};
+  auto output = Blob<float>(10);
+  auto out = Blobs<float>{&output};
   layer.ForwardCpu(Layer::Mode::kTrain, {&input}, &out);
 
   // TODO(robertsdionne): remove dependency upon random number generator code with a mock.
@@ -32,15 +32,15 @@ TEST(DropoutLayerTest, TestForwardCpu) {
 }
 
 TEST(DropoutLayerTest, TestBackwardCpu) {
-  auto input = Blob(10);
+  auto input = Blob<float>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
   auto generator = std::mt19937(123);
   auto layer = DropoutLayer(0.5f, generator);
-  auto output = Blob(10);
-  auto in = Blobs{&input};
-  auto out = Blobs{&output};
+  auto output = Blob<float>(10);
+  auto in = Blobs<float>{&input};
+  auto out = Blobs<float>{&output};
   layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
@@ -61,27 +61,27 @@ TEST(DropoutLayerTest, TestBackwardCpu) {
 }
 
 TEST(DropoutLayerTest, TestGradient) {
-  auto input = Blob(10);
+  auto input = Blob<float>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 1.0f;
   }
   auto generator = std::mt19937(123);
   auto layer = DropoutLayer(0.5f, generator);
   auto loss_layer = EuclideanLossLayer();
-  auto in = Blobs{&input};
+  auto in = Blobs<float>{&input};
 
   constexpr float kEpsilon = 1e-4;
 
   for (auto i = 0; i < input.width; ++i) {
-    auto output = Blob(10);
-    auto out = Blobs{&output};
-    auto losses = Blob(10);
-    auto target = Blob(10);
+    auto output = Blob<float>(10);
+    auto out = Blobs<float>{&output};
+    auto losses = Blob<float>(10);
+    auto target = Blob<float>(10);
     for (auto j = 0; j < target.width; ++j) {
       target.value(j) = 1.0;
     }
-    auto loss_in = Blobs{&output, &target};
-    auto loss_out = Blobs{&losses};
+    auto loss_in = Blobs<float>{&output, &target};
+    auto loss_out = Blobs<float>{&losses};
 
     generator.seed(123);
     layer.ForwardCpu(Layer::Mode::kTrain, in, &out);

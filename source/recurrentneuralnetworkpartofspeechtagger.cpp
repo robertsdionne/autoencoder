@@ -12,7 +12,7 @@
 namespace autoencoder {
 
   template<typename Distribution, typename Generator>
-  void InitializeBlob(Distribution &distribution, Generator &generator, autoencoder::Blob *blob) {
+  void InitializeBlob(Distribution &distribution, Generator &generator, Blob<float> *blob) {
     for (auto i = 0; i < blob->height; ++i) {
       for (auto j = 0; j < blob->width; ++j) {
         blob->value(j, i) = distribution(generator);
@@ -44,12 +44,12 @@ namespace autoencoder {
 
   void RecurrentNeuralNetworkPartOfSpeechTagger::ForwardCpu(
       const std::vector<std::string> &sentence, std::vector<std::string> *tags) {
-    auto input = Blobs{};
+    auto input = Blobs<float>{};
     word_table.ForwardCpu(sentence, &input);
     input.insert(input.begin(), &recurrent_state_input);
 
-    auto guessed_tags = std::vector<Blob>(sentence.size(), Blob(tag_dimension));
-    auto output = Blobs{};
+    auto guessed_tags = std::vector<Blob<float>>(sentence.size(), Blob<float>(tag_dimension));
+    auto output = Blobs<float>{};
     for (auto &guessed_tag : guessed_tags) {
       output.push_back(&guessed_tag);
     }
@@ -68,15 +68,15 @@ namespace autoencoder {
 
   float RecurrentNeuralNetworkPartOfSpeechTagger::ForwardBackwardCpu(
       const TaggedSentence &tagged_sentence) {
-    auto input = Blobs{};
+    auto input = Blobs<float>{};
     word_table.ForwardCpu(tagged_sentence.words, &input);
     input.insert(input.begin(), &recurrent_state_input);
 
-    auto target = Blobs{};
+    auto target = Blobs<float>{};
     tag_table.ForwardCpu(tagged_sentence.tags, &target);
 
-    auto guessed_tags = std::vector<Blob>(tagged_sentence.size(), Blob(tag_dimension));
-    auto output = Blobs{};
+    auto guessed_tags = std::vector<Blob<float>>(tagged_sentence.size(), Blob<float>(tag_dimension));
+    auto output = Blobs<float>{};
     for (auto &guessed_tag : guessed_tags) {
       output.push_back(&guessed_tag);
     }
@@ -84,14 +84,14 @@ namespace autoencoder {
 
     part_of_speech_sentence.ForwardCpu(Layer::Mode::kTrain, input, &output);
 
-    auto output_and_target = Blobs{};
+    auto output_and_target = Blobs<float>{};
     for (auto i = 0; i < target.size(); ++i) {
       output_and_target.push_back(output.at(i));
       output_and_target.push_back(target.at(i));
     }
 
-    auto losses = std::vector<Blob>(tagged_sentence.size(), Blob(tag_dimension));
-    auto loss_output = Blobs{};
+    auto losses = std::vector<Blob<float>>(tagged_sentence.size(), Blob<float>(tag_dimension));
+    auto loss_output = Blobs<float>{};
     for (auto &loss : losses) {
       loss_output.push_back(&loss);
     }

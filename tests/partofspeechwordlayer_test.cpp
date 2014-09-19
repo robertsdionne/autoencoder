@@ -10,7 +10,7 @@ using namespace autoencoder;
 constexpr auto kRandomSeed = 123;
 
 template<typename Distribution, typename Generator>
-void InitializeBlob(Distribution &distribution, Generator &generator, Blob *blob) {
+void InitializeBlob(Distribution &distribution, Generator &generator, Blob<float> *blob) {
   for (auto i = 0; i < blob->height; ++i) {
     for (auto j = 0; j < blob->width; ++j) {
       blob->value(j, i) = distribution(generator);
@@ -23,12 +23,12 @@ TEST(PartOfSpeechWordLayerTest, TestForwardCpu) {
   std::uniform_real_distribution<float> uniform;
   std::uniform_real_distribution<float> uniform_symmetric(-1.0f, 1.0f);
 
-  auto recurrent_input = Blob(10);
-  auto word_input = Blob(10);
-  auto classify_weights = Blob(10, 5);
-  auto classify_bias = Blob(5);
-  auto combine_weights = Blob(20, 10);
-  auto combine_bias = Blob(10);
+  auto recurrent_input = Blob<float>(10);
+  auto word_input = Blob<float>(10);
+  auto classify_weights = Blob<float>(10, 5);
+  auto classify_bias = Blob<float>(5);
+  auto combine_weights = Blob<float>(20, 10);
+  auto combine_bias = Blob<float>(10);
 
   InitializeBlob(uniform_symmetric, generator, &recurrent_input);
   InitializeBlob(uniform_symmetric, generator, &word_input);
@@ -39,9 +39,9 @@ TEST(PartOfSpeechWordLayerTest, TestForwardCpu) {
 
   auto layer = PartOfSpeechWordLayer(
       0.5f, classify_weights, classify_bias, combine_weights, combine_bias, generator);
-  auto tag_output = Blob(5);
-  auto recurrent_output = Blob(10);
-  auto out = Blobs{&tag_output, &recurrent_output};
+  auto tag_output = Blob<float>(5);
+  auto recurrent_output = Blob<float>(10);
+  auto out = Blobs<float>{&tag_output, &recurrent_output};
   layer.ForwardCpu(Layer::Mode::kTrain, {&recurrent_input, &word_input}, &out);
 
   auto sum = 0.0f;
@@ -74,12 +74,12 @@ TEST(PartOfSpeechWordLayerTest, TestBackwardCpu) {
   std::uniform_real_distribution<float> uniform;
   std::uniform_real_distribution<float> uniform_symmetric(-1.0f, 1.0f);
 
-  auto recurrent_input = Blob(10);
-  auto word_input = Blob(10);
-  auto classify_weights = Blob(10, 5);
-  auto classify_bias = Blob(5);
-  auto combine_weights = Blob(20, 10);
-  auto combine_bias = Blob(10);
+  auto recurrent_input = Blob<float>(10);
+  auto word_input = Blob<float>(10);
+  auto classify_weights = Blob<float>(10, 5);
+  auto classify_bias = Blob<float>(5);
+  auto combine_weights = Blob<float>(20, 10);
+  auto combine_bias = Blob<float>(10);
 
   InitializeBlob(uniform_symmetric, generator, &recurrent_input);
   InitializeBlob(uniform_symmetric, generator, &word_input);
@@ -90,10 +90,10 @@ TEST(PartOfSpeechWordLayerTest, TestBackwardCpu) {
 
   auto layer = PartOfSpeechWordLayer(
       0.5f, classify_weights, classify_bias, combine_weights, combine_bias, generator);
-  auto tag_output = Blob(5);
-  auto recurrent_output = Blob(10);
-  auto in = Blobs{&recurrent_input, &word_input};
-  auto out = Blobs{&tag_output, &recurrent_output};
+  auto tag_output = Blob<float>(5);
+  auto recurrent_output = Blob<float>(10);
+  auto in = Blobs<float>{&recurrent_input, &word_input};
+  auto out = Blobs<float>{&tag_output, &recurrent_output};
   layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < tag_output.width; ++i) {
     tag_output.difference(i) = i == 2;
@@ -401,12 +401,12 @@ TEST(PartOfSpeechWordLayerTest, TestGradient) {
   std::uniform_real_distribution<float> uniform;
   std::uniform_real_distribution<float> uniform_symmetric(-1.0f, 1.0f);
 
-  auto recurrent_input = Blob(10);
-  auto word_input = Blob(10);
-  auto classify_weights = Blob(10, 5);
-  auto classify_bias = Blob(5);
-  auto combine_weights = Blob(20, 10);
-  auto combine_bias = Blob(10);
+  auto recurrent_input = Blob<float>(10);
+  auto word_input = Blob<float>(10);
+  auto classify_weights = Blob<float>(10, 5);
+  auto classify_bias = Blob<float>(5);
+  auto combine_weights = Blob<float>(20, 10);
+  auto combine_bias = Blob<float>(10);
 
   InitializeBlob(uniform_symmetric, generator, &recurrent_input);
   InitializeBlob(uniform_symmetric, generator, &word_input);
@@ -418,25 +418,25 @@ TEST(PartOfSpeechWordLayerTest, TestGradient) {
   auto layer = PartOfSpeechWordLayer(
       0.5f, classify_weights, classify_bias, combine_weights, combine_bias, generator);
   auto loss_layer = EuclideanLossLayer();
-  auto tag_output = Blob(5);
-  auto recurrent_output = Blob(10);
-  auto in = Blobs{&recurrent_input, &word_input};
-  auto out = Blobs{&tag_output, &recurrent_output};
+  auto tag_output = Blob<float>(5);
+  auto recurrent_output = Blob<float>(10);
+  auto in = Blobs<float>{&recurrent_input, &word_input};
+  auto out = Blobs<float>{&tag_output, &recurrent_output};
 
   constexpr float kEpsilon = 1e-1;
   constexpr float kTolerance = 2.1e-1;
 
   for (auto i = 0; i < recurrent_input.width; ++i) {
-    auto tag_output = Blob(5);
-    auto recurrent_output = Blob(10);
-    auto out = Blobs{&tag_output, &recurrent_output};
-    auto losses = Blob(5);
-    auto target = Blob(5);
+    auto tag_output = Blob<float>(5);
+    auto recurrent_output = Blob<float>(10);
+    auto out = Blobs<float>{&tag_output, &recurrent_output};
+    auto losses = Blob<float>(5);
+    auto target = Blob<float>(5);
     for (auto j = 0; j < recurrent_input.width; ++j) {
       recurrent_input.difference(j) = 0.0;
     }
-    auto loss_in = Blobs{&tag_output, &target};
-    auto loss_out = Blobs{&losses};
+    auto loss_in = Blobs<float>{&tag_output, &target};
+    auto loss_out = Blobs<float>{&losses};
 
     layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
     loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);

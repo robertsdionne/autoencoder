@@ -22,7 +22,7 @@ namespace autoencoder {
     LookupTable(std::mt19937 &generator);
 
     LookupTable(std::mt19937 &generator,
-        const std::vector<std::string> &tokens, const std::vector<Blob> &vectors);
+        const std::vector<std::string> &tokens, const std::vector<Blob<float>> &vectors);
 
     virtual ~LookupTable() = default;
 
@@ -50,7 +50,7 @@ namespace autoencoder {
       }
     }
 
-    void ForwardCpu(const std::vector<std::string> &tokens, Blobs *top);
+    void ForwardCpu(const std::vector<std::string> &tokens, Blobs<float> *top);
 
     std::string LookupToken(int index);
 
@@ -62,7 +62,7 @@ namespace autoencoder {
     std::mt19937 &generator;
     std::uniform_real_distribution<float> uniform;
     std::unordered_map<std::string, int> token_indices, unknown_token_indices;
-    std::vector<Blob> vectors, unknown_vectors;
+    std::vector<Blob<float>> vectors, unknown_vectors;
     std::unordered_map<int, std::string> index_tokens, unknown_index_tokens;
   };
 

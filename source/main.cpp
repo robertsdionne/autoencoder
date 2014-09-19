@@ -10,6 +10,8 @@
 #include "recurrentneuralnetworkpartofspeechtagger.hpp"
 #include "evaluator.hpp"
 
+using namespace autoencoder;
+
 namespace autoencoder {
 
   DEFINE_double(dropout_probability, 0.5f, "the probability of masking out an input for dropout");
@@ -32,62 +34,62 @@ int main(int argument_count, char *arguments[]) {
   gflags::SetUsageMessage("Part-of-speech tagger implemented with a recurrent neural network.");
   gflags::ParseCommandLineFlags(&argument_count, &arguments, true);
 
-  auto data_loader = autoencoder::DataLoader();
+  auto data_loader = DataLoader();
 
   std::cout << "Loading test sentences... ";
   std::cout.flush();
   auto test_sentences = data_loader.ReadTaggedSentences(
-      autoencoder::FLAGS_test_filename, autoencoder::FLAGS_test_sentences);
+      FLAGS_test_filename, FLAGS_test_sentences);
   std::cout << "Done." << std::endl;
 
   std::cout << "Loading training sentences and vocabulary... ";
   std::cout.flush();
   auto training_sentences = data_loader.ReadTaggedSentences(
-      autoencoder::FLAGS_training_filename, autoencoder::FLAGS_training_sentences);
+      FLAGS_training_filename, FLAGS_training_sentences);
   auto training_vocabulary = data_loader.FindVocabulary(training_sentences);
   std::cout << "Done." << std::endl;
 
   std::cout << "Loading in-domain validation sentences... ";
   std::cout.flush();
   auto validation_in_domain_sentences = data_loader.ReadTaggedSentences(
-      autoencoder::FLAGS_validation_in_domain_filename);
+      FLAGS_validation_in_domain_filename);
   std::cout << "Done." << std::endl;
 
   std::cout << "Loading out-of-domain validation sentences... ";
   std::cout.flush();
   auto validation_out_of_domain_sentences = data_loader.ReadTaggedSentences(
-      autoencoder::FLAGS_validation_out_of_domain_filename);
+      FLAGS_validation_out_of_domain_filename);
   std::cout << "Done." << std::endl;
 
   std::cout << "Loading overall tag set... ";
   std::cout.flush();
   auto tag_set = data_loader.FindTags({
-    autoencoder::FLAGS_test_filename,
-    autoencoder::FLAGS_training_filename,
-    autoencoder::FLAGS_validation_in_domain_filename,
-    autoencoder::FLAGS_validation_out_of_domain_filename,
+    FLAGS_test_filename,
+    FLAGS_training_filename,
+    FLAGS_validation_in_domain_filename,
+    FLAGS_validation_out_of_domain_filename,
   });
   auto tags = std::vector<std::string>(tag_set.begin(), tag_set.end());
   tags.insert(tags.begin(), "<START>");
   std::cout << "Done." << std::endl << std::endl;
 
-  auto generator = std::mt19937(autoencoder::FLAGS_random_seed);
-  auto word_table = autoencoder::LookupTable::Load(
-      generator, autoencoder::FLAGS_words_filename, autoencoder::FLAGS_vectors_filename);
-  auto tag_vectors = std::vector<autoencoder::Blob>(tags.size(), autoencoder::Blob(tags.size()));
+  auto generator = std::mt19937(FLAGS_random_seed);
+  auto word_table = LookupTable::Load(
+      generator, FLAGS_words_filename, FLAGS_vectors_filename);
+  auto tag_vectors = std::vector<Blob<float>>(tags.size(), Blob<float>(tags.size()));
   for (auto i = 0; i < tags.size(); ++i) {
     tag_vectors.at(i).value(i) = 1.0f;
   }
-  auto tag_table = autoencoder::LookupTable(generator, tags, tag_vectors);
-  auto part_of_speech_tagger = autoencoder::RecurrentNeuralNetworkPartOfSpeechTagger(
-      word_table, tag_table, autoencoder::FLAGS_dropout_probability, generator,
-      autoencoder::FLAGS_recurrent_state_dimension, tags.size(),
-      autoencoder::FLAGS_word_representation_dimension);
-  auto evaluator = autoencoder::Evaluator();
+  auto tag_table = LookupTable(generator, tags, tag_vectors);
+  auto part_of_speech_tagger = RecurrentNeuralNetworkPartOfSpeechTagger(
+      word_table, tag_table, FLAGS_dropout_probability, generator,
+      FLAGS_recurrent_state_dimension, tags.size(),
+      FLAGS_word_representation_dimension);
+  auto evaluator = Evaluator();
 
   part_of_speech_tagger.Train(
-      training_sentences, autoencoder::FLAGS_learning_rate, autoencoder::FLAGS_momentum,
-      autoencoder::FLAGS_iterations, evaluator, validation_in_domain_sentences,
+      training_sentences, FLAGS_learning_rate, FLAGS_momentum,
+      FLAGS_iterations, evaluator, validation_in_domain_sentences,
       training_vocabulary);
 
   std::cout << "Evaluating on training data... ";
@@ -111,7 +113,7 @@ int main(int argument_count, char *arguments[]) {
   std::cout << "Done." << std::endl;
   std::cout << validation_out_of_domain_report << std::endl<< std::endl;
 
-  if (autoencoder::FLAGS_test) {
+  if (FLAGS_test) {
     std::cout << "Evaluating on test data!!! ";
     std::cout.flush();
     auto test_report = evaluator.Evaluate(

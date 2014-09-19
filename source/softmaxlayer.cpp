@@ -7,7 +7,7 @@
 
 namespace autoencoder {
 
-  float SoftmaxLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float SoftmaxLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
     auto maximum = -std::numeric_limits<float>::infinity();
     for (auto i = 0; i < bottom.at(0)->width; ++i) {
       maximum = std::max(maximum, bottom.at(0)->value(i));
@@ -24,7 +24,7 @@ namespace autoencoder {
     return 0.0f;
   }
 
-  void SoftmaxLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
+  void SoftmaxLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
     for (auto i = 0; i < bottom->at(0)->width; ++i) {
       bottom->at(0)->difference(i) = 0.0f;
       for (auto j = 0; j < top.at(0)->width; ++j) {

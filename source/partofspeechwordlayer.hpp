@@ -17,26 +17,26 @@ namespace autoencoder {
   public:
     PartOfSpeechWordLayer(
         float p,
-        Blob &classify_weights, Blob &classify_bias,
-        Blob &combine_weights, Blob &combine_bias,
+        Blob<float> &classify_weights, Blob<float> &classify_bias,
+        Blob<float> &combine_weights, Blob<float> &combine_bias,
         std::mt19937 &generator);
 
     virtual ~PartOfSpeechWordLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
+    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
 
-    void BackwardCpu(const Blobs &top, Blobs *bottom) override;
+    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
 
   private:
     DropoutLayer dropout;
-    Blob corrupted_recurrent, corrupted_word;
+    Blob<float> corrupted_recurrent, corrupted_word;
     InnerProductLayer classify;
-    Blob classified;
+    Blob<float> classified;
     SoftmaxLayer softmax;
     ConcatenateLayer concatenate;
-    Blob concatenated;
+    Blob<float> concatenated;
     InnerProductLayer combine;
-    Blob combined;
+    Blob<float> combined;
     RectifiedLinearLayer rectified_linear;
   };
 

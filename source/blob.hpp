@@ -8,41 +8,42 @@
 
 namespace autoencoder {
 
+  template <typename F>
   struct Blob {
     Blob(int width = 1, int height = 1, int depth = 1, int duration = 1)
     : values(width, height, depth, duration), differences(width, height, depth, duration),
       velocities(width, height, depth, duration), accelerations(width, height, depth, duration),
       width(width), height(height), depth(depth), duration(duration) {}
 
-    float difference(int i, int j = 0, int k = 0, int l = 0) const {
+    F difference(int i, int j = 0, int k = 0, int l = 0) const {
       return differences.value(i, j, k, l);
     }
 
-    float &difference(int i, int j = 0, int k = 0, int l = 0) {
+    F &difference(int i, int j = 0, int k = 0, int l = 0) {
       return differences.value(i, j, k, l);
     }
 
-    float value(int i, int j = 0, int k = 0, int l = 0) const {
+    F value(int i, int j = 0, int k = 0, int l = 0) const {
       return values.value(i, j, k, l);
     }
 
-    float &value(int i, int j = 0, int k = 0, int l = 0) {
+    F &value(int i, int j = 0, int k = 0, int l = 0) {
       return values.value(i, j, k, l);
     }
 
-    float velocity(int i, int j = 0, int k = 0, int l = 0) const {
+    F velocity(int i, int j = 0, int k = 0, int l = 0) const {
       return velocities.value(i, j, k, l);
     }
 
-    float &velocity(int i, int j = 0, int k = 0, int l = 0) {
+    F &velocity(int i, int j = 0, int k = 0, int l = 0) {
       return velocities.value(i, j, k, l);
     }
 
-    float acceleration(int i, int j = 0, int k = 0, int l = 0) const {
+    F acceleration(int i, int j = 0, int k = 0, int l = 0) const {
       return accelerations.value(i, j, k, l);
     }
 
-    float &acceleration(int i, int j = 0, int k = 0, int l = 0) {
+    F &acceleration(int i, int j = 0, int k = 0, int l = 0) {
       return accelerations.value(i, j, k, l);
     }
 
@@ -66,8 +67,8 @@ namespace autoencoder {
       accelerations.Reshape(width, height, depth, duration);
     }
 
-    float SquareMagnitude() {
-      auto sum = 0.0f;
+    F SquareMagnitude() {
+      auto sum = F(0.0);
       for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
           for (auto k = 0; k < depth; ++k) {
@@ -80,7 +81,7 @@ namespace autoencoder {
       return sum;
     }
 
-    void ClipGradient(float sum) {
+    void ClipGradient(F sum) {
       auto magnitude = sqrt(sum);
       if (magnitude > 1.0) {
         for (auto i = 0; i < width; ++i) {
@@ -95,7 +96,7 @@ namespace autoencoder {
       }
     }
 
-    inline void UpdateMomentum(float learning_rate, float momentum = 0.0f) {
+    inline void UpdateMomentum(F learning_rate, F momentum = F(0.0)) {
       for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
           for (auto k = 0; k < depth; ++k) {
@@ -109,15 +110,15 @@ namespace autoencoder {
       }
     }
 
-    inline void UpdateAdaDelta(float learning_rate, float decay) {
+    inline void UpdateAdaDelta(F learning_rate, F decay) {
       for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
           for (auto k = 0; k < depth; ++k) {
             for (auto l = 0; l < duration; ++l) {
               velocity(i, j, k, l) = decay * velocity(i, j, k, l)
                   + (1.0 - decay) * difference(i, j, k, l) * difference(i, j, k, l);
-              auto delta = -sqrt(acceleration(i, j, k, l) + std::numeric_limits<float>::epsilon())
-                  / sqrt(velocity(i, j, k, l) + std::numeric_limits<float>::epsilon())
+              auto delta = -sqrt(acceleration(i, j, k, l) + std::numeric_limits<F>::epsilon())
+                  / sqrt(velocity(i, j, k, l) + std::numeric_limits<F>::epsilon())
                   * difference(i, j, k, l);
               acceleration(i, j, k, l) = decay * acceleration(i, j, k, l)
                   + (1.0 - decay) * delta * delta;
@@ -129,7 +130,7 @@ namespace autoencoder {
       IsValid();
     }
 
-    inline void UpdateAdaGrad(float learning_rate) {
+    inline void UpdateAdaGrad(F learning_rate) {
       for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
           for (auto k = 0; k < depth; ++k) {
@@ -144,11 +145,12 @@ namespace autoencoder {
     }
 
   public:
-    Values<float> values, differences, velocities, accelerations;
+    Values<F> values, differences, velocities, accelerations;
     int width, height, depth, duration;
   };
 
-  using Blobs = std::vector<Blob *>;
+  template <typename F>
+  using Blobs = std::vector<Blob<F> *>;
 
 }  // namespace autoencoder
 

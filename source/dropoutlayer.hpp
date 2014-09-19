@@ -15,9 +15,9 @@ namespace autoencoder {
 
     virtual ~DropoutLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
+    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
 
-    void BackwardCpu(const Blobs &top, Blobs *bottom) override;
+    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
 
   private:
     std::vector<Values<float>> mask;

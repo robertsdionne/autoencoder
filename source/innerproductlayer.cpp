@@ -4,10 +4,10 @@
 
 namespace autoencoder {
 
-  InnerProductLayer::InnerProductLayer(Blob &weights, Blob &bias)
+  InnerProductLayer::InnerProductLayer(Blob<float> &weights, Blob<float> &bias)
   : weights(weights), bias(bias) {}
 
-  float InnerProductLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float InnerProductLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
     top->at(0)->IsValid();
     for (auto i = 0; i < weights.height; ++i) {
       top->at(0)->value(i) = bias.value(i);
@@ -26,7 +26,7 @@ namespace autoencoder {
     return 0.0f;
   }
 
-  void InnerProductLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
+  void InnerProductLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
     // dE/dW
     for (auto i = 0; i < weights.height; ++i) {
       for (auto j = 0; j < weights.width; ++j) {

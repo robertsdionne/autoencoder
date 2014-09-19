@@ -8,17 +8,17 @@ namespace autoencoder {
 
   class InnerProductLayer : public Layer {
   public:
-    InnerProductLayer(Blob &weights, Blob &bias);
+    InnerProductLayer(Blob<float> &weights, Blob<float> &bias);
 
     virtual ~InnerProductLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
+    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
 
-    void BackwardCpu(const Blobs &top, Blobs *bottom) override;
+    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
 
   private:
-    Blob &weights;
-    Blob &bias;
+    Blob<float> &weights;
+    Blob<float> &bias;
   };
 
 }  // namespace autoencoder

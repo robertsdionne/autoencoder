@@ -11,7 +11,7 @@ namespace autoencoder {
     assert(0.0f <= p <= 1.0f);
   }
 
-  float DropoutLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float DropoutLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
     if (Mode::kTrain == mode) {
       mask.clear();
       for (auto i = 0; i < bottom.size(); ++i) {
@@ -34,7 +34,7 @@ namespace autoencoder {
     return 0.0f;
   }
 
-  void DropoutLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
+  void DropoutLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
     for (auto i = 0; i < bottom->size(); ++i) {
       for (auto j = 0; j < bottom->at(i)->width; ++j) {
         auto top_diff = top.at(i)->difference(j);

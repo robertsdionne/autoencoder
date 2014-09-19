@@ -53,9 +53,9 @@ namespace autoencoder {
     std::mt19937 &generator;
     std::uniform_real_distribution<float> uniform, uniform_symmetric;
     int recurrent_state_dimension, tag_dimension, word_representation_dimension;
-    Blob recurrent_state_input, recurrent_state_output;
-    Blob classify_weights, classify_bias;
-    Blob combine_weights, combine_bias;
+    Blob<float> recurrent_state_input, recurrent_state_output;
+    Blob<float> classify_weights, classify_bias;
+    Blob<float> combine_weights, combine_bias;
     PartOfSpeechSentenceLayer part_of_speech_sentence;
     EuclideanLossLayer loss;
   };

@@ -8,13 +8,13 @@
 using namespace autoencoder;
 
 TEST(SoftmaxLayerTest, TestForwardCpu) {
-  auto input = Blob(8);
+  auto input = Blob<float>(8);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
   auto layer = SoftmaxLayer();
-  auto output = Blob(8);
-  auto out = Blobs{&output};
+  auto output = Blob<float>(8);
+  auto out = Blobs<float>{&output};
   layer.ForwardCpu(Layer::Mode::kTrain, {&input}, &out);
 
   EXPECT_FLOAT_EQ(0.00057668809f, output.value(0));
@@ -34,14 +34,14 @@ TEST(SoftmaxLayerTest, TestForwardCpu) {
 }
 
 TEST(SoftmaxLayerTest, TestBackwardCpu) {
-  auto input = Blob(8);
+  auto input = Blob<float>(8);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
   auto layer = SoftmaxLayer();
-  auto output = Blob(8);
-  auto in = Blobs{&input};
-  auto out = Blobs{&output};
+  auto output = Blob<float>(8);
+  auto in = Blobs<float>{&input};
+  auto out = Blobs<float>{&output};
   layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = (i == 2);
@@ -59,26 +59,26 @@ TEST(SoftmaxLayerTest, TestBackwardCpu) {
 }
 
 TEST(SoftmaxLayerTest, TestGradient) {
-  auto input = Blob(8);
+  auto input = Blob<float>(8);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
-  auto in = Blobs{&input};
+  auto in = Blobs<float>{&input};
   auto layer = SoftmaxLayer();
   auto loss_layer = EuclideanLossLayer();
 
   constexpr float kEpsilon = 1e-4;
 
   for (auto i = 0; i < input.width; ++i) {
-    auto output = Blob(8);
-    auto out = Blobs{&output};
-    auto losses = Blob(8);
-    auto target = Blob(8);
+    auto output = Blob<float>(8);
+    auto out = Blobs<float>{&output};
+    auto losses = Blob<float>(8);
+    auto target = Blob<float>(8);
     for (auto j = 0; j < input.width; ++j) {
       input.difference(j) = 0.0;
     }
-    auto loss_in = Blobs{&output, &target};
-    auto loss_out = Blobs{&losses};
+    auto loss_in = Blobs<float>{&output, &target};
+    auto loss_out = Blobs<float>{&losses};
 
     layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
     loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);

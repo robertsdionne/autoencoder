@@ -8,14 +8,14 @@ namespace autoencoder {
 
   PartOfSpeechSentenceLayer::PartOfSpeechSentenceLayer(
       float p,
-      Blob &classify_weights, Blob &classify_bias,
-      Blob &combine_weights, Blob &combine_bias,
+      Blob<float> &classify_weights, Blob<float> &classify_bias,
+      Blob<float> &combine_weights, Blob<float> &combine_bias,
       std::mt19937 &generator)
     : p(p), generator(generator),
       classify_weights(classify_weights), classify_bias(classify_bias),
       combine_weights(combine_weights), combine_bias(combine_bias) {}
 
-  float PartOfSpeechSentenceLayer::ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) {
+  float PartOfSpeechSentenceLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
     layers.clear();
     recurrent_states.clear();
 
@@ -30,8 +30,8 @@ namespace autoencoder {
           p, classify_weights, classify_bias, combine_weights, combine_bias, generator);
       recurrent_states.emplace_back(combine_weights.height);
 
-      auto layer_input = Blobs{&recurrent_states.at(i - 1), bottom.at(i)};
-      auto layer_output = Blobs{top->at(i - 1), &recurrent_states.at(i)};
+      auto layer_input = Blobs<float>{&recurrent_states.at(i - 1), bottom.at(i)};
+      auto layer_output = Blobs<float>{top->at(i - 1), &recurrent_states.at(i)};
 
       // std::cout << "layers.at(" << i << " - 1).ForwardCpu" << std::endl;
       layers.at(i - 1).ForwardCpu(mode, layer_input, &layer_output);
@@ -45,10 +45,10 @@ namespace autoencoder {
     return 0.0f;
   }
 
-  void PartOfSpeechSentenceLayer::BackwardCpu(const Blobs &top, Blobs *bottom) {
+  void PartOfSpeechSentenceLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
     for (auto i = bottom->size() - 1; i > 0; --i) {
-      auto layer_input = Blobs{&recurrent_states.at(i - 1), bottom->at(i)};
-      auto layer_output = Blobs{top.at(i - 1), &recurrent_states.at(i)};
+      auto layer_input = Blobs<float>{&recurrent_states.at(i - 1), bottom->at(i)};
+      auto layer_output = Blobs<float>{top.at(i - 1), &recurrent_states.at(i)};
 
       // std::cout << "layers.at(" << i << " - 1).BackwardCpu" << std::endl;
       layers.at(i - 1).BackwardCpu(layer_output, &layer_input);

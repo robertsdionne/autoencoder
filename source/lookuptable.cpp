@@ -24,7 +24,7 @@ namespace autoencoder {
 
   LookupTable::LookupTable(
       std::mt19937 &generator,
-      const std::vector<std::string> &tokens, const std::vector<Blob> &vectors)
+      const std::vector<std::string> &tokens, const std::vector<Blob<float>> &vectors)
   : generator(generator),
     token_indices(), unknown_token_indices(),
     vectors(vectors), unknown_vectors(),
@@ -36,7 +36,7 @@ namespace autoencoder {
     }
   }
 
-  void LookupTable::ForwardCpu(const std::vector<std::string> &tokens, Blobs *top) {
+  void LookupTable::ForwardCpu(const std::vector<std::string> &tokens, Blobs<float> *top) {
     top->clear();
     for (auto &token : tokens) {
       if (token_indices.cend() == token_indices.find(token)) {
@@ -85,13 +85,13 @@ namespace autoencoder {
       }
     }
 
-    auto vectors = std::vector<Blob>();
+    auto vectors = std::vector<Blob<float>>();
     std::ifstream vectors_in(vectors_filename);
     assert(vectors_in);
     while (std::getline(vectors_in, line)) {
       if (line.size() > 0) {
         std::istringstream line_in(line);
-        vectors.push_back(Blob(FLAGS_word_representation_dimension));
+        vectors.push_back(Blob<float>(FLAGS_word_representation_dimension));
         for (auto i = 0; i < FLAGS_word_representation_dimension; ++i) {
           float value = 0.0f;
           line_in >> value;

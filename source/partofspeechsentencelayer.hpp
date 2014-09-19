@@ -14,23 +14,23 @@ namespace autoencoder {
   public:
     PartOfSpeechSentenceLayer(
         float p,
-        Blob &classify_weights, Blob &classify_bias,
-        Blob &combine_weights, Blob &combine_bias,
+        Blob<float> &classify_weights, Blob<float> &classify_bias,
+        Blob<float> &combine_weights, Blob<float> &combine_bias,
         std::mt19937 &generator);
 
     virtual ~PartOfSpeechSentenceLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs &bottom, Blobs *top) override;
+    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
 
-    void BackwardCpu(const Blobs &top, Blobs *bottom) override;
+    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
 
   private:
     float p;
     std::mt19937 &generator;
-    Blob &classify_weights, &classify_bias;
-    Blob &combine_weights, &combine_bias;
+    Blob<float> &classify_weights, &classify_bias;
+    Blob<float> &combine_weights, &combine_bias;
     std::vector<PartOfSpeechWordLayer> layers;
-    std::vector<Blob> recurrent_states;
+    std::vector<Blob<float>> recurrent_states;
   };
 
 }  // namespace autoencoder
