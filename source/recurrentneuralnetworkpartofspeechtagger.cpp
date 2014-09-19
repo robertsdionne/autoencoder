@@ -11,8 +11,8 @@
 
 namespace autoencoder {
 
-  template<typename Distribution, typename Generator>
-  void InitializeBlob(Distribution &distribution, Generator &generator, Blob<float> *blob) {
+  template<typename Distribution, typename Generator, typename F>
+  void InitializeBlob(Distribution &distribution, Generator &generator, Blob<F> *blob) {
     for (auto i = 0; i < blob->height; ++i) {
       for (auto j = 0; j < blob->width; ++j) {
         blob->value(j, i) = distribution(generator);
@@ -20,9 +20,10 @@ namespace autoencoder {
     }
   }
 
-  RecurrentNeuralNetworkPartOfSpeechTagger::RecurrentNeuralNetworkPartOfSpeechTagger(
-      LookupTable &word_table, LookupTable &tag_table,
-      float p, std::mt19937 &generator,
+  template <typename F>
+  RecurrentNeuralNetworkPartOfSpeechTagger<F>::RecurrentNeuralNetworkPartOfSpeechTagger(
+      LookupTable<F> &word_table, LookupTable<F> &tag_table,
+      F p, std::mt19937 &generator,
       int recurrent_state_dimension,
       int tag_dimension,
       int word_representation_dimension)
@@ -42,20 +43,21 @@ namespace autoencoder {
         p, classify_weights, classify_bias, combine_weights, combine_bias, generator),
     loss() {}
 
-  void RecurrentNeuralNetworkPartOfSpeechTagger::ForwardCpu(
+  template <typename F>
+  void RecurrentNeuralNetworkPartOfSpeechTagger<F>::ForwardCpu(
       const std::vector<std::string> &sentence, std::vector<std::string> *tags) {
-    auto input = Blobs<float>{};
+    auto input = Blobs<F>{};
     word_table.ForwardCpu(sentence, &input);
     input.insert(input.begin(), &recurrent_state_input);
 
-    auto guessed_tags = std::vector<Blob<float>>(sentence.size(), Blob<float>(tag_dimension));
-    auto output = Blobs<float>{};
+    auto guessed_tags = std::vector<Blob<F>>(sentence.size(), Blob<F>(tag_dimension));
+    auto output = Blobs<F>{};
     for (auto &guessed_tag : guessed_tags) {
       output.push_back(&guessed_tag);
     }
     output.push_back(&recurrent_state_output);
 
-    part_of_speech_sentence.ForwardCpu(Layer::Mode::kTest, input, &output);
+    part_of_speech_sentence.ForwardCpu(Mode::kTest, input, &output);
 
     for (auto i = 0; i < output.size(); ++i) {
       output.at(i)->IsValid();
@@ -66,37 +68,38 @@ namespace autoencoder {
     }
   }
 
-  float RecurrentNeuralNetworkPartOfSpeechTagger::ForwardBackwardCpu(
+  template <typename F>
+  F RecurrentNeuralNetworkPartOfSpeechTagger<F>::ForwardBackwardCpu(
       const TaggedSentence &tagged_sentence) {
-    auto input = Blobs<float>{};
+    auto input = Blobs<F>{};
     word_table.ForwardCpu(tagged_sentence.words, &input);
     input.insert(input.begin(), &recurrent_state_input);
 
-    auto target = Blobs<float>{};
+    auto target = Blobs<F>{};
     tag_table.ForwardCpu(tagged_sentence.tags, &target);
 
-    auto guessed_tags = std::vector<Blob<float>>(tagged_sentence.size(), Blob<float>(tag_dimension));
-    auto output = Blobs<float>{};
+    auto guessed_tags = std::vector<Blob<F>>(tagged_sentence.size(), Blob<F>(tag_dimension));
+    auto output = Blobs<F>{};
     for (auto &guessed_tag : guessed_tags) {
       output.push_back(&guessed_tag);
     }
     output.push_back(&recurrent_state_output);
 
-    part_of_speech_sentence.ForwardCpu(Layer::Mode::kTrain, input, &output);
+    part_of_speech_sentence.ForwardCpu(Mode::kTrain, input, &output);
 
-    auto output_and_target = Blobs<float>{};
+    auto output_and_target = Blobs<F>{};
     for (auto i = 0; i < target.size(); ++i) {
       output_and_target.push_back(output.at(i));
       output_and_target.push_back(target.at(i));
     }
 
-    auto losses = std::vector<Blob<float>>(tagged_sentence.size(), Blob<float>(tag_dimension));
-    auto loss_output = Blobs<float>{};
+    auto losses = std::vector<Blob<F>>(tagged_sentence.size(), Blob<F>(tag_dimension));
+    auto loss_output = Blobs<F>{};
     for (auto &loss : losses) {
       loss_output.push_back(&loss);
     }
 
-    auto result = loss.ForwardCpu(Layer::Mode::kTrain, output_and_target, &loss_output);
+    auto result = loss.ForwardCpu(Mode::kTrain, output_and_target, &loss_output);
 
     for (auto &loss : losses) {
       loss.IsValid();
@@ -108,12 +111,13 @@ namespace autoencoder {
     return result;
   }
 
-  void RecurrentNeuralNetworkPartOfSpeechTagger::Train(
+  template <typename F>
+  void RecurrentNeuralNetworkPartOfSpeechTagger<F>::Train(
       const std::vector<TaggedSentence> &tagged_sentences,
-      float learning_rate,
-      float momentum,
+      F learning_rate,
+      F momentum,
       int iterations,
-      Evaluator &evaluator,
+      Evaluator<F> &evaluator,
       const std::vector<TaggedSentence> &validation_sentences,
       const std::unordered_set<std::string> &training_vocabulary) {
 
@@ -166,20 +170,26 @@ namespace autoencoder {
     std::cout << "Done." << std::endl << std::endl;
   }
 
-  void RecurrentNeuralNetworkPartOfSpeechTagger::Validate(
+  template <typename F>
+  void RecurrentNeuralNetworkPartOfSpeechTagger<F>::Validate(
       const std::vector<TaggedSentence> &tagged_sentences) const {
   }
 
-  std::vector<std::string> RecurrentNeuralNetworkPartOfSpeechTagger::Tag(
+  template <typename F>
+  std::vector<std::string> RecurrentNeuralNetworkPartOfSpeechTagger<F>::Tag(
       const std::vector<std::string> &sentence) {
     auto tags = std::vector<std::string>();
     ForwardCpu(sentence, &tags);
     return tags;
   }
 
-  float RecurrentNeuralNetworkPartOfSpeechTagger::ScoreTagging(
+  template <typename F>
+  F RecurrentNeuralNetworkPartOfSpeechTagger<F>::ScoreTagging(
       const TaggedSentence &tagged_sentence) const {
-    return -std::numeric_limits<float>::infinity();
+    return -std::numeric_limits<F>::infinity();
   }
+
+  template class RecurrentNeuralNetworkPartOfSpeechTagger<float>;
+  template class RecurrentNeuralNetworkPartOfSpeechTagger<double>;
 
 }  // namespace autoencoder

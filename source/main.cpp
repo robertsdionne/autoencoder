@@ -74,18 +74,18 @@ int main(int argument_count, char *arguments[]) {
   std::cout << "Done." << std::endl << std::endl;
 
   auto generator = std::mt19937(FLAGS_random_seed);
-  auto word_table = LookupTable::Load(
+  auto word_table = LookupTable<float>::Load(
       generator, FLAGS_words_filename, FLAGS_vectors_filename);
   auto tag_vectors = std::vector<Blob<float>>(tags.size(), Blob<float>(tags.size()));
   for (auto i = 0; i < tags.size(); ++i) {
     tag_vectors.at(i).value(i) = 1.0f;
   }
-  auto tag_table = LookupTable(generator, tags, tag_vectors);
-  auto part_of_speech_tagger = RecurrentNeuralNetworkPartOfSpeechTagger(
+  auto tag_table = LookupTable<float>(generator, tags, tag_vectors);
+  auto part_of_speech_tagger = RecurrentNeuralNetworkPartOfSpeechTagger<float>(
       word_table, tag_table, FLAGS_dropout_probability, generator,
       FLAGS_recurrent_state_dimension, tags.size(),
       FLAGS_word_representation_dimension);
-  auto evaluator = Evaluator();
+  auto evaluator = Evaluator<float>();
 
   part_of_speech_tagger.Train(
       training_sentences, FLAGS_learning_rate, FLAGS_momentum,

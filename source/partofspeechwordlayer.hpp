@@ -13,31 +13,32 @@
 
 namespace autoencoder {
 
-  class PartOfSpeechWordLayer : public Layer {
+  template <typename F>
+  class PartOfSpeechWordLayer : public Layer<F> {
   public:
     PartOfSpeechWordLayer(
-        float p,
-        Blob<float> &classify_weights, Blob<float> &classify_bias,
-        Blob<float> &combine_weights, Blob<float> &combine_bias,
+        F p,
+        Blob<F> &classify_weights, Blob<F> &classify_bias,
+        Blob<F> &combine_weights, Blob<F> &combine_bias,
         std::mt19937 &generator);
 
     virtual ~PartOfSpeechWordLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
+    F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
 
-    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
+    void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
 
   private:
-    DropoutLayer dropout;
-    Blob<float> corrupted_recurrent, corrupted_word;
-    InnerProductLayer classify;
-    Blob<float> classified;
-    SoftmaxLayer softmax;
-    ConcatenateLayer concatenate;
-    Blob<float> concatenated;
-    InnerProductLayer combine;
-    Blob<float> combined;
-    RectifiedLinearLayer rectified_linear;
+    DropoutLayer<F> dropout;
+    Blob<F> corrupted_recurrent, corrupted_word;
+    InnerProductLayer<F> classify;
+    Blob<F> classified;
+    SoftmaxLayer<F> softmax;
+    ConcatenateLayer<F> concatenate;
+    Blob<F> concatenated;
+    InnerProductLayer<F> combine;
+    Blob<F> combined;
+    RectifiedLinearLayer<F> rectified_linear;
   };
 
 }  // namespace autoencoder

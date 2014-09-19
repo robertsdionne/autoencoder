@@ -37,12 +37,12 @@ TEST(PartOfSpeechWordLayerTest, TestForwardCpu) {
   InitializeBlob(uniform, generator, &combine_weights);
   InitializeBlob(uniform, generator, &combine_bias);
 
-  auto layer = PartOfSpeechWordLayer(
+  auto layer = PartOfSpeechWordLayer<float>(
       0.5f, classify_weights, classify_bias, combine_weights, combine_bias, generator);
   auto tag_output = Blob<float>(5);
   auto recurrent_output = Blob<float>(10);
   auto out = Blobs<float>{&tag_output, &recurrent_output};
-  layer.ForwardCpu(Layer::Mode::kTrain, {&recurrent_input, &word_input}, &out);
+  layer.ForwardCpu(Mode::kTrain, {&recurrent_input, &word_input}, &out);
 
   auto sum = 0.0f;
   for (auto i = 0; i < tag_output.width; ++i) {
@@ -88,13 +88,13 @@ TEST(PartOfSpeechWordLayerTest, TestBackwardCpu) {
   InitializeBlob(uniform, generator, &combine_weights);
   InitializeBlob(uniform, generator, &combine_bias);
 
-  auto layer = PartOfSpeechWordLayer(
+  auto layer = PartOfSpeechWordLayer<float>(
       0.5f, classify_weights, classify_bias, combine_weights, combine_bias, generator);
   auto tag_output = Blob<float>(5);
   auto recurrent_output = Blob<float>(10);
   auto in = Blobs<float>{&recurrent_input, &word_input};
   auto out = Blobs<float>{&tag_output, &recurrent_output};
-  layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+  layer.ForwardCpu(Mode::kTrain, in, &out);
   for (auto i = 0; i < tag_output.width; ++i) {
     tag_output.difference(i) = i == 2;
   }
@@ -415,9 +415,9 @@ TEST(PartOfSpeechWordLayerTest, TestGradient) {
   InitializeBlob(uniform, generator, &combine_weights);
   InitializeBlob(uniform, generator, &combine_bias);
 
-  auto layer = PartOfSpeechWordLayer(
+  auto layer = PartOfSpeechWordLayer<float>(
       0.5f, classify_weights, classify_bias, combine_weights, combine_bias, generator);
-  auto loss_layer = EuclideanLossLayer();
+  auto loss_layer = EuclideanLossLayer<float>();
   auto tag_output = Blob<float>(5);
   auto recurrent_output = Blob<float>(10);
   auto in = Blobs<float>{&recurrent_input, &word_input};
@@ -438,8 +438,8 @@ TEST(PartOfSpeechWordLayerTest, TestGradient) {
     auto loss_in = Blobs<float>{&tag_output, &target};
     auto loss_out = Blobs<float>{&losses};
 
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
     layer.BackwardCpu(out, &in);
 
@@ -448,12 +448,12 @@ TEST(PartOfSpeechWordLayerTest, TestGradient) {
     auto original_recurrent_input_i = recurrent_input.value(i);
 
     recurrent_input.value(i) = original_recurrent_input_i + kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_1 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     recurrent_input.value(i) = original_recurrent_input_i - kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_0 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     recurrent_input.value(i) = original_recurrent_input_i;
 

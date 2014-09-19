@@ -8,9 +8,11 @@
 
 namespace autoencoder {
 
+  template <typename F>
   class Evaluator;
 
-  class DumbPartOfSpeechTagger : public PartOfSpeechTagger {
+  template <typename F>
+  class DumbPartOfSpeechTagger : public PartOfSpeechTagger<F> {
   public:
     DumbPartOfSpeechTagger() = default;
 
@@ -18,10 +20,10 @@ namespace autoencoder {
 
     void Train(
         const std::vector<TaggedSentence> &tagged_sentences,
-        float learning_rate,
-        float momentum,
+        F learning_rate,
+        F momentum,
         int iterations,
-        Evaluator &evaluator,
+        Evaluator<F> &evaluator,
         const std::vector<TaggedSentence> &validation_sentences,
         const std::unordered_set<std::string> &training_vocabulary) override;
 
@@ -29,7 +31,7 @@ namespace autoencoder {
 
     std::vector<std::string> Tag(const std::vector<std::string> &sentence) override;
 
-    float ScoreTagging(const TaggedSentence &tagged_sentence) const override;
+    F ScoreTagging(const TaggedSentence &tagged_sentence) const override;
   };
 
 }  // namespace autoencoder

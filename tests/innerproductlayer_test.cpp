@@ -21,10 +21,10 @@ TEST(InnerProductLayerTest, TestForwardCpu) {
   for (auto i = 0; i < bias.width; ++i) {
     bias.value(i) = i;
   }
-  auto layer = InnerProductLayer(weights, bias);
+  auto layer = InnerProductLayer<float>(weights, bias);
   auto output = Blob<float>(3);
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Layer::Mode::kTrain, {&input}, &out);
+  layer.ForwardCpu(Mode::kTrain, {&input}, &out);
 
   EXPECT_FLOAT_EQ(14.0f, output.value(0));
   EXPECT_FLOAT_EQ(21.0f, output.value(1));
@@ -46,11 +46,11 @@ TEST(InnerProductLayerTest, TestBackwardCpu) {
   for (auto i = 0; i < bias.width; ++i) {
     bias.value(i) = i;
   }
-  auto layer = InnerProductLayer(weights, bias);
+  auto layer = InnerProductLayer<float>(weights, bias);
   auto output = Blob<float>(3);
   auto in = Blobs<float>{&input};
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+  layer.ForwardCpu(Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }
@@ -95,8 +95,8 @@ TEST(InnerProductLayerTest, TestGradient) {
     bias.value(i) = i;
   }
   auto in = Blobs<float>{&input};
-  auto layer = InnerProductLayer(weights, bias);
-  auto loss_layer = EuclideanLossLayer();
+  auto layer = InnerProductLayer<float>(weights, bias);
+  auto loss_layer = EuclideanLossLayer<float>();
 
   constexpr float kEpsilon = 1e-2;
   constexpr float kTolerance = 3e-3;
@@ -112,8 +112,8 @@ TEST(InnerProductLayerTest, TestGradient) {
     auto loss_in = Blobs<float>{&output, &target};
     auto loss_out = Blobs<float>{&losses};
 
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
     layer.BackwardCpu(out, &in);
 
@@ -122,12 +122,12 @@ TEST(InnerProductLayerTest, TestGradient) {
     auto original_input_i = input.value(i);
 
     input.value(i) = original_input_i + kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_1 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i - kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_0 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i;
 
@@ -151,8 +151,8 @@ TEST(InnerProductLayerTest, TestGradient) {
       auto loss_in = Blobs<float>{&output, &target};
       auto loss_out = Blobs<float>{&losses};
 
-      layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-      loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+      layer.ForwardCpu(Mode::kTrain, in, &out);
+      loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
       loss_layer.Backward(loss_out, &loss_in);
       layer.BackwardCpu(out, &in);
 
@@ -161,12 +161,12 @@ TEST(InnerProductLayerTest, TestGradient) {
       auto original_weight_ij = weights.value(j, i);
 
       weights.value(j, i) = original_weight_ij + kEpsilon;
-      layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-      auto loss_1 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+      layer.ForwardCpu(Mode::kTrain, in, &out);
+      auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
       weights.value(j, i) = original_weight_ij - kEpsilon;
-      layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-      auto loss_0 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+      layer.ForwardCpu(Mode::kTrain, in, &out);
+      auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
       weights.value(j, i) = original_weight_ij;
 
@@ -188,8 +188,8 @@ TEST(InnerProductLayerTest, TestGradient) {
     auto loss_in = Blobs<float>{&output, &target};
     auto loss_out = Blobs<float>{&losses};
 
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
     layer.BackwardCpu(out, &in);
 
@@ -198,12 +198,12 @@ TEST(InnerProductLayerTest, TestGradient) {
     auto original_bias_i = bias.value(i);
 
     bias.value(i) = original_bias_i + kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_1 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     bias.value(i) = original_bias_i - kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_0 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     bias.value(i) = original_bias_i;
 

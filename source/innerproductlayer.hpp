@@ -6,19 +6,20 @@
 
 namespace autoencoder {
 
-  class InnerProductLayer : public Layer {
+  template <typename F>
+  class InnerProductLayer : public Layer<F> {
   public:
-    InnerProductLayer(Blob<float> &weights, Blob<float> &bias);
+    InnerProductLayer(Blob<F> &weights, Blob<F> &bias);
 
     virtual ~InnerProductLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
+    F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
 
-    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
+    void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
 
   private:
-    Blob<float> &weights;
-    Blob<float> &bias;
+    Blob<F> &weights;
+    Blob<F> &bias;
   };
 
 }  // namespace autoencoder

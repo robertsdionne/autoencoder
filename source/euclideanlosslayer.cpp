@@ -6,7 +6,8 @@
 
 namespace autoencoder {
 
-  float EuclideanLossLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
+  template <typename F>
+  F EuclideanLossLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     auto loss = 0.0f;
     for (auto i = 0; i < bottom.size(); i += 2) {
       for (auto j = 0; j < bottom.at(i)->width; ++j) {
@@ -20,12 +21,16 @@ namespace autoencoder {
     return loss;
   }
 
-  void EuclideanLossLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
+  template <typename F>
+  void EuclideanLossLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = 0; i < bottom->size(); ++i) {
-      auto sign = i % 2 == 0 ? -1.0f : 1.0f;
-      Saxpby(sign, top.at(i / 2)->differences, 1.0f, &bottom->at(i)->differences);
+      auto sign = i % 2 == 0 ? F(-1.0) : F(1.0);
+      Axpby(sign, top.at(i / 2)->differences, F(1.0), &bottom->at(i)->differences);
       bottom->at(i)->IsValid();
     }
   }
+
+  template class EuclideanLossLayer<float>;
+  template class EuclideanLossLayer<double>;
 
 }  // namespace autoencoder

@@ -9,20 +9,23 @@
 
 namespace autoencoder {
 
-  void DumbPartOfSpeechTagger::Train(
+  template <typename F>
+  void DumbPartOfSpeechTagger<F>::Train(
         const std::vector<TaggedSentence> &tagged_sentences,
-        float learning_rate,
-        float momentum,
+        F learning_rate,
+        F momentum,
         int iterations,
-        Evaluator &evaluator,
+        Evaluator<F> &evaluator,
         const std::vector<TaggedSentence> &validation_sentences,
         const std::unordered_set<std::string> &training_vocabulary) {
   }
 
-  void DumbPartOfSpeechTagger::Validate(const std::vector<TaggedSentence> &tagged_sentences) const {
+  template <typename F>
+  void DumbPartOfSpeechTagger<F>::Validate(const std::vector<TaggedSentence> &tagged_sentences) const {
   }
 
-  std::vector<std::string> DumbPartOfSpeechTagger::Tag(
+  template <typename F>
+  std::vector<std::string> DumbPartOfSpeechTagger<F>::Tag(
       const std::vector<std::string> &sentence) {
     auto tags = std::vector<std::string>();
     for (auto &word : sentence) {
@@ -31,8 +34,12 @@ namespace autoencoder {
     return tags;
   }
 
-  float DumbPartOfSpeechTagger::ScoreTagging(const TaggedSentence &tagged_sentence) const {
-    return -std::numeric_limits<float>::infinity();
+  template <typename F>
+  F DumbPartOfSpeechTagger<F>::ScoreTagging(const TaggedSentence &tagged_sentence) const {
+    return -std::numeric_limits<F>::infinity();
   }
+
+  template class DumbPartOfSpeechTagger<float>;
+  template class DumbPartOfSpeechTagger<double>;
 
 }  // namespace autoencoder

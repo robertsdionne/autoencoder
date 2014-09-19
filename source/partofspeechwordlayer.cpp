@@ -7,10 +7,11 @@
 
 namespace autoencoder {
 
-  PartOfSpeechWordLayer::PartOfSpeechWordLayer(
-      float p,
-      Blob<float> &classify_weights, Blob<float> &classify_bias,
-      Blob<float> &combine_weights, Blob<float> &combine_bias,
+  template <typename F>
+  PartOfSpeechWordLayer<F>::PartOfSpeechWordLayer(
+      F p,
+      Blob<F> &classify_weights, Blob<F> &classify_bias,
+      Blob<F> &combine_weights, Blob<F> &combine_bias,
       std::mt19937 &generator)
     : dropout(p, generator),
       corrupted_recurrent(combine_weights.height),
@@ -21,16 +22,17 @@ namespace autoencoder {
       combine(combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear() {}
 
-  float PartOfSpeechWordLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
+  template <typename F>
+  F PartOfSpeechWordLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     // std::cout << "corrupted_recurrent.width " << corrupted_recurrent.width << std::endl;
     // std::cout << "corrupted_word.width " << corrupted_word.width << std::endl;
-    auto dropout_output = Blobs<float>{&corrupted_recurrent, &corrupted_word};
-    auto dropout_recurrent_output = Blobs<float>{&corrupted_recurrent};
-    auto classify_output = Blobs<float>{&classified};
-    auto softmax_output = Blobs<float>{top->at(0)};
-    auto concatenate_output = Blobs<float>{&concatenated};
-    auto combine_output = Blobs<float>{&combined};
-    auto rectified_linear_output = Blobs<float>{top->at(1)};
+    auto dropout_output = Blobs<F>{&corrupted_recurrent, &corrupted_word};
+    auto dropout_recurrent_output = Blobs<F>{&corrupted_recurrent};
+    auto classify_output = Blobs<F>{&classified};
+    auto softmax_output = Blobs<F>{top->at(0)};
+    auto concatenate_output = Blobs<F>{&concatenated};
+    auto combine_output = Blobs<F>{&combined};
+    auto rectified_linear_output = Blobs<F>{top->at(1)};
 
     dropout.ForwardCpu(mode, bottom, &dropout_output);
     classify.ForwardCpu(mode, dropout_recurrent_output, &classify_output);
@@ -43,14 +45,15 @@ namespace autoencoder {
     return 0.0f;
   }
 
-  void PartOfSpeechWordLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
-    auto dropout_output = Blobs<float>{&corrupted_recurrent, &corrupted_word};
-    auto dropout_recurrent_output = Blobs<float>{&corrupted_recurrent};
-    auto classify_output = Blobs<float>{&classified};
-    auto softmax_output = Blobs<float>{top.at(0)};
-    auto concatenate_output = Blobs<float>{&concatenated};
-    auto combine_output = Blobs<float>{&combined};
-    auto rectified_linear_output = Blobs<float>{top.at(1)};
+  template <typename F>
+  void PartOfSpeechWordLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
+    auto dropout_output = Blobs<F>{&corrupted_recurrent, &corrupted_word};
+    auto dropout_recurrent_output = Blobs<F>{&corrupted_recurrent};
+    auto classify_output = Blobs<F>{&classified};
+    auto softmax_output = Blobs<F>{top.at(0)};
+    auto concatenate_output = Blobs<F>{&concatenated};
+    auto combine_output = Blobs<F>{&combined};
+    auto rectified_linear_output = Blobs<F>{top.at(1)};
 
     rectified_linear.BackwardCpu(rectified_linear_output, &combine_output);
     combine.BackwardCpu(combine_output, &concatenate_output);
@@ -61,5 +64,8 @@ namespace autoencoder {
     bottom->at(0)->IsValid();
     bottom->at(1)->IsValid();
   }
+
+  template class PartOfSpeechWordLayer<float>;
+  template class PartOfSpeechWordLayer<double>;
 
 }  // namespace autoencoder

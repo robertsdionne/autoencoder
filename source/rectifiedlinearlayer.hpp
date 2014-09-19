@@ -6,13 +6,14 @@
 
 namespace autoencoder {
 
-  class RectifiedLinearLayer : public Layer {
+  template <typename F>
+  class RectifiedLinearLayer : public Layer<F> {
   public:
     virtual ~RectifiedLinearLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
+    F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
 
-    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
+    void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
   };
 
 }  // namespace autoencoder

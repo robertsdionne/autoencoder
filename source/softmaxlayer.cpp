@@ -7,24 +7,26 @@
 
 namespace autoencoder {
 
-  float SoftmaxLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
-    auto maximum = -std::numeric_limits<float>::infinity();
+  template <typename F>
+  F SoftmaxLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
+    auto maximum = -std::numeric_limits<F>::infinity();
     for (auto i = 0; i < bottom.at(0)->width; ++i) {
       maximum = std::max(maximum, bottom.at(0)->value(i));
     }
-    auto sum = std::numeric_limits<float>::epsilon();
+    auto sum = std::numeric_limits<F>::epsilon();
     for (auto i = 0; i < bottom.at(0)->width; ++i) {
       sum += exp(bottom.at(0)->value(i) - maximum);
     }
     for (auto i = 0; i < top->at(0)->width; ++i) {
       top->at(0)->value(i) =
-          (exp(bottom.at(0)->value(i) - maximum) + std::numeric_limits<float>::epsilon()) / sum;
+          (exp(bottom.at(0)->value(i) - maximum) + std::numeric_limits<F>::epsilon()) / sum;
     }
     top->at(0)->IsValid();
     return 0.0f;
   }
 
-  void SoftmaxLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
+  template <typename F>
+  void SoftmaxLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = 0; i < bottom->at(0)->width; ++i) {
       bottom->at(0)->difference(i) = 0.0f;
       for (auto j = 0; j < top.at(0)->width; ++j) {
@@ -34,5 +36,8 @@ namespace autoencoder {
     }
     bottom->at(0)->IsValid();
   }
+
+  template class SoftmaxLayer<float>;
+  template class SoftmaxLayer<double>;
 
 }  // namespace autoencoder

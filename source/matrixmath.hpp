@@ -8,14 +8,17 @@ namespace autoencoder {
   template <typename F>
   struct Values;
 
-  void Saxpby(float alpha, const Values<float> &x, float beta, Values<float> *y);
+  template <typename F>
+  void Axpby(F alpha, const Values<F> &x, F beta, Values<F> *y);
 
-  void Sgemm(
-    float alpha, const Values<float> &A, const Values<float> &B, float beta, Values<float> *C,
+  template <typename F>
+  void Gemm(
+    F alpha, const Values<F> &A, const Values<F> &B, F beta, Values<F> *C,
     CBLAS_TRANSPOSE transpose_A = CblasNoTrans, CBLAS_TRANSPOSE transpose_B = CblasNoTrans);
 
-  void Sgemv(
-    float alpha, const Values<float> &A, const Values<float> &x, float beta, Values<float> *y,
+  template <typename F>
+  void Gemv(
+    F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
     CBLAS_TRANSPOSE transpose_A = CblasNoTrans);
 
 }  // namespace autoencoder

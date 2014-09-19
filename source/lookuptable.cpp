@@ -16,15 +16,17 @@ namespace autoencoder {
 
   DEFINE_int32(word_representation_dimension, 50, "the word representation dimension");
   
-  LookupTable::LookupTable(std::mt19937 &generator)
-  : generator(generator), uniform(-1.0f, 1.0f),
+  template <typename F>
+  LookupTable<F>::LookupTable(std::mt19937 &generator)
+  : generator(generator), uniform(F(-1.0), F(1.0)),
     token_indices(), unknown_token_indices(),
     vectors(), unknown_vectors(),
     index_tokens(), unknown_index_tokens() {}
 
-  LookupTable::LookupTable(
+  template <typename F>
+  LookupTable<F>::LookupTable(
       std::mt19937 &generator,
-      const std::vector<std::string> &tokens, const std::vector<Blob<float>> &vectors)
+      const std::vector<std::string> &tokens, const std::vector<Blob<F>> &vectors)
   : generator(generator),
     token_indices(), unknown_token_indices(),
     vectors(vectors), unknown_vectors(),
@@ -36,7 +38,8 @@ namespace autoencoder {
     }
   }
 
-  void LookupTable::ForwardCpu(const std::vector<std::string> &tokens, Blobs<float> *top) {
+  template <typename F>
+  void LookupTable<F>::ForwardCpu(const std::vector<std::string> &tokens, Blobs<F> *top) {
     top->clear();
     for (auto &token : tokens) {
       if (token_indices.cend() == token_indices.find(token)) {
@@ -61,7 +64,8 @@ namespace autoencoder {
     }
   }
 
-  std::string LookupTable::LookupToken(int index) {
+  template <typename F>
+  std::string LookupTable<F>::LookupToken(int index) {
     if (index_tokens.cend() == index_tokens.find(index)) {
       return "?";
     } else {
@@ -69,7 +73,8 @@ namespace autoencoder {
     }
   }
 
-  LookupTable LookupTable::Load(
+  template <typename F>
+  LookupTable<F> LookupTable<F>::Load(
       std::mt19937 &generator,
       const std::string &words_filename, const std::string &vectors_filename) {
     auto words = std::vector<std::string>();
@@ -85,15 +90,15 @@ namespace autoencoder {
       }
     }
 
-    auto vectors = std::vector<Blob<float>>();
+    auto vectors = std::vector<Blob<F>>();
     std::ifstream vectors_in(vectors_filename);
     assert(vectors_in);
     while (std::getline(vectors_in, line)) {
       if (line.size() > 0) {
         std::istringstream line_in(line);
-        vectors.push_back(Blob<float>(FLAGS_word_representation_dimension));
+        vectors.push_back(Blob<F>(FLAGS_word_representation_dimension));
         for (auto i = 0; i < FLAGS_word_representation_dimension; ++i) {
-          float value = 0.0f;
+          F value = 0.0f;
           line_in >> value;
           vectors.back().value(i) = value;
         }
@@ -101,5 +106,8 @@ namespace autoencoder {
     }
     return LookupTable(generator, words, vectors);
   }
+
+  template class LookupTable<float>;
+  template class LookupTable<double>;
 
 }  // namespace autoencoder

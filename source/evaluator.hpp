@@ -9,25 +9,29 @@
 
 namespace autoencoder {
 
+  template <typename F>
   class PartOfSpeechTagger;
 
+  template <typename F>
   struct EvaluationReport {
-    float tag_accuracy, unknown_accuracy;
+    F tag_accuracy, unknown_accuracy;
   };
 
+  template <typename F>
   class Evaluator {
   public:
     Evaluator() = default;
 
     virtual ~Evaluator() = default;
 
-    EvaluationReport Evaluate(
-        PartOfSpeechTagger &part_of_speech_tagger,
+    EvaluationReport<F> Evaluate(
+        PartOfSpeechTagger<F> &part_of_speech_tagger,
         const std::vector<TaggedSentence> &tagged_sentences,
         const std::unordered_set<std::string> &training_vocabulary) const;
   };
 
-  std::ostream &operator <<(std::ostream &out, const EvaluationReport &report);
+  template <typename F>
+  std::ostream &operator <<(std::ostream &out, const EvaluationReport<F> &report);
 
 }  // namespace autoencoder
 

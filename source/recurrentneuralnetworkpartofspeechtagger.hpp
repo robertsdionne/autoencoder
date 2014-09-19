@@ -13,14 +13,18 @@
 
 namespace autoencoder {
 
+  template <typename F>
   class Evaluator;
+
+  template <typename F>
   class LookupTable;
 
-  class RecurrentNeuralNetworkPartOfSpeechTagger : public PartOfSpeechTagger {
+  template <typename F>
+  class RecurrentNeuralNetworkPartOfSpeechTagger : public PartOfSpeechTagger<F> {
   public:
     RecurrentNeuralNetworkPartOfSpeechTagger(
-      LookupTable &word_table, LookupTable &tag_table,
-      float p, std::mt19937 &generator,
+      LookupTable<F> &word_table, LookupTable<F> &tag_table,
+      F p, std::mt19937 &generator,
       int recurrent_state_dimension,
       int tag_dimension,
       int word_representation_dimension);
@@ -29,14 +33,14 @@ namespace autoencoder {
 
     void ForwardCpu(const std::vector<std::string> &sentence, std::vector<std::string> *tags);
 
-    float ForwardBackwardCpu(const TaggedSentence &tagged_sentence);
+    F ForwardBackwardCpu(const TaggedSentence &tagged_sentence);
 
     void Train(
         const std::vector<TaggedSentence> &tagged_sentences,
-        float learning_rate,
-        float momentum,
+        F learning_rate,
+        F momentum,
         int iterations,
-        Evaluator &evaluator,
+        Evaluator<F> &evaluator,
         const std::vector<TaggedSentence> &validation_sentences,
         const std::unordered_set<std::string> &training_vocabulary) override;
 
@@ -44,20 +48,20 @@ namespace autoencoder {
 
     std::vector<std::string> Tag(const std::vector<std::string> &sentence) override;
 
-    float ScoreTagging(const TaggedSentence &tagged_sentence) const override;
+    F ScoreTagging(const TaggedSentence &tagged_sentence) const override;
 
   public:
-    LookupTable &word_table;
-    LookupTable &tag_table;
-    float p;
+    LookupTable<F> &word_table;
+    LookupTable<F> &tag_table;
+    F p;
     std::mt19937 &generator;
-    std::uniform_real_distribution<float> uniform, uniform_symmetric;
+    std::uniform_real_distribution<F> uniform, uniform_symmetric;
     int recurrent_state_dimension, tag_dimension, word_representation_dimension;
-    Blob<float> recurrent_state_input, recurrent_state_output;
-    Blob<float> classify_weights, classify_bias;
-    Blob<float> combine_weights, combine_bias;
-    PartOfSpeechSentenceLayer part_of_speech_sentence;
-    EuclideanLossLayer loss;
+    Blob<F> recurrent_state_input, recurrent_state_output;
+    Blob<F> classify_weights, classify_bias;
+    Blob<F> combine_weights, combine_bias;
+    PartOfSpeechSentenceLayer<F> part_of_speech_sentence;
+    EuclideanLossLayer<F> loss;
   };
 
 }  // namespace autoencoder

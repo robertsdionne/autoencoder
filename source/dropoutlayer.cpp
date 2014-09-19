@@ -6,12 +6,14 @@
 
 namespace autoencoder {
 
-  DropoutLayer::DropoutLayer(float p, std::mt19937 &generator)
+  template <typename F>
+  DropoutLayer<F>::DropoutLayer(F p, std::mt19937 &generator)
     : mask(), p(p), scale(1.0f / p), generator(generator), bernoulli(p) {
     assert(0.0f <= p <= 1.0f);
   }
 
-  float DropoutLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
+  template <typename F>
+  F DropoutLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     if (Mode::kTrain == mode) {
       mask.clear();
       for (auto i = 0; i < bottom.size(); ++i) {
@@ -34,7 +36,8 @@ namespace autoencoder {
     return 0.0f;
   }
 
-  void DropoutLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
+  template <typename F>
+  void DropoutLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = 0; i < bottom->size(); ++i) {
       for (auto j = 0; j < bottom->at(i)->width; ++j) {
         auto top_diff = top.at(i)->difference(j);
@@ -43,5 +46,8 @@ namespace autoencoder {
       bottom->at(i)->IsValid();
     }
   }
+
+  template class DropoutLayer<float>;
+  template class DropoutLayer<double>;
 
 }  // namespace autoencoder

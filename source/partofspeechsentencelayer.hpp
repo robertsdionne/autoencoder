@@ -10,27 +10,28 @@
 
 namespace autoencoder {
 
-  class PartOfSpeechSentenceLayer : public Layer {
+  template <typename F>
+  class PartOfSpeechSentenceLayer : public Layer<F> {
   public:
     PartOfSpeechSentenceLayer(
-        float p,
-        Blob<float> &classify_weights, Blob<float> &classify_bias,
-        Blob<float> &combine_weights, Blob<float> &combine_bias,
+        F p,
+        Blob<F> &classify_weights, Blob<F> &classify_bias,
+        Blob<F> &combine_weights, Blob<F> &combine_bias,
         std::mt19937 &generator);
 
     virtual ~PartOfSpeechSentenceLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
+    F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
 
-    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
+    void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
 
   private:
-    float p;
+    F p;
     std::mt19937 &generator;
-    Blob<float> &classify_weights, &classify_bias;
-    Blob<float> &combine_weights, &combine_bias;
-    std::vector<PartOfSpeechWordLayer> layers;
-    std::vector<Blob<float>> recurrent_states;
+    Blob<F> &classify_weights, &classify_bias;
+    Blob<F> &combine_weights, &combine_bias;
+    std::vector<PartOfSpeechWordLayer<F>> layers;
+    std::vector<Blob<F>> recurrent_states;
   };
 
 }  // namespace autoencoder

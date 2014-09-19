@@ -11,10 +11,10 @@ TEST(EuclideanLossLayerTest, TestForwardCpu) {
   for (auto i = 0; i < target.width; ++i) {
     target.value(i) = 1.0f;
   }
-  auto layer = EuclideanLossLayer();
+  auto layer = EuclideanLossLayer<float>();
   auto output = Blob<float>(10);
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Layer::Mode::kTrain, {&input, &target}, &out);
+  layer.ForwardCpu(Mode::kTrain, {&input, &target}, &out);
 
   for (auto i = 0; i < output.width; ++i) {
     EXPECT_FLOAT_EQ(0.5f, output.value(i));
@@ -28,11 +28,11 @@ TEST(EuclideanLossLayerTest, TestBackwardCpu) {
   for (auto i = 0; i < target.width; ++i) {
     target.value(i) = 1.0f;
   }
-  auto layer = EuclideanLossLayer();
+  auto layer = EuclideanLossLayer<float>();
   auto output = Blob<float>(10);
   auto in = Blobs<float>{&input, &target};
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
+  layer.ForwardCpu(Mode::kTrain, in, &out);
   layer.BackwardCpu(out, &in);
 
   for (auto i = 0; i < input.width; ++i) {

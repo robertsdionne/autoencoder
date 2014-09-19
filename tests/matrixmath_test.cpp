@@ -20,7 +20,7 @@ TEST(MatrixMathTest, TestSgemm) {
     }
   }
   auto C = Values<float>(kN, kM);
-  Sgemm(1.0f, A, B, 0.0f, &C);
+  Gemm(1.0f, A, B, 0.0f, &C);
 
   EXPECT_FLOAT_EQ(14.0f, C.value(0, 0));
   EXPECT_FLOAT_EQ(20.0f, C.value(0, 1));

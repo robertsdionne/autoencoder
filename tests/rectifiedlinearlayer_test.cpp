@@ -12,10 +12,10 @@ TEST(RectifiedLinearLayerTest, TestForwardCpu) {
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
-  auto layer = RectifiedLinearLayer();
+  auto layer = RectifiedLinearLayer<float>();
   auto output = Blob<float>(10);
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Layer::Mode::kTrain, {&input}, &out);
+  layer.ForwardCpu(Mode::kTrain, {&input}, &out);
 
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));
@@ -27,7 +27,7 @@ TEST(RectifiedLinearLayerTest, TestBackwardCpu) {
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }
-  auto layer = RectifiedLinearLayer();
+  auto layer = RectifiedLinearLayer<float>();
   auto input = Blob<float>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
@@ -46,8 +46,8 @@ TEST(RectifiedLinearLayerTest, TestGradient) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
   auto in = Blobs<float>{&input};
-  auto layer = RectifiedLinearLayer();
-  auto loss_layer = EuclideanLossLayer();
+  auto layer = RectifiedLinearLayer<float>();
+  auto loss_layer = EuclideanLossLayer<float>();
 
   constexpr float kEpsilon = 1e-4;
 
@@ -62,8 +62,8 @@ TEST(RectifiedLinearLayerTest, TestGradient) {
     auto loss_in = Blobs<float>{&output, &target};
     auto loss_out = Blobs<float>{&losses};
 
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
     layer.BackwardCpu(out, &in);
 
@@ -72,12 +72,12 @@ TEST(RectifiedLinearLayerTest, TestGradient) {
     auto original_input_i = input.value(i);
 
     input.value(i) = original_input_i + kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_1 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i - kEpsilon;
-    layer.ForwardCpu(Layer::Mode::kTrain, in, &out);
-    auto loss_0 = loss_layer.Forward(Layer::Mode::kTrain, loss_in, &loss_out);
+    layer.ForwardCpu(Mode::kTrain, in, &out);
+    auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i;
 

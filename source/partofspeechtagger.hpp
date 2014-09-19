@@ -10,18 +10,20 @@
 
 namespace autoencoder {
 
+  template <typename F>
   class Evaluator;
 
+  template <typename F>
   class PartOfSpeechTagger {
     DECLARE_INTERFACE(PartOfSpeechTagger);
 
   public:
     virtual void Train(
         const std::vector<TaggedSentence> &tagged_sentences,
-        float learning_rate,
-        float momentum,
+        F learning_rate,
+        F momentum,
         int iterations,
-        Evaluator &evaluator,
+        Evaluator<F> &evaluator,
         const std::vector<TaggedSentence> &validation_sentences,
         const std::unordered_set<std::string> &training_vocabulary) = 0;
 
@@ -29,7 +31,7 @@ namespace autoencoder {
 
     virtual std::vector<std::string> Tag(const std::vector<std::string> &sentence) = 0;
 
-    virtual float ScoreTagging(const TaggedSentence &tagged_sentence) const = 0;
+    virtual F ScoreTagging(const TaggedSentence &tagged_sentence) const = 0;
   };
 
 }  // namespace autoencoder

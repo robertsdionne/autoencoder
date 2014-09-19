@@ -15,7 +15,7 @@ TEST(LookupTableTest, TestForwardCpu) {
     }
   }
   auto generator = std::mt19937(123);
-  auto table = LookupTable(generator, words, vectors);
+  auto table = LookupTable<float>(generator, words, vectors);
   auto input = std::vector<std::string>{"one", "three", "five"};
   auto output = Blobs<float>{};
   table.ForwardCpu(input, &output);

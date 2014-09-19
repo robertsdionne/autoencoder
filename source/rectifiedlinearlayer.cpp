@@ -3,19 +3,24 @@
 
 namespace autoencoder {
 
-  float RectifiedLinearLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
+  template <typename F>
+  F RectifiedLinearLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     for (auto i = 0; i < top->at(0)->width; ++i) {
-      top->at(0)->value(i) = std::max(0.0f, bottom.at(0)->value(i));
+      top->at(0)->value(i) = std::max(F(0.0), bottom.at(0)->value(i));
     }
     top->at(0)->IsValid();
     return 0.0;
   }
 
-  void RectifiedLinearLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
+  template <typename F>
+  void RectifiedLinearLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = 0; i < bottom->at(0)->width; ++i) {
-      bottom->at(0)->difference(i) = top.at(0)->difference(i) * (bottom->at(0)->value(i) > 0.0f);
+      bottom->at(0)->difference(i) = top.at(0)->difference(i) * (bottom->at(0)->value(i) > F(0.0));
     }
     bottom->at(0)->IsValid();
   }
+
+  template class RectifiedLinearLayer<float>;
+  template class RectifiedLinearLayer<double>;
 
 }  // namespace autoencoder

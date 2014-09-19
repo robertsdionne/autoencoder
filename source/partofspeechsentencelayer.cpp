@@ -6,16 +6,18 @@
 
 namespace autoencoder {
 
-  PartOfSpeechSentenceLayer::PartOfSpeechSentenceLayer(
-      float p,
-      Blob<float> &classify_weights, Blob<float> &classify_bias,
-      Blob<float> &combine_weights, Blob<float> &combine_bias,
+  template <typename F>
+  PartOfSpeechSentenceLayer<F>::PartOfSpeechSentenceLayer(
+      F p,
+      Blob<F> &classify_weights, Blob<F> &classify_bias,
+      Blob<F> &combine_weights, Blob<F> &combine_bias,
       std::mt19937 &generator)
     : p(p), generator(generator),
       classify_weights(classify_weights), classify_bias(classify_bias),
       combine_weights(combine_weights), combine_bias(combine_bias) {}
 
-  float PartOfSpeechSentenceLayer::ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) {
+  template <typename F>
+  F PartOfSpeechSentenceLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     layers.clear();
     recurrent_states.clear();
 
@@ -30,8 +32,8 @@ namespace autoencoder {
           p, classify_weights, classify_bias, combine_weights, combine_bias, generator);
       recurrent_states.emplace_back(combine_weights.height);
 
-      auto layer_input = Blobs<float>{&recurrent_states.at(i - 1), bottom.at(i)};
-      auto layer_output = Blobs<float>{top->at(i - 1), &recurrent_states.at(i)};
+      auto layer_input = Blobs<F>{&recurrent_states.at(i - 1), bottom.at(i)};
+      auto layer_output = Blobs<F>{top->at(i - 1), &recurrent_states.at(i)};
 
       // std::cout << "layers.at(" << i << " - 1).ForwardCpu" << std::endl;
       layers.at(i - 1).ForwardCpu(mode, layer_input, &layer_output);
@@ -45,10 +47,11 @@ namespace autoencoder {
     return 0.0f;
   }
 
-  void PartOfSpeechSentenceLayer::BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) {
+  template <typename F>
+  void PartOfSpeechSentenceLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = bottom->size() - 1; i > 0; --i) {
-      auto layer_input = Blobs<float>{&recurrent_states.at(i - 1), bottom->at(i)};
-      auto layer_output = Blobs<float>{top.at(i - 1), &recurrent_states.at(i)};
+      auto layer_input = Blobs<F>{&recurrent_states.at(i - 1), bottom->at(i)};
+      auto layer_output = Blobs<F>{top.at(i - 1), &recurrent_states.at(i)};
 
       // std::cout << "layers.at(" << i << " - 1).BackwardCpu" << std::endl;
       layers.at(i - 1).BackwardCpu(layer_output, &layer_input);
@@ -60,5 +63,8 @@ namespace autoencoder {
     }
     bottom->front()->IsValid();
   }
+
+  template class PartOfSpeechSentenceLayer<float>;
+  template class PartOfSpeechSentenceLayer<double>;
 
 }  // namespace autoencoder

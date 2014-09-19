@@ -17,12 +17,13 @@ namespace autoencoder {
 
   DECLARE_int32(word_representation_dimension);
 
+  template <typename F>
   class LookupTable {
   public:
     LookupTable(std::mt19937 &generator);
 
     LookupTable(std::mt19937 &generator,
-        const std::vector<std::string> &tokens, const std::vector<Blob<float>> &vectors);
+        const std::vector<std::string> &tokens, const std::vector<Blob<F>> &vectors);
 
     virtual ~LookupTable() = default;
 
@@ -50,19 +51,19 @@ namespace autoencoder {
       }
     }
 
-    void ForwardCpu(const std::vector<std::string> &tokens, Blobs<float> *top);
+    void ForwardCpu(const std::vector<std::string> &tokens, Blobs<F> *top);
 
     std::string LookupToken(int index);
 
-    static LookupTable Load(
+    static LookupTable<F> Load(
         std::mt19937 &generator,
         const std::string &words_filename, const std::string &vectors_filename);
 
   private:
     std::mt19937 &generator;
-    std::uniform_real_distribution<float> uniform;
+    std::uniform_real_distribution<F> uniform;
     std::unordered_map<std::string, int> token_indices, unknown_token_indices;
-    std::vector<Blob<float>> vectors, unknown_vectors;
+    std::vector<Blob<F>> vectors, unknown_vectors;
     std::unordered_map<int, std::string> index_tokens, unknown_index_tokens;
   };
 

@@ -9,19 +9,20 @@
 
 namespace autoencoder {
 
-  class DropoutLayer : public Layer {
+  template <typename F>
+  class DropoutLayer : public Layer<F> {
   public:
-    DropoutLayer(float p, std::mt19937 &generator);
+    DropoutLayer(F p, std::mt19937 &generator);
 
     virtual ~DropoutLayer() = default;
 
-    float ForwardCpu(Mode mode, const Blobs<float> &bottom, Blobs<float> *top) override;
+    F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
 
-    void BackwardCpu(const Blobs<float> &top, Blobs<float> *bottom) override;
+    void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
 
   private:
-    std::vector<Values<float>> mask;
-    float p, scale;
+    std::vector<Values<F>> mask;
+    F p, scale;
     std::mt19937 &generator;
     std::bernoulli_distribution bernoulli;
   };
