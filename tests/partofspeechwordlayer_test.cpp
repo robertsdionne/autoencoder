@@ -1,3 +1,4 @@
+#include <complex>
 #include <gtest/gtest.h>
 #include <random>
 
@@ -9,8 +10,8 @@ using namespace autoencoder;
 
 constexpr auto kRandomSeed = 123;
 
-template<typename Distribution, typename Generator>
-void InitializeBlob(Distribution &distribution, Generator &generator, Blob<float> *blob) {
+template<typename Distribution, typename Generator, typename F>
+void InitializeBlob(Distribution &distribution, Generator &generator, Blob<F> *blob) {
   for (auto i = 0; i < blob->height; ++i) {
     for (auto j = 0; j < blob->width; ++j) {
       blob->value(j, i) = distribution(generator);
@@ -398,15 +399,15 @@ TEST(PartOfSpeechWordLayerTest, TestBackwardCpu) {
 
 TEST(PartOfSpeechWordLayerTest, TestGradient) {
   std::mt19937 generator(kRandomSeed);
-  std::uniform_real_distribution<float> uniform;
-  std::uniform_real_distribution<float> uniform_symmetric(-1.0f, 1.0f);
+  std::uniform_real_distribution<double> uniform(0.0, 0.1);
+  std::uniform_real_distribution<double> uniform_symmetric(-0.1, 0.1);
 
-  auto recurrent_input = Blob<float>(10);
-  auto word_input = Blob<float>(10);
-  auto classify_weights = Blob<float>(10, 5);
-  auto classify_bias = Blob<float>(5);
-  auto combine_weights = Blob<float>(20, 10);
-  auto combine_bias = Blob<float>(10);
+  auto recurrent_input = Blob<double>(10);
+  auto word_input = Blob<double>(10);
+  auto classify_weights = Blob<double>(10, 5);
+  auto classify_bias = Blob<double>(5);
+  auto combine_weights = Blob<double>(20, 10);
+  auto combine_bias = Blob<double>(10);
 
   InitializeBlob(uniform_symmetric, generator, &recurrent_input);
   InitializeBlob(uniform_symmetric, generator, &word_input);
@@ -415,29 +416,30 @@ TEST(PartOfSpeechWordLayerTest, TestGradient) {
   InitializeBlob(uniform, generator, &combine_weights);
   InitializeBlob(uniform, generator, &combine_bias);
 
-  auto layer = PartOfSpeechWordLayer<float>(
+  auto layer = PartOfSpeechWordLayer<double>(
       0.5f, classify_weights, classify_bias, combine_weights, combine_bias, generator);
-  auto loss_layer = EuclideanLossLayer<float>();
-  auto tag_output = Blob<float>(5);
-  auto recurrent_output = Blob<float>(10);
-  auto in = Blobs<float>{&recurrent_input, &word_input};
-  auto out = Blobs<float>{&tag_output, &recurrent_output};
+  auto loss_layer = EuclideanLossLayer<double>();
+  auto tag_output = Blob<double>(5);
+  auto recurrent_output = Blob<double>(10);
+  auto in = Blobs<double>{&recurrent_input, &word_input};
+  auto out = Blobs<double>{&tag_output, &recurrent_output};
 
-  constexpr float kEpsilon = 1e-1;
-  constexpr float kTolerance = 2.1e-1;
+  constexpr double kEpsilon = 1e-4;
+  constexpr double kTolerance = 1e-4;
 
   for (auto i = 0; i < recurrent_input.width; ++i) {
-    auto tag_output = Blob<float>(5);
-    auto recurrent_output = Blob<float>(10);
-    auto out = Blobs<float>{&tag_output, &recurrent_output};
-    auto losses = Blob<float>(5);
-    auto target = Blob<float>(5);
+    auto tag_output = Blob<double>(5);
+    auto recurrent_output = Blob<double>(10);
+    auto out = Blobs<double>{&tag_output, &recurrent_output};
+    auto losses = Blob<double>(5);
+    auto target = Blob<double>(5);
     for (auto j = 0; j < recurrent_input.width; ++j) {
       recurrent_input.difference(j) = 0.0;
     }
-    auto loss_in = Blobs<float>{&tag_output, &target};
-    auto loss_out = Blobs<float>{&losses};
+    auto loss_in = Blobs<double>{&tag_output, &target};
+    auto loss_out = Blobs<double>{&losses};
 
+    generator.seed(kRandomSeed);
     layer.ForwardCpu(Mode::kTrain, in, &out);
     loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
@@ -448,10 +450,12 @@ TEST(PartOfSpeechWordLayerTest, TestGradient) {
     auto original_recurrent_input_i = recurrent_input.value(i);
 
     recurrent_input.value(i) = original_recurrent_input_i + kEpsilon;
+    generator.seed(kRandomSeed);
     layer.ForwardCpu(Mode::kTrain, in, &out);
     auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     recurrent_input.value(i) = original_recurrent_input_i - kEpsilon;
+    generator.seed(kRandomSeed);
     layer.ForwardCpu(Mode::kTrain, in, &out);
     auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 

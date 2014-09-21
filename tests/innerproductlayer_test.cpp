@@ -14,7 +14,7 @@ TEST(InnerProductLayerTest, TestForwardCpu) {
   auto weights = Blob<float>(4, 3);
   for (auto i = 0; i < weights.height; ++i) {
     for (auto j = 0; j < weights.width; ++j) {
-      weights.value(j, i) = i + j;
+      weights.value(j, i) = (i + j);
     }
   }
   auto bias = Blob<float>(3);
@@ -80,37 +80,37 @@ TEST(InnerProductLayerTest, TestBackwardCpu) {
 }
 
 TEST(InnerProductLayerTest, TestGradient) {
-  auto input = Blob<float>(4);
+  auto input = Blob<double>(4);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = i;
   }
-  auto weights = Blob<float>(4, 3);
+  auto weights = Blob<double>(4, 3);
   for (auto i = 0; i < weights.height; ++i) {
     for (auto j = 0; j < weights.width; ++j) {
-      weights.value(j, i) = i + j;
+      weights.value(j, i) = (i + j) / 36.0f;
     }
   }
-  auto bias = Blob<float>(3);
+  auto bias = Blob<double>(3);
   for (auto i = 0; i < bias.width; ++i) {
-    bias.value(i) = i;
+    bias.value(i) = i / 6.0f;
   }
-  auto in = Blobs<float>{&input};
-  auto layer = InnerProductLayer<float>(weights, bias);
-  auto loss_layer = EuclideanLossLayer<float>();
+  auto in = Blobs<double>{&input};
+  auto layer = InnerProductLayer<double>(weights, bias);
+  auto loss_layer = EuclideanLossLayer<double>();
 
-  constexpr float kEpsilon = 1e-2;
-  constexpr float kTolerance = 3e-3;
+  constexpr double kEpsilon = 1e-4;
+  constexpr double kTolerance = 1e-3;
 
   for (auto i = 0; i < input.width; ++i) {
-    auto output = Blob<float>(3);
-    auto out = Blobs<float>{&output};
-    auto losses = Blob<float>(3);
-    auto target = Blob<float>(3);
+    auto output = Blob<double>(3);
+    auto out = Blobs<double>{&output};
+    auto losses = Blob<double>(3);
+    auto target = Blob<double>(3);
     for (auto j = 0; j < input.width; ++j) {
       input.difference(j) = 0.0;
     }
-    auto loss_in = Blobs<float>{&output, &target};
-    auto loss_out = Blobs<float>{&losses};
+    auto loss_in = Blobs<double>{&output, &target};
+    auto loss_out = Blobs<double>{&losses};
 
     layer.ForwardCpu(Mode::kTrain, in, &out);
     loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
@@ -139,17 +139,17 @@ TEST(InnerProductLayerTest, TestGradient) {
 
   for (auto i = 0; i < weights.height; ++i) {
     for (auto j = 0; j < weights.width; ++j) {
-      auto output = Blob<float>(3);
-      auto out = Blobs<float>{&output};
-      auto losses = Blob<float>(3);
-      auto target = Blob<float>(3);
+      auto output = Blob<double>(3);
+      auto out = Blobs<double>{&output};
+      auto losses = Blob<double>(3);
+      auto target = Blob<double>(3);
       for (auto k = 0; k < weights.height; ++k) {
         for (auto l = 0; l < weights.width; ++l) {
           weights.difference(l, k) = 0.0;
         }
       }
-      auto loss_in = Blobs<float>{&output, &target};
-      auto loss_out = Blobs<float>{&losses};
+      auto loss_in = Blobs<double>{&output, &target};
+      auto loss_out = Blobs<double>{&losses};
 
       layer.ForwardCpu(Mode::kTrain, in, &out);
       loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
@@ -178,15 +178,15 @@ TEST(InnerProductLayerTest, TestGradient) {
   }
 
   for (auto i = 0; i < bias.width; ++i) {
-    auto output = Blob<float>(3);
-    auto out = Blobs<float>{&output};
-    auto losses = Blob<float>(3);
-    auto target = Blob<float>(3);
+    auto output = Blob<double>(3);
+    auto out = Blobs<double>{&output};
+    auto losses = Blob<double>(3);
+    auto target = Blob<double>(3);
     for (auto j = 0; j < bias.width; ++j) {
       bias.difference(j) = 0.0;
     }
-    auto loss_in = Blobs<float>{&output, &target};
-    auto loss_out = Blobs<float>{&losses};
+    auto loss_in = Blobs<double>{&output, &target};
+    auto loss_out = Blobs<double>{&losses};
 
     layer.ForwardCpu(Mode::kTrain, in, &out);
     loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
