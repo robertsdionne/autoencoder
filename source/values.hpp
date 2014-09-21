@@ -80,6 +80,20 @@ namespace autoencoder {
       values.resize(width * height * depth * duration);
     }
 
+    F SquareMagnitude() {
+      auto sum = F(0.0);
+      for (auto i = 0; i < width; ++i) {
+        for (auto j = 0; j < height; ++j) {
+          for (auto k = 0; k < depth; ++k) {
+            for (auto l = 0; l < duration; ++l) {
+              sum += value(i, j, k, l) * value(i, j, k, l);
+            }
+          }
+        }
+      }
+      return sum;
+    }
+
   public:
     std::vector<F> values;
     int width, height, depth, duration;

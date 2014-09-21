@@ -67,22 +67,8 @@ namespace autoencoder {
       accelerations.Reshape(width, height, depth, duration);
     }
 
-    F SquareMagnitude() {
-      auto sum = F(0.0);
-      for (auto i = 0; i < width; ++i) {
-        for (auto j = 0; j < height; ++j) {
-          for (auto k = 0; k < depth; ++k) {
-            for (auto l = 0; l < duration; ++l) {
-              sum += difference(i, j, k, l) * difference(i, j, k, l);
-            }
-          }
-        }
-      }
-      return sum;
-    }
-
-    void ClipGradient(F sum) {
-      auto magnitude = sqrt(sum);
+    void ClipGradient(F square_magnitude) {
+      auto magnitude = sqrt(square_magnitude);
       if (magnitude > 1.0) {
         for (auto i = 0; i < width; ++i) {
           for (auto j = 0; j < height; ++j) {
@@ -90,6 +76,32 @@ namespace autoencoder {
               for (auto l = 0; l < duration; ++l) {
                 difference(i, j, k, l) /= magnitude;
               }
+            }
+          }
+        }
+      }
+    }
+
+    void L1Regularize(F lambda) {
+      for (auto i = 0; i < width; ++i) {
+        for (auto j = 0; j < height; ++j) {
+          for (auto k = 0; k < depth; ++k) {
+            for (auto l = 0; l < duration; ++l) {
+              auto sign = value(i, j, k, l) < F(0.0) ? F(-1.0) : F(1.0);
+              difference(i, j, k, l) += sign * lambda;
+            }
+          }
+        }
+      }
+    }
+
+    void L2Regularize(F lambda, F square_magnitude) {
+      auto magnitude = sqrt(square_magnitude);
+      for (auto i = 0; i < width; ++i) {
+        for (auto j = 0; j < height; ++j) {
+          for (auto k = 0; k < depth; ++k) {
+            for (auto l = 0; l < duration; ++l) {
+              difference(i, j, k, l) += lambda * value(i, j, k, l) / magnitude;
             }
           }
         }

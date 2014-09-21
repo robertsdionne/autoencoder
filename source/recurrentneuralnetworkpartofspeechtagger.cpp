@@ -116,6 +116,8 @@ namespace autoencoder {
       const std::vector<TaggedSentence> &tagged_sentences,
       F learning_rate,
       F momentum,
+      F lambda_1,
+      F lambda_2,
       int iterations,
       Evaluator<F> &evaluator,
       const std::vector<TaggedSentence> &validation_sentences,
@@ -124,6 +126,8 @@ namespace autoencoder {
     InitializeBlob(uniform_symmetric, generator, &recurrent_state_input);
     InitializeBlob(uniform_symmetric, generator, &classify_weights);
     InitializeBlob(uniform_symmetric, generator, &combine_weights);
+
+    std::uniform_int_distribution<int> uniform(0, tagged_sentences.size() - 1);
 
     std::cout << "Training... " << std::endl << std::endl;
     for (auto i = 0; i < iterations; ++i) {
@@ -136,21 +140,39 @@ namespace autoencoder {
       std::cout << "Starting iteration " << i << "... " << std::endl << std::endl;
       
       for (auto j = 0; j < tagged_sentences.size(); ++j) {
-        ForwardBackwardCpu(tagged_sentences.at(j));
+        ForwardBackwardCpu(tagged_sentences.at(uniform(generator)));
+
+        classify_weights.L1Regularize(lambda_1);
+        classify_bias.L1Regularize(lambda_1);
+        combine_weights.L1Regularize(lambda_1);
+        combine_bias.L1Regularize(lambda_1);
 
         auto square_magnitude =
-            classify_weights.SquareMagnitude() + classify_weights.SquareMagnitude()
-            + combine_weights.SquareMagnitude() + combine_bias.SquareMagnitude();
+            classify_weights.values.SquareMagnitude()
+            + classify_weights.values.SquareMagnitude()
+            + combine_weights.values.SquareMagnitude()
+            + combine_bias.values.SquareMagnitude();
 
-        classify_weights.ClipGradient(square_magnitude);
-        classify_bias.ClipGradient(square_magnitude);
-        combine_weights.ClipGradient(square_magnitude);
-        combine_bias.ClipGradient(square_magnitude);
+        classify_weights.L2Regularize(lambda_2, square_magnitude);
+        classify_bias.L2Regularize(lambda_2, square_magnitude);
+        combine_weights.L2Regularize(lambda_2, square_magnitude);
+        combine_bias.L2Regularize(lambda_2, square_magnitude);
 
-        classify_weights.UpdateAdaDelta(learning_rate, 0.5);
-        classify_bias.UpdateAdaDelta(learning_rate, 0.5);
-        combine_weights.UpdateAdaDelta(learning_rate, 0.5);
-        combine_bias.UpdateAdaDelta(learning_rate, 0.5);
+        auto difference_square_magnitude =
+            classify_weights.differences.SquareMagnitude()
+            + classify_weights.differences.SquareMagnitude()
+            + combine_weights.differences.SquareMagnitude()
+            + combine_bias.differences.SquareMagnitude();
+
+        classify_weights.ClipGradient(difference_square_magnitude);
+        classify_bias.ClipGradient(difference_square_magnitude);
+        combine_weights.ClipGradient(difference_square_magnitude);
+        combine_bias.ClipGradient(difference_square_magnitude);
+
+        classify_weights.UpdateAdaGrad(learning_rate);
+        classify_bias.UpdateAdaGrad(learning_rate);
+        combine_weights.UpdateAdaGrad(learning_rate);
+        combine_bias.UpdateAdaGrad(learning_rate);
 
         if (j > 0 && j % 100 == 0) {
           std::cout << "Finished " << j << " sentences." << std::endl;

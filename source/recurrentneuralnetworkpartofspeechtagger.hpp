@@ -39,6 +39,8 @@ namespace autoencoder {
         const std::vector<TaggedSentence> &tagged_sentences,
         F learning_rate,
         F momentum,
+        F lambda_1,
+        F lambda_2,
         int iterations,
         Evaluator<F> &evaluator,
         const std::vector<TaggedSentence> &validation_sentences,

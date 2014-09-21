@@ -22,6 +22,10 @@ namespace autoencoder {
 
   DEFINE_double(momentum, 0.0f, "the momentum");
 
+  DEFINE_double(lambda_1, 1e-4, "the L1 regularization coefficient");
+
+  DEFINE_double(lambda_2, 1e-4, "the L2 regularization coefficient");
+
   DEFINE_int32(random_seed, std::random_device()(), "seed the random number generator");
 
   DEFINE_int32(recurrent_state_dimension, 50, "the recurrent state dimension");
@@ -88,7 +92,7 @@ int main(int argument_count, char *arguments[]) {
   auto evaluator = Evaluator<float>();
 
   part_of_speech_tagger.Train(
-      training_sentences, FLAGS_learning_rate, FLAGS_momentum,
+      training_sentences, FLAGS_learning_rate, FLAGS_momentum, FLAGS_lambda_1, FLAGS_lambda_2,
       FLAGS_iterations, evaluator, validation_in_domain_sentences,
       training_vocabulary);
 
