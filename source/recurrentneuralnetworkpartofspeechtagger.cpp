@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "blob.hpp"
+#include "device.hpp"
 #include "evaluator.hpp"
 #include "lookuptable.hpp"
 #include "recurrentneuralnetworkpartofspeechtagger.hpp"
@@ -22,6 +23,7 @@ namespace autoencoder {
 
   template <typename F>
   RecurrentNeuralNetworkPartOfSpeechTagger<F>::RecurrentNeuralNetworkPartOfSpeechTagger(
+      Device<F> &device,
       LookupTable<F> &word_table, LookupTable<F> &tag_table,
       F p, std::mt19937 &generator,
       int recurrent_state_dimension,
@@ -40,8 +42,8 @@ namespace autoencoder {
         recurrent_state_dimension + word_representation_dimension, recurrent_state_dimension),
     combine_bias(recurrent_state_dimension),
     part_of_speech_sentence(
-        p, classify_weights, classify_bias, combine_weights, combine_bias, generator),
-    loss() {}
+        device, p, classify_weights, classify_bias, combine_weights, combine_bias, generator),
+    loss(device) {}
 
   template <typename F>
   void RecurrentNeuralNetworkPartOfSpeechTagger<F>::ForwardCpu(

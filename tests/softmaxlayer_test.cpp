@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "blob.hpp"
+#include "cpudevice.hpp"
 #include "euclideanlosslayer.hpp"
 #include "softmaxlayer.hpp"
 
@@ -65,7 +66,8 @@ TEST(SoftmaxLayerTest, TestGradient) {
   }
   auto in = Blobs<float>{&input};
   auto layer = SoftmaxLayer<float>();
-  auto loss_layer = EuclideanLossLayer<float>();
+  auto device = CpuDevice<float>();
+  auto loss_layer = EuclideanLossLayer<float>(device);
 
   constexpr float kEpsilon = 1e-4;
 

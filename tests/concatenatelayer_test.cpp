@@ -2,6 +2,7 @@
 
 #include "blob.hpp"
 #include "concatenatelayer.hpp"
+#include "cpudevice.hpp"
 #include "euclideanlosslayer.hpp"
 
 using namespace autoencoder;
@@ -81,7 +82,8 @@ TEST(ConcatenateLayerTest, TestGradient) {
   }
 
   auto layer = ConcatenateLayer<float>();
-  auto loss_layer = EuclideanLossLayer<float>();
+  auto device = CpuDevice<float>();
+  auto loss_layer = EuclideanLossLayer<float>(device);
 
   constexpr auto kEpsilon = 1e-4;
 

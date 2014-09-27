@@ -1,10 +1,13 @@
 #include <iostream>
 
 #include "blob.hpp"
+#include "device.hpp"
 #include "euclideanlosslayer.hpp"
-#include "matrixmath.hpp"
 
 namespace autoencoder {
+
+  template <typename F>
+  EuclideanLossLayer<F>::EuclideanLossLayer(Device<F> &device) : device(device) {}
 
   template <typename F>
   F EuclideanLossLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
@@ -25,7 +28,7 @@ namespace autoencoder {
   void EuclideanLossLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = 0; i < bottom->size(); ++i) {
       auto sign = i % 2 == 0 ? F(-1.0) : F(1.0);
-      Axpby(sign, top.at(i / 2)->differences, F(1.0), &bottom->at(i)->differences);
+      device.Axpby(sign, top.at(i / 2)->differences, F(1.0), &bottom->at(i)->differences);
       bottom->at(i)->IsValid();
     }
   }

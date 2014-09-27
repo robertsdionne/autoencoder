@@ -13,10 +13,13 @@
 
 namespace autoencoder {
 
+  template <typename F> class Device;
+
   template <typename F>
   class PartOfSpeechWordLayer : public Layer<F> {
   public:
     PartOfSpeechWordLayer(
+        Device<F> &device,
         F p,
         Blob<F> &classify_weights, Blob<F> &classify_bias,
         Blob<F> &combine_weights, Blob<F> &combine_bias,

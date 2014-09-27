@@ -8,11 +8,12 @@ namespace autoencoder {
 
   template <typename F>
   PartOfSpeechSentenceLayer<F>::PartOfSpeechSentenceLayer(
+      Device<F> &device,
       F p,
       Blob<F> &classify_weights, Blob<F> &classify_bias,
       Blob<F> &combine_weights, Blob<F> &combine_bias,
       std::mt19937 &generator)
-    : p(p), generator(generator),
+    : device(device), p(p), generator(generator),
       classify_weights(classify_weights), classify_bias(classify_bias),
       combine_weights(combine_weights), combine_bias(combine_bias) {}
 
@@ -29,7 +30,7 @@ namespace autoencoder {
 
     for (auto i = 1; i < bottom.size(); ++i) {
       layers.emplace_back(
-          p, classify_weights, classify_bias, combine_weights, combine_bias, generator);
+          device, p, classify_weights, classify_bias, combine_weights, combine_bias, generator);
       recurrent_states.emplace_back(combine_weights.height);
 
       auto layer_input = Blobs<F>{&recurrent_states.at(i - 1), bottom.at(i)};

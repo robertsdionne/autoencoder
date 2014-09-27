@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "matrixmath.hpp"
+#include "cpudevice.hpp"
 #include "values.hpp"
 
 using namespace autoencoder;
@@ -20,7 +20,8 @@ TEST(MatrixMathTest, TestSgemm) {
     }
   }
   auto C = Values<float>(kN, kM);
-  Gemm(1.0f, A, B, 0.0f, &C);
+  auto device = CpuDevice<float>();
+  device.Gemm(1.0f, A, B, 0.0f, &C);
 
   EXPECT_FLOAT_EQ(14.0f, C.value(0, 0));
   EXPECT_FLOAT_EQ(20.0f, C.value(0, 1));

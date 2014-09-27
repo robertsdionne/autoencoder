@@ -13,16 +13,15 @@
 
 namespace autoencoder {
 
-  template <typename F>
-  class Evaluator;
-
-  template <typename F>
-  class LookupTable;
+  template <typename F> class Device;
+  template <typename F> class Evaluator;
+  template <typename F> class LookupTable;
 
   template <typename F>
   class RecurrentNeuralNetworkPartOfSpeechTagger : public PartOfSpeechTagger<F> {
   public:
     RecurrentNeuralNetworkPartOfSpeechTagger(
+      Device<F> &device,
       LookupTable<F> &word_table, LookupTable<F> &tag_table,
       F p, std::mt19937 &generator,
       int recurrent_state_dimension,

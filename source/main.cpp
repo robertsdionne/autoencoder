@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "blob.hpp"
+#include "cpudevice.hpp"
 #include "dataloader.hpp"
 #include "lookuptable.hpp"
 #include "recurrentneuralnetworkpartofspeechtagger.hpp"
@@ -79,6 +80,7 @@ int main(int argument_count, char *arguments[]) {
   tags.insert(tags.begin(), "<START>");
   std::cout << "Done." << std::endl << std::endl;
 
+  auto device = CpuDevice<number>();
   auto generator = std::mt19937(FLAGS_random_seed);
   auto word_table = LookupTable<number>::Load(
       generator, FLAGS_words_filename, FLAGS_vectors_filename);
@@ -88,7 +90,7 @@ int main(int argument_count, char *arguments[]) {
   }
   auto tag_table = LookupTable<number>(generator, tags, tag_vectors);
   auto part_of_speech_tagger = RecurrentNeuralNetworkPartOfSpeechTagger<number>(
-      word_table, tag_table, FLAGS_dropout_probability, generator,
+      device, word_table, tag_table, FLAGS_dropout_probability, generator,
       FLAGS_recurrent_state_dimension, tags.size(),
       FLAGS_word_representation_dimension);
   auto evaluator = Evaluator<number>(generator);

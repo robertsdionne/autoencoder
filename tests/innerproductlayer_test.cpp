@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "blob.hpp"
+#include "cpudevice.hpp"
 #include "euclideanlosslayer.hpp"
 #include "innerproductlayer.hpp"
 
@@ -21,7 +22,8 @@ TEST(InnerProductLayerTest, TestForwardCpu) {
   for (auto i = 0; i < bias.width; ++i) {
     bias.value(i) = i;
   }
-  auto layer = InnerProductLayer<float>(weights, bias);
+  auto device = CpuDevice<float>();
+  auto layer = InnerProductLayer<float>(device, weights, bias);
   auto output = Blob<float>(3);
   auto out = Blobs<float>{&output};
   layer.ForwardCpu(Mode::kTrain, {&input}, &out);
@@ -46,7 +48,8 @@ TEST(InnerProductLayerTest, TestBackwardCpu) {
   for (auto i = 0; i < bias.width; ++i) {
     bias.value(i) = i;
   }
-  auto layer = InnerProductLayer<float>(weights, bias);
+  auto device = CpuDevice<float>();
+  auto layer = InnerProductLayer<float>(device, weights, bias);
   auto output = Blob<float>(3);
   auto in = Blobs<float>{&input};
   auto out = Blobs<float>{&output};
@@ -95,8 +98,9 @@ TEST(InnerProductLayerTest, TestGradient) {
     bias.value(i) = i / 6.0f;
   }
   auto in = Blobs<double>{&input};
-  auto layer = InnerProductLayer<double>(weights, bias);
-  auto loss_layer = EuclideanLossLayer<double>();
+  auto device = CpuDevice<double>();
+  auto layer = InnerProductLayer<double>(device, weights, bias);
+  auto loss_layer = EuclideanLossLayer<double>(device);
 
   constexpr double kEpsilon = 1e-4;
   constexpr double kTolerance = 1e-3;

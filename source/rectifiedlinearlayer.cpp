@@ -9,7 +9,12 @@ namespace autoencoder {
       top->at(0)->value(i) = std::max(F(0.0), bottom.at(0)->value(i));
     }
     top->at(0)->IsValid();
-    return 0.0;
+    return F(0.0);
+  }
+
+  template <typename F>
+  F RectifiedLinearLayer<F>::ForwardGpu(Mode mode, const Blobs<F> & bottom, Blobs<F> *top) {
+    return F(0.0);
   }
 
   template <typename F>

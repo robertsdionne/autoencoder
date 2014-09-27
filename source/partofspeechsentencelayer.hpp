@@ -10,10 +10,13 @@
 
 namespace autoencoder {
 
+  template <typename F> class Device;
+
   template <typename F>
   class PartOfSpeechSentenceLayer : public Layer<F> {
   public:
     PartOfSpeechSentenceLayer(
+        Device<F> &device,
         F p,
         Blob<F> &classify_weights, Blob<F> &classify_bias,
         Blob<F> &combine_weights, Blob<F> &combine_bias,
@@ -26,6 +29,7 @@ namespace autoencoder {
     void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
 
   private:
+    Device<F> &device;
     F p;
     std::mt19937 &generator;
     Blob<F> &classify_weights, &classify_bias;

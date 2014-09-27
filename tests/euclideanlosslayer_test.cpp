@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "blob.hpp"
+#include "cpudevice.hpp"
 #include "euclideanlosslayer.hpp"
 
 using namespace autoencoder;
@@ -11,7 +12,8 @@ TEST(EuclideanLossLayerTest, TestForwardCpu) {
   for (auto i = 0; i < target.width; ++i) {
     target.value(i) = 1.0f;
   }
-  auto layer = EuclideanLossLayer<float>();
+  auto device = CpuDevice<float>();
+  auto layer = EuclideanLossLayer<float>(device);
   auto output = Blob<float>(10);
   auto out = Blobs<float>{&output};
   layer.ForwardCpu(Mode::kTrain, {&input, &target}, &out);
@@ -28,7 +30,8 @@ TEST(EuclideanLossLayerTest, TestBackwardCpu) {
   for (auto i = 0; i < target.width; ++i) {
     target.value(i) = 1.0f;
   }
-  auto layer = EuclideanLossLayer<float>();
+  auto device = CpuDevice<float>();
+  auto layer = EuclideanLossLayer<float>(device);
   auto output = Blob<float>(10);
   auto in = Blobs<float>{&input, &target};
   auto out = Blobs<float>{&output};

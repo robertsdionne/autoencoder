@@ -2,6 +2,7 @@
 #include <random>
 
 #include "blob.hpp"
+#include "cpudevice.hpp"
 #include "dropoutlayer.hpp"
 #include "euclideanlosslayer.hpp"
 
@@ -67,7 +68,8 @@ TEST(DropoutLayerTest, TestGradient) {
   }
   auto generator = std::mt19937(123);
   auto layer = DropoutLayer<float>(0.5f, generator);
-  auto loss_layer = EuclideanLossLayer<float>();
+  auto device = CpuDevice<float>();
+  auto loss_layer = EuclideanLossLayer<float>(device);
   auto in = Blobs<float>{&input};
 
   constexpr float kEpsilon = 1e-4;

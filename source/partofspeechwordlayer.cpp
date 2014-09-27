@@ -3,12 +3,14 @@
 #include <random>
 
 #include "blob.hpp"
+#include "device.hpp"
 #include "partofspeechwordlayer.hpp"
 
 namespace autoencoder {
 
   template <typename F>
   PartOfSpeechWordLayer<F>::PartOfSpeechWordLayer(
+      Device<F> &device,
       F p,
       Blob<F> &classify_weights, Blob<F> &classify_bias,
       Blob<F> &combine_weights, Blob<F> &combine_bias,
@@ -16,10 +18,10 @@ namespace autoencoder {
     : dropout(p, generator),
       corrupted_recurrent(combine_weights.height),
       corrupted_word(combine_weights.width - combine_weights.height),
-      classify(classify_weights, classify_bias), classified(classify_weights.height),
+      classify(device, classify_weights, classify_bias), classified(classify_weights.height),
       softmax(),
       concatenate(), concatenated(combine_weights.width),
-      combine(combine_weights, combine_bias), combined(combine_weights.height),
+      combine(device, combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear() {}
 
   template <typename F>

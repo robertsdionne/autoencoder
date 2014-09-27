@@ -1,5 +1,6 @@
 set(AUTOENCODER_SOURCES
     concatenatelayer.cpp
+    cpudevice.cpp
     dataloader.cpp
     dropoutlayer.cpp
     dumbpartofspeechtagger.cpp
@@ -7,7 +8,6 @@ set(AUTOENCODER_SOURCES
     evaluator.cpp
     innerproductlayer.cpp
     lookuptable.cpp
-    matrixmath.cpp
     partofspeechsentencelayer.cpp
     partofspeechwordlayer.cpp
     rectifiedlinearlayer.cpp

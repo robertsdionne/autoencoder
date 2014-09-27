@@ -2,13 +2,13 @@ include_directories(../source)
 
 add_executable(alltests
     concatenatelayer_test.cpp
+    cpudevice_test.cpp
     dataloader_test.cpp
     dropoutlayer_test.cpp
     dumbpartofspeechtagger_test.cpp
     euclideanlosslayer_test.cpp
     innerproductlayer_test.cpp
     lookuptable_test.cpp
-    matrixmath_test.cpp
     partofspeechsentencelayer_test.cpp
     partofspeechwordlayer_test.cpp
     rectifiedlinearlayer_test.cpp

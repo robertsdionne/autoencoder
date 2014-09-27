@@ -6,10 +6,12 @@
 
 namespace autoencoder {
 
+  template <typename F> class Device;
+
   template <typename F>
   class InnerProductLayer : public Layer<F> {
   public:
-    InnerProductLayer(Blob<F> &weights, Blob<F> &bias);
+    InnerProductLayer(Device<F> &device, Blob<F> &weights, Blob<F> &bias);
 
     virtual ~InnerProductLayer() = default;
 
@@ -18,6 +20,7 @@ namespace autoencoder {
     void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
 
   private:
+    Device<F> &device;
     Blob<F> &weights;
     Blob<F> &bias;
   };
