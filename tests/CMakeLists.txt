@@ -14,9 +14,11 @@ add_executable(alltests
     rectifiedlinearlayer_test.cpp
     softmaxlayer_test.cpp
     taggedsentence_test.cpp
-    values_test.cpp)
+    values_test.cpp
+    vexcl_test.cpp)
 
 add_dependencies(alltests ${BLAS_TARGET})
 
 target_link_libraries(
-    alltests autoencoderlib clBLAS gflags-static gtest gtest_main ${BLAS_LIBRARY} ${OPENCL_LIBRARY})
+    alltests autoencoderlib boost_system clBLAS gflags-static gtest gtest_main ${BLAS_LIBRARY} ${Boost_LIBRARIES}
+    ${VEXCL_LIBRARIES})
