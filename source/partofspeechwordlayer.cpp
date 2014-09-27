@@ -22,7 +22,7 @@ namespace autoencoder {
       softmax(),
       concatenate(), concatenated(combine_weights.width),
       combine(device, combine_weights, combine_bias), combined(combine_weights.height),
-      rectified_linear() {}
+      rectified_linear(device) {}
 
   template <typename F>
   F PartOfSpeechWordLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {

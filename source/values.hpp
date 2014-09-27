@@ -1,6 +1,7 @@
 #ifndef AUTOENCODER_VALUES_HPP_
 #define AUTOENCODER_VALUES_HPP_
 
+#include <CL/cl.h>
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -100,6 +101,7 @@ namespace autoencoder {
 
   public:
     std::vector<F> values;
+    cl_mem memory = 0;
     int width, height, depth, duration;
   };
 

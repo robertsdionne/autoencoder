@@ -1,11 +1,19 @@
+#include <CL/cl.h>
 #include <cassert>
+#include <clBLAS.h>
 #include <gflags/gflags.h>
 
+#include "blob.hpp"
 #include "opencldevice.hpp"
+#include "values.hpp"
 
 namespace autoencoder {
 
+#ifdef __APPLE__
   DEFINE_string(opencl_device_name, "GeForce", "The OpenCL device name");
+#else
+  DEFINE_string(opencl_device_name, "Cayman", "The OpenCL device name");
+#endif
 
   template <typename F>
   OpenClDevice<F>::OpenClDevice() {
@@ -53,10 +61,14 @@ namespace autoencoder {
     clblasTeardown();
 
     // Release command queue
-    assert(CL_SUCCESS == clReleaseCommandQueue(queue));
+    if (queue) {
+      assert(CL_SUCCESS == clReleaseCommandQueue(queue));
+    }
 
     // Release context
-    assert(CL_SUCCESS == clReleaseContext(context));
+    if (context) {
+      assert(CL_SUCCESS == clReleaseContext(context));
+    }
   }
 
   template <>
@@ -97,5 +109,29 @@ namespace autoencoder {
       Transpose transpose_A) {
     // TODO(robertsdionne): implement
   }
+
+  template <typename F>
+  void OpenClDevice<F>::Ship(Blob<F> &blob) {
+    Ship(blob.values);
+    Ship(blob.differences);
+  }
+
+  template <typename F>
+  void OpenClDevice<F>::Ship(Values<F> &values) {
+    if (!values.memory) {
+      cl_int error;
+      values.memory = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+          values.width * values.height * values.depth * values.duration * sizeof(F),
+          values.values.data(), &error);
+      assert(CL_SUCCESS == error);
+    } else {
+      assert(CL_SUCCESS == clEnqueueWriteBuffer(queue, values.memory, CL_TRUE, 0,
+          values.width * values.height * values.depth * values.duration * sizeof(F),
+          values.values.data(), 0, nullptr, nullptr));
+    }
+  }
+
+  template class OpenClDevice<float>;
+  template class OpenClDevice<double>;
 
 }  // namespace autoencoder

@@ -18,4 +18,5 @@ add_executable(alltests
 
 add_dependencies(alltests ${BLAS_TARGET})
 
-target_link_libraries(alltests autoencoderlib gflags-static gtest gtest_main ${BLAS_LIBRARY})
+target_link_libraries(
+    alltests autoencoderlib clBLAS gflags-static gtest gtest_main ${BLAS_LIBRARY} ${OPENCL_LIBRARY})

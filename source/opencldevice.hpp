@@ -8,6 +8,9 @@
 
 namespace autoencoder {
 
+  template <typename F> class Blob;
+  template <typename F> class Values;
+
   DECLARE_string(opencl_device_name);
 
   template <typename F>
@@ -25,7 +28,10 @@ namespace autoencoder {
     virtual void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
         Transpose transpose_A = Transpose::kNo);
 
-  private:
+    void Ship(Blob<F> &blob);
+
+    void Ship(Values<F> &values);
+
     cl_platform_id platform = 0;
     cl_device_id device = 0;
     cl_context context = 0;

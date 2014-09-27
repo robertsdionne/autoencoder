@@ -4,6 +4,7 @@
 #include "blob.hpp"
 #include "cpudevice.hpp"
 #include "euclideanlosslayer.hpp"
+#include "opencldevice.hpp"
 #include "rectifiedlinearlayer.hpp"
 
 using namespace autoencoder;
@@ -13,8 +14,11 @@ TEST(RectifiedLinearLayer, TestForwardGpu) {
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
-  auto layer = RectifiedLinearLayer<float>();
+  auto device = OpenClDevice<float>();
+  auto layer = RectifiedLinearLayer<float>(device);
   auto output = Blob<float>(10);
+  device.Ship(input);
+  device.Ship(output);
   auto out = Blobs<float>{&output};
   layer.ForwardGpu(Mode::kTrain, {&input}, &out);
 
@@ -28,7 +32,8 @@ TEST(RectifiedLinearLayerTest, TestForwardCpu) {
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
-  auto layer = RectifiedLinearLayer<float>();
+  auto device = CpuDevice<float>();
+  auto layer = RectifiedLinearLayer<float>(device);
   auto output = Blob<float>(10);
   auto out = Blobs<float>{&output};
   layer.ForwardCpu(Mode::kTrain, {&input}, &out);
@@ -43,7 +48,8 @@ TEST(RectifiedLinearLayerTest, TestBackwardCpu) {
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }
-  auto layer = RectifiedLinearLayer<float>();
+  auto device = CpuDevice<float>();
+  auto layer = RectifiedLinearLayer<float>(device);
   auto input = Blob<float>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
@@ -62,8 +68,8 @@ TEST(RectifiedLinearLayerTest, TestGradient) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
   auto in = Blobs<float>{&input};
-  auto layer = RectifiedLinearLayer<float>();
   auto device = CpuDevice<float>();
+  auto layer = RectifiedLinearLayer<float>(device);
   auto loss_layer = EuclideanLossLayer<float>(device);
 
   constexpr float kEpsilon = 1e-4;
