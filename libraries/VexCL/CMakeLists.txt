@@ -91,7 +91,7 @@ set_property(CACHE VEXCL_BACKEND PROPERTY STRINGS "OpenCL" "CUDA")
 # Find Backend
 #----------------------------------------------------------------------------
 if ("${VEXCL_BACKEND}" STREQUAL "OpenCL")
-    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
     find_package(OpenCL REQUIRED)
     include_directories( ${OPENCL_INCLUDE_DIRS} )
     set(BACKEND_LIBS ${OPENCL_LIBRARIES})

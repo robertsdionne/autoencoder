@@ -9,6 +9,8 @@ endif()
 add_subdirectory(libraries/clBLAS/src EXCLUDE_FROM_ALL)
 add_subdirectory(libraries/clFFT/src EXCLUDE_FROM_ALL)
 
+add_subdirectory(libraries/VexCL)
+
 add_subdirectory(libraries/gflags-2.1.1)
 add_subdirectory(libraries/gtest-1.7.0)
 

@@ -10,6 +10,7 @@
 *.vcxproj
 CMakeCache.txt
 CMakeFiles/
+Doxyfile
 Makefile
 [Dd]ebug/
 libraries/OpenBLAS-0.2.11/src/
