@@ -19,8 +19,6 @@ set(BUILD_TEST OFF)
 
 if (APPLE)
   find_library(ACCELERATE_LIBRARY Accelerate)
-  find_library(AUDIO_TOOLBOX_LIBRARY AudioToolbox)
-  find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
   find_library(OPENCL_LIBRARY OpenCL)
 
   add_custom_target(AccelerateBlas)

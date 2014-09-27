@@ -8,6 +8,7 @@ set(AUTOENCODER_SOURCES
     evaluator.cpp
     innerproductlayer.cpp
     lookuptable.cpp
+    opencldevice.cpp
     partofspeechsentencelayer.cpp
     partofspeechwordlayer.cpp
     rectifiedlinearlayer.cpp
