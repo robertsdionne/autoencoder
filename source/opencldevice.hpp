@@ -11,6 +11,8 @@ namespace autoencoder {
   template <typename F> class Blob;
   template <typename F> class Values;
 
+  #define AUTOENCODER_OPENCL_C(source_code) #source_code
+
   DECLARE_string(opencl_device_name);
 
   template <typename F>

@@ -33,8 +33,7 @@ namespace autoencoder {
     auto &opencl_device = dynamic_cast<OpenClDevice<F> &>(device);
     if (!program) {
       cl_int error;
-      program = clCreateProgramWithSource(
-          opencl_device.context, 1, const_cast<const char **>(&kSource), nullptr, &error);
+      program = clCreateProgramWithSource(opencl_device.context, 1, &kSource, nullptr, &error);
       assert(CL_SUCCESS == error);
       if (CL_SUCCESS != clBuildProgram(
           program, 1, &opencl_device.device, nullptr, nullptr, nullptr)) {
@@ -58,20 +57,20 @@ namespace autoencoder {
   }
 
   template <>
-  const char *RectifiedLinearLayer<float>::kSource = R"openclc(
+  const char *RectifiedLinearLayer<float>::kSource = AUTOENCODER_OPENCL_C(
     __kernel void RectifiedLinearForward(__global float *bottom, __global float *top) {
       int i = get_global_id(0);
       top[i] = max(0.0f, bottom[i]);
     }
-  )openclc";
+  );
 
   template <>
-  const char *RectifiedLinearLayer<double>::kSource = R"openclc(
+  const char *RectifiedLinearLayer<double>::kSource = AUTOENCODER_OPENCL_C(
     __kernel void RectifiedLinearForward(__global double *bottom, __global double *top) {
       int i = get_global_id(0);
       top[i] = max(0.0, bottom[i]);
     }
-  )openclc";
+  );
 
   template <typename F>
   void RectifiedLinearLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
