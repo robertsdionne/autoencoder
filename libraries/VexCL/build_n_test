@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Builds everything within all configured build directories and runs the tests
+# under given OpenCL and CUDA platforms.
+
+# Stop on errors:
+#set -e
+
+# Build with every possible compiler:
+for compiler in build-cl-*; do
+    ninja -C ${compiler}
+
+    platforms=$(${compiler}/examples/devlist | grep CL_PLATFORM_NAME | sed 's/.*= \(\w*\).*/\1/' | sort -u)
+
+    # and run the tests for each OpenCL platform:
+    for platform in ${platforms}; do
+        echo
+        echo "----------------------------------------------------------------------"
+        echo "OCL_PLATFORM=${platform} compiler=${compiler}"
+        echo "----------------------------------------------------------------------"
+        echo
+        OCL_PLATFORM=${platform} ninja -C ${compiler} test
+    done
+done
+
+# Run tests for CUDA backend built with every possible compiler:
+for compiler in build-cu-*; do
+    echo
+    echo "----------------------------------------------------------------------"
+    echo "CUDA backend; compiler=${compiler}"
+    echo "----------------------------------------------------------------------"
+    echo
+    ninja -C ${compiler} all test
+done
