@@ -15,11 +15,15 @@ namespace autoencoder {
   template <typename F>
   F DropoutLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     if (Mode::kTrain == mode) {
-      mask.clear();
+      auto regenerate_mask = 0 == mask.size();
       for (auto i = 0; i < bottom.size(); ++i) {
-        mask.emplace_back(bottom.at(i)->width);
+        if (regenerate_mask) {
+          mask.emplace_back(bottom.at(i)->width);
+        }
         for (auto j = 0; j < bottom.at(i)->width; ++j) {
-          mask.at(i).value(j) = bernoulli(generator);
+          if (regenerate_mask) {
+            mask.at(i).value(j) = bernoulli(generator);
+          }
           top->at(i)->value(j) = bottom.at(i)->value(j) * mask.at(i).value(j) * scale;
         }
         bottom.at(i)->IsValid();
@@ -45,6 +49,7 @@ namespace autoencoder {
       }
       bottom->at(i)->IsValid();
     }
+    mask.clear();
   }
 
   template class DropoutLayer<float>;

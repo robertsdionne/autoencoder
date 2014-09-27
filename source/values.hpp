@@ -76,6 +76,10 @@ namespace autoencoder {
       this->height = height;
       this->depth = depth;
       this->duration = duration;
+      Reset();
+    }
+
+    void Reset() {
       values.clear();
       values.resize(width * height * depth * duration);
     }

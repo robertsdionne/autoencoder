@@ -67,8 +67,7 @@ namespace autoencoder {
       accelerations.Reshape(width, height, depth, duration);
     }
 
-    void ClipGradient(F square_magnitude) {
-      auto magnitude = sqrt(square_magnitude);
+    inline void ClipGradient(F magnitude) {
       if (magnitude > 1.0) {
         for (auto i = 0; i < width; ++i) {
           for (auto j = 0; j < height; ++j) {
@@ -82,12 +81,13 @@ namespace autoencoder {
       }
     }
 
-    void L1Regularize(F lambda) {
+    inline void L1Regularize(F lambda) {
       for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
           for (auto k = 0; k < depth; ++k) {
             for (auto l = 0; l < duration; ++l) {
-              auto sign = value(i, j, k, l) < F(0.0) ? F(-1.0) : F(1.0);
+              auto x = value(i, j, k, l);
+              auto sign = F((x > F(0.0)) - (x < F(0.0)));
               difference(i, j, k, l) += sign * lambda;
             }
           }
@@ -95,8 +95,7 @@ namespace autoencoder {
       }
     }
 
-    void L2Regularize(F lambda, F square_magnitude) {
-      auto magnitude = sqrt(square_magnitude);
+    inline void L2Regularize(F lambda, F magnitude) {
       for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
           for (auto k = 0; k < depth; ++k) {
@@ -128,12 +127,12 @@ namespace autoencoder {
           for (auto k = 0; k < depth; ++k) {
             for (auto l = 0; l < duration; ++l) {
               velocity(i, j, k, l) = decay * velocity(i, j, k, l)
-                  + (1.0 - decay) * difference(i, j, k, l) * difference(i, j, k, l);
+                  + (F(1.0) - decay) * difference(i, j, k, l) * difference(i, j, k, l);
               auto delta = -sqrt(acceleration(i, j, k, l) + std::numeric_limits<F>::epsilon())
                   / sqrt(velocity(i, j, k, l) + std::numeric_limits<F>::epsilon())
                   * difference(i, j, k, l);
               acceleration(i, j, k, l) = decay * acceleration(i, j, k, l)
-                  + (1.0 - decay) * delta * delta;
+                  + (F(1.0) - decay) * delta * delta;
               value(i, j, k, l) += learning_rate * delta;
             }
           }
@@ -149,7 +148,7 @@ namespace autoencoder {
             for (auto l = 0; l < duration; ++l) {
               velocity(i, j, k, l) += difference(i, j, k, l) * difference(i, j, k, l);
               value(i, j, k, l) -= learning_rate *
-                  difference(i, j, k, l) / (sqrt(velocity(i, j, k, l) + 1.0));
+                  difference(i, j, k, l) / (sqrt(velocity(i, j, k, l) + F(1.0)));
             }
           }
         }

@@ -29,7 +29,7 @@ namespace autoencoder {
       int word_representation_dimension)
   : word_table(word_table), tag_table(tag_table),
     p(p), generator(generator),
-    uniform(), uniform_symmetric(-0.1f, 0.1f),
+    uniform(), uniform_symmetric(F(-0.1), F(0.1)),
     recurrent_state_dimension(recurrent_state_dimension),
     tag_dimension(tag_dimension),
     word_representation_dimension(word_representation_dimension),
@@ -63,8 +63,8 @@ namespace autoencoder {
       output.at(i)->IsValid();
     }
 
-    for (auto &guessed_tag : guessed_tags) {
-      tags->push_back(tag_table.LookupToken(guessed_tag.values.Argmax()));
+    for (auto i = 1; i < guessed_tags.size(); ++i) {
+      tags->push_back(tag_table.LookupToken(guessed_tags.at(i).values.Argmax()));
     }
   }
 
@@ -123,11 +123,13 @@ namespace autoencoder {
       const std::vector<TaggedSentence> &validation_sentences,
       const std::unordered_set<std::string> &training_vocabulary) {
 
-    InitializeBlob(uniform_symmetric, generator, &recurrent_state_input);
+    // InitializeBlob(uniform_symmetric, generator, &recurrent_state_input);
     InitializeBlob(uniform_symmetric, generator, &classify_weights);
     InitializeBlob(uniform_symmetric, generator, &combine_weights);
 
     std::uniform_int_distribution<int> uniform(0, tagged_sentences.size() - 1);
+
+    constexpr auto minibatch_size = 100;
 
     std::cout << "Training... " << std::endl << std::endl;
     for (auto i = 0; i < iterations; ++i) {
@@ -140,51 +142,76 @@ namespace autoencoder {
       std::cout << "Starting iteration " << i << "... " << std::endl << std::endl;
       
       for (auto j = 0; j < tagged_sentences.size(); ++j) {
-        ForwardBackwardCpu(tagged_sentences.at(uniform(generator)));
+        // auto u = uniform(generator);
+        auto u = j;
+        ForwardBackwardCpu(tagged_sentences.at(u));
+
+        classify_weights.ClipGradient(tagged_sentences.at(u).size());
+        classify_bias.ClipGradient(tagged_sentences.at(u).size());
+        combine_weights.ClipGradient(tagged_sentences.at(u).size());
+        combine_bias.ClipGradient(tagged_sentences.at(u).size());
 
         classify_weights.L1Regularize(lambda_1);
         classify_bias.L1Regularize(lambda_1);
         combine_weights.L1Regularize(lambda_1);
         combine_bias.L1Regularize(lambda_1);
 
-        auto square_magnitude =
-            classify_weights.values.SquareMagnitude()
+        auto magnitude = sqrt(classify_weights.values.SquareMagnitude()
             + classify_weights.values.SquareMagnitude()
             + combine_weights.values.SquareMagnitude()
-            + combine_bias.values.SquareMagnitude();
+            + combine_bias.values.SquareMagnitude());
 
-        classify_weights.L2Regularize(lambda_2, square_magnitude);
-        classify_bias.L2Regularize(lambda_2, square_magnitude);
-        combine_weights.L2Regularize(lambda_2, square_magnitude);
-        combine_bias.L2Regularize(lambda_2, square_magnitude);
+        classify_weights.L2Regularize(lambda_2, magnitude);
+        classify_bias.L2Regularize(lambda_2, magnitude);
+        combine_weights.L2Regularize(lambda_2, magnitude);
+        combine_bias.L2Regularize(lambda_2, magnitude);
 
-        auto difference_square_magnitude =
-            classify_weights.differences.SquareMagnitude()
-            + classify_weights.differences.SquareMagnitude()
-            + combine_weights.differences.SquareMagnitude()
-            + combine_bias.differences.SquareMagnitude();
+        // auto difference_magnitude = sqrt(classify_weights.differences.SquareMagnitude()
+        //     + classify_weights.differences.SquareMagnitude()
+        //     + combine_weights.differences.SquareMagnitude()
+        //     + combine_bias.differences.SquareMagnitude());
 
-        classify_weights.ClipGradient(difference_square_magnitude);
-        classify_bias.ClipGradient(difference_square_magnitude);
-        combine_weights.ClipGradient(difference_square_magnitude);
-        combine_bias.ClipGradient(difference_square_magnitude);
+        // classify_weights.ClipGradient(difference_magnitude);
+        // classify_bias.ClipGradient(difference_magnitude);
+        // combine_weights.ClipGradient(difference_magnitude);
+        // combine_bias.ClipGradient(difference_magnitude);
 
-        classify_weights.UpdateAdaGrad(learning_rate);
-        classify_bias.UpdateAdaGrad(learning_rate);
-        combine_weights.UpdateAdaGrad(learning_rate);
-        combine_bias.UpdateAdaGrad(learning_rate);
+        // const auto modified_learning_rate = learning_rate * pow(F(0.1), i / 2.0);
+        const auto modified_learning_rate = learning_rate;
 
-        if (j > 0 && j % 100 == 0) {
-          std::cout << "Finished " << j << " sentences." << std::endl;
-        }
+        classify_weights.UpdateMomentum(modified_learning_rate, momentum);
+        classify_bias.UpdateMomentum(modified_learning_rate, momentum);
+        combine_weights.UpdateMomentum(modified_learning_rate, momentum);
+        combine_bias.UpdateMomentum(modified_learning_rate, momentum);
+
+        constexpr auto kAdaDeltaMemory = F(0.95);
+
+        // classify_weights.UpdateAdaDelta(modified_learning_rate, kAdaDeltaMemory);
+        // classify_bias.UpdateAdaDelta(modified_learning_rate, kAdaDeltaMemory);
+        // combine_weights.UpdateAdaDelta(modified_learning_rate, kAdaDeltaMemory);
+        // combine_bias.UpdateAdaDelta(modified_learning_rate, kAdaDeltaMemory);
+
+        // classify_weights.UpdateAdaGrad(modified_learning_rate);
+        // classify_bias.UpdateAdaGrad(modified_learning_rate);
+        // combine_weights.UpdateAdaGrad(modified_learning_rate);
+        // combine_bias.UpdateAdaGrad(modified_learning_rate);
+
+        classify_weights.differences.Reset();
+        classify_bias.differences.Reset();
+        combine_weights.differences.Reset();
+        combine_bias.differences.Reset();
+
+        // if (j > 0 && j % 100 == 0) {
+        //   std::cout << "Finished " << j << " sentences." << std::endl;
+        // }
 
         if (j > 0 && j + 1 < tagged_sentences.size() && j % 1000 == 0) {
-          std::cout << std::endl << "Evaluating on validation data... ";
-          std::cout.flush();
+          // std::cout << std::endl << "Evaluating on validation data... ";
+          // std::cout.flush();
           auto validation_report = evaluator.Evaluate(
               *this, validation_sentences, training_vocabulary);
           std::cout << "Done." << std::endl;
-          std::cout << validation_report << std::endl<< std::endl;
+          std::cout << validation_report << std::endl << std::endl;
         }
       }
       std::cout << "Done." << std::endl << std::endl;
