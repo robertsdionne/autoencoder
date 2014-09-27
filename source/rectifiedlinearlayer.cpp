@@ -7,9 +7,6 @@
 namespace autoencoder {
 
   template <typename F>
-  constexpr const char *RectifiedLinearLayer<F>::kSource;
-
-  template <typename F>
   RectifiedLinearLayer<F>::RectifiedLinearLayer(Device<F> &device) : device(device) {}
 
   template <typename F>
@@ -34,7 +31,6 @@ namespace autoencoder {
   template <typename F>
   F RectifiedLinearLayer<F>::ForwardGpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     auto &opencl_device = dynamic_cast<OpenClDevice<F> &>(device);
-    opencl_device.Ship(bottom.at(0)->values);
     if (!program) {
       cl_int error;
       program = clCreateProgramWithSource(
@@ -51,15 +47,31 @@ namespace autoencoder {
       kernel = clCreateKernel(program, "RectifiedLinearForward", &error);
       assert(CL_SUCCESS == error);
     }
-    assert(CL_SUCCESS == clSetKernelArg(kernel, 0, sizeof(cl_mem), bottom.at(0)->values.memory));
-    assert(CL_SUCCESS == clSetKernelArg(kernel, 1, sizeof(cl_mem), top->at(0)->values.memory));
+    assert(CL_SUCCESS == clSetKernelArg(kernel, 0, sizeof(cl_mem), &bottom.at(0)->values.memory));
+    assert(CL_SUCCESS == clSetKernelArg(kernel, 1, sizeof(cl_mem), &top->at(0)->values.memory));
     cl_event complete;
     auto global_work_size = size_t(bottom.at(0)->values.width);
-    /*assert(CL_SUCCESS ==*/ std::cout << clEnqueueNDRangeKernel(opencl_device.queue,
-        kernel, 1, nullptr, &global_work_size, nullptr, 0, nullptr, &complete)/*)*/ << std::endl;
+    assert(CL_SUCCESS == clEnqueueNDRangeKernel(opencl_device.queue,
+        kernel, 1, nullptr, &global_work_size, nullptr, 0, nullptr, &complete));
     assert(CL_SUCCESS == clWaitForEvents(1, &complete));
     return F(0.0);
   }
+
+  template <>
+  const char *RectifiedLinearLayer<float>::kSource = R"openclc(
+    __kernel void RectifiedLinearForward(__global float *bottom, __global float *top) {
+      int i = get_global_id(0);
+      top[i] = max(0.0f, bottom[i]);
+    }
+  )openclc";
+
+  template <>
+  const char *RectifiedLinearLayer<double>::kSource = R"openclc(
+    __kernel void RectifiedLinearForward(__global double *bottom, __global double *top) {
+      int i = get_global_id(0);
+      top[i] = max(0.0, bottom[i]);
+    }
+  )openclc";
 
   template <typename F>
   void RectifiedLinearLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {

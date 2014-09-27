@@ -21,6 +21,26 @@ TEST(RectifiedLinearLayer, TestForwardGpu) {
   device.Ship(output);
   auto out = Blobs<float>{&output};
   layer.ForwardGpu(Mode::kTrain, {&input}, &out);
+  device.Retrieve(output);
+
+  for (auto i = 0; i < input.width; ++i) {
+    EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));
+  }
+}
+
+TEST(RectifiedLinearLayer, TestForwardGpuDouble) {
+  auto input = Blob<double>(10);
+  for (auto i = 0; i < input.width; ++i) {
+    input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
+  }
+  auto device = OpenClDevice<double>();
+  auto layer = RectifiedLinearLayer<double>(device);
+  auto output = Blob<double>(10);
+  device.Ship(input);
+  device.Ship(output);
+  auto out = Blobs<double>{&output};
+  layer.ForwardGpu(Mode::kTrain, {&input}, &out);
+  device.Retrieve(output);
 
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));

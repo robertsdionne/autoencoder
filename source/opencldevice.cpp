@@ -111,6 +111,20 @@ namespace autoencoder {
   }
 
   template <typename F>
+  void OpenClDevice<F>::Retrieve(Blob<F> &blob) {
+    Retrieve(blob.values);
+    Retrieve(blob.differences);
+  }
+
+  template <typename F>
+  void OpenClDevice<F>::Retrieve(Values<F> &values) {
+    assert(values.memory);
+    assert(CL_SUCCESS == clEnqueueReadBuffer(queue, values.memory, CL_TRUE, 0,
+        values.width * values.height * values.depth * values.duration * sizeof(F),
+        values.values.data(), 0, nullptr, nullptr));
+  }
+
+  template <typename F>
   void OpenClDevice<F>::Ship(Blob<F> &blob) {
     Ship(blob.values);
     Ship(blob.differences);
@@ -120,15 +134,14 @@ namespace autoencoder {
   void OpenClDevice<F>::Ship(Values<F> &values) {
     if (!values.memory) {
       cl_int error;
-      values.memory = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+      values.memory = clCreateBuffer(context, CL_MEM_READ_WRITE,
           values.width * values.height * values.depth * values.duration * sizeof(F),
-          values.values.data(), &error);
+          nullptr, &error);
       assert(CL_SUCCESS == error);
-    } else {
-      assert(CL_SUCCESS == clEnqueueWriteBuffer(queue, values.memory, CL_TRUE, 0,
-          values.width * values.height * values.depth * values.duration * sizeof(F),
-          values.values.data(), 0, nullptr, nullptr));
     }
+    assert(CL_SUCCESS == clEnqueueWriteBuffer(queue, values.memory, CL_TRUE, 0,
+        values.width * values.height * values.depth * values.duration * sizeof(F),
+        values.values.data(), 0, nullptr, nullptr));
   }
 
   template class OpenClDevice<float>;

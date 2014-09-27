@@ -28,12 +28,7 @@ namespace autoencoder {
     cl_program program = 0;
     cl_kernel kernel = 0;
 
-    static constexpr const char *kSource = R"openclc(
-      __kernel void RectifiedLinearForward(__global float *bottom, __global float *top) {
-        int i = get_global_id(0);
-        top[i] = max(0.0f, bottom[i]);
-      }
-    )openclc";
+    static const char *kSource;
   };
 
 }  // namespace autoencoder

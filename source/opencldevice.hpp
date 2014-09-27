@@ -28,6 +28,10 @@ namespace autoencoder {
     virtual void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
         Transpose transpose_A = Transpose::kNo);
 
+    void Retrieve(Blob<F> &blob);
+
+    void Retrieve(Values<F> &values);
+
     void Ship(Blob<F> &blob);
 
     void Ship(Values<F> &values);
