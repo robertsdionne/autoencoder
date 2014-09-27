@@ -9,7 +9,7 @@
 
 using namespace autoencoder;
 
-TEST(RectifiedLinearLayer, TestForwardGpu) {
+TEST(RectifiedLinearLayerTest, TestForwardGpu) {
   auto input = Blob<float>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
@@ -28,7 +28,7 @@ TEST(RectifiedLinearLayer, TestForwardGpu) {
   }
 }
 
-TEST(RectifiedLinearLayer, TestForwardGpuDouble) {
+TEST(RectifiedLinearLayerTest, TestForwardGpuDouble) {
   auto input = Blob<double>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
