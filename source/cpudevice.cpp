@@ -5,7 +5,7 @@
 
 namespace autoencoder {
 
-template <>
+  template <>
   void CpuDevice<float>::Axpby(float alpha, const Values<float> &x, float beta, Values<float> *y) {
     // TODO(robertsdionne): Figure out why clang thinks cblas_saxpby is an undefined symbol.
     cblas_sscal(y->width, beta, y->values.data(), 1);

@@ -1,8 +1,6 @@
 #ifndef AUTOENCODER_DEVICE_HPP_
 #define AUTOENCODER_DEVICE_HPP_
 
-#include BLAS_HEADER
-
 #include "interface.hpp"
 
 namespace autoencoder {
@@ -27,17 +25,6 @@ namespace autoencoder {
     virtual void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
         Transpose transpose_A = Transpose::kNo) = 0;
   };
-
-  inline CBLAS_TRANSPOSE ToCblas(Transpose transpose) {
-    switch (transpose) {
-      case Transpose::kYes:
-        return CblasTrans;
-        break;
-      case Transpose::kNo:
-        return CblasNoTrans;
-        break;
-    }
-  } 
 
 }  // namespace autoencoder
 
