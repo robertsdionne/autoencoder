@@ -5,8 +5,7 @@
 
 namespace autoencoder {
 
-  template <typename F>
-  struct Values;
+  template <typename F> struct Values;
 
   template <typename F>
   class CpuDevice : public Device<F> {
