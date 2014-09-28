@@ -22,13 +22,13 @@ namespace autoencoder {
 
     virtual ~OpenClDevice();
 
-    virtual void Axpby(F alpha, const Values<F> &x, F beta, Values<F> *y);
+    void Axpby(F alpha, const Values<F> &x, F beta, Values<F> *y) override;
 
-    virtual void Gemm(F alpha, const Values<F> &A, const Values<F> &B, F beta, Values<F> *C,
-        Transpose transpose_A = Transpose::kNo, Transpose transpose_B = Transpose::kNo);
+    void Gemm(F alpha, const Values<F> &A, const Values<F> &B, F beta, Values<F> *C,
+        Transpose transpose_A = Transpose::kNo, Transpose transpose_B = Transpose::kNo) override;
 
-    virtual void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
-        Transpose transpose_A = Transpose::kNo);
+    void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
+        Transpose transpose_A = Transpose::kNo) override;
 
     void Retrieve(Blob<F> &blob);
 

@@ -12,15 +12,17 @@ namespace autoencoder {
   template <typename F>
   class CpuDevice : public Device<F> {
   public:
-    virtual void Axpby(F alpha, const Values<F> &x, F beta, Values<F> *y) override;
+    void Axpby(F alpha, const Values<F> &x, F beta, Values<F> *y) override;
 
-    virtual void Gemm(F alpha, const Values<F> &A, const Values<F> &B, F beta, Values<F> *C,
+    void Gemm(F alpha, const Values<F> &A, const Values<F> &B, F beta, Values<F> *C,
         Transpose transpose_A = Transpose::kNo, Transpose transpose_B = Transpose::kNo) override;
 
-    virtual void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
+    void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
         Transpose transpose_A = Transpose::kNo) override;
 
-    virtual void Max(F alpha, const Values<F> &x, Values<F> *y) override;
+    void Max(F alpha, const Values<F> &x, Values<F> *y) override;
+
+    void MaxDerivative(F alpha, const Values<F> &dx, const Values<F> &y, Values<F> *dy) override;
   };
 
   inline CBLAS_TRANSPOSE ToCblas(Transpose transpose) {

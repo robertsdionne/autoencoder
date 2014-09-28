@@ -58,6 +58,12 @@ namespace autoencoder {
   }
 
   template <typename F>
+  void VexClDevice<F>::MaxDerivative(
+      F alpha, const Values<F> &dx, const Values<F> &y, Values<F> *dy) {
+    dy->values_device = dx.values_device * (y.values_device > alpha);
+  }
+
+  template <typename F>
   void VexClDevice<F>::Initialize(Blob<F> &blob) {
     Initialize(blob.values);
     Initialize(blob.differences);

@@ -60,7 +60,7 @@ TEST(RectifiedLinearLayerTest, TestForwardCpu) {
   auto layer = RectifiedLinearLayer<float>(device);
   auto output = Blob<float>(10);
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Mode::kTrain, {&input}, &out);
+  layer.ForwardXpu(Mode::kTrain, {&input}, &out);
 
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));
@@ -79,7 +79,7 @@ TEST(RectifiedLinearLayerTest, TestBackwardCpu) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
   auto in = Blobs<float>{&input};
-  layer.BackwardCpu({&output}, &in);
+  layer.BackwardXpu({&output}, &in);
 
   for (auto i = 0; i < input.width; ++i) {
     EXPECT_FLOAT_EQ(i % 2, input.difference(i));
@@ -109,21 +109,21 @@ TEST(RectifiedLinearLayerTest, TestGradient) {
     auto loss_in = Blobs<float>{&output, &target};
     auto loss_out = Blobs<float>{&losses};
 
-    layer.ForwardCpu(Mode::kTrain, in, &out);
+    layer.ForwardXpu(Mode::kTrain, in, &out);
     loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
-    layer.BackwardCpu(out, &in);
+    layer.BackwardXpu(out, &in);
 
     auto actual_partial_error_with_respect_to_input_i = input.difference(i);
 
     auto original_input_i = input.value(i);
 
     input.value(i) = original_input_i + kEpsilon;
-    layer.ForwardCpu(Mode::kTrain, in, &out);
+    layer.ForwardXpu(Mode::kTrain, in, &out);
     auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i - kEpsilon;
-    layer.ForwardCpu(Mode::kTrain, in, &out);
+    layer.ForwardXpu(Mode::kTrain, in, &out);
     auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i;

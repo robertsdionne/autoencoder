@@ -41,7 +41,7 @@ namespace autoencoder {
     softmax.ForwardCpu(mode, classify_output, &softmax_output);
     concatenate.ForwardCpu(mode, dropout_output, &concatenate_output);
     combine.ForwardCpu(mode, concatenate_output, &combine_output);
-    rectified_linear.ForwardCpu(mode, combine_output, &rectified_linear_output);
+    rectified_linear.ForwardXpu(mode, combine_output, &rectified_linear_output);
     top->at(0)->IsValid();
     top->at(1)->IsValid();
     return 0.0f;
@@ -57,7 +57,7 @@ namespace autoencoder {
     auto combine_output = Blobs<F>{&combined};
     auto rectified_linear_output = Blobs<F>{top.at(1)};
 
-    rectified_linear.BackwardCpu(rectified_linear_output, &combine_output);
+    rectified_linear.BackwardXpu(rectified_linear_output, &combine_output);
     combine.BackwardCpu(combine_output, &concatenate_output);
     concatenate.BackwardCpu(concatenate_output, &dropout_output);
     softmax.BackwardCpu(softmax_output, &classify_output);

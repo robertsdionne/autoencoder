@@ -78,6 +78,12 @@ namespace autoencoder {
     y->values[y->values < alpha] = alpha;
   }
 
+  template <typename F>
+  void CpuDevice<F>::MaxDerivative(
+      F alpha, const Values<F> &dx, const Values<F> &y, Values<F> *dy) {
+    dy->values = dx.values * (y.values > alpha);
+  }
+
   template class CpuDevice<float>;
   template class CpuDevice<double>;
 
