@@ -4,7 +4,7 @@
 #include "blob.hpp"
 #include "cpudevice.hpp"
 #include "euclideanlosslayer.hpp"
-#include "opencldevice.hpp"
+#include "vexcldevice.hpp"
 #include "rectifiedlinearlayer.hpp"
 
 using namespace autoencoder;
@@ -14,9 +14,11 @@ TEST(RectifiedLinearLayerTest, TestForwardGpu) {
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
-  auto device = OpenClDevice<float>();
+  auto device = VexClDevice<float>();
   auto layer = RectifiedLinearLayer<float>(device);
   auto output = Blob<float>(10);
+  device.Initialize(input);
+  device.Initialize(output);
   device.Ship(input);
   device.Ship(output);
   auto out = Blobs<float>{&output};
@@ -33,9 +35,11 @@ TEST(RectifiedLinearLayerTest, TestForwardGpuDouble) {
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
-  auto device = OpenClDevice<double>();
+  auto device = VexClDevice<double>();
   auto layer = RectifiedLinearLayer<double>(device);
   auto output = Blob<double>(10);
+  device.Initialize(input);
+  device.Initialize(output);
   device.Ship(input);
   device.Ship(output);
   auto out = Blobs<double>{&output};

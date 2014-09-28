@@ -8,7 +8,9 @@
 namespace autoencoder {
 
   template <typename F>
-  VexClDevice<F>::VexClDevice() : context{vex::Filter::Type{CL_DEVICE_TYPE_GPU}} {}
+  VexClDevice<F>::VexClDevice() : context{
+    vex::Filter::Type{CL_DEVICE_TYPE_GPU} && vex::Filter::DoublePrecision
+  } {}
 
   template <>
   void VexClDevice<float>::Axpby(
@@ -51,6 +53,20 @@ namespace autoencoder {
   }
 
   template <typename F>
+  void VexClDevice<F>::Initialize(Blob<F> &blob) {
+    Initialize(blob.values);
+    Initialize(blob.differences);
+  }
+
+  template <typename F>
+  void VexClDevice<F>::Initialize(Values<F> &values) {
+    assert(0 == values.values_device.size());
+    if (0 == values.values_device.size()) {
+      values.values_device = vex::vector<F>{context, values.values.size()};
+    }
+  }
+
+  template <typename F>
   void VexClDevice<F>::Retrieve(Blob<F> &blob) {
     Retrieve(blob.values);
     Retrieve(blob.differences);
@@ -58,8 +74,8 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Retrieve(Values<F> &values) {
-    assert(values.values_device.nparts());
-    if (values.values_device.nparts()) {
+    assert(values.values_device.size());
+    if (values.values_device.size()) {
       vex::copy(values.values_device, values.values);
     }
   }
@@ -72,11 +88,13 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Ship(Values<F> &values) {
-    assert(values.values_device.nparts());
-    if (0 == values.values_device.nparts()) {
-      values.values_device = vex::vector<F>{context, values.values.size()};
+    assert(values.values_device.size());
+    if (values.values_device.size()) {
+      vex::copy(values.values, values.values_device);
     }
-    vex::copy(values.values, values.values_device);
   }
+
+  template class VexClDevice<float>;
+  template class VexClDevice<double>;
 
 }  // namespace autoencoder

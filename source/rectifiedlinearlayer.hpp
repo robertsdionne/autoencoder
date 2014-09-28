@@ -15,7 +15,7 @@ namespace autoencoder {
   public:
     RectifiedLinearLayer(Device<F> &device);
 
-    virtual ~RectifiedLinearLayer();
+    virtual ~RectifiedLinearLayer() = default;
 
     F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
 
@@ -25,10 +25,6 @@ namespace autoencoder {
 
   private:
     Device<F> &device;
-    cl_program program = 0;
-    cl_kernel kernel = 0;
-
-    static const char *kSource;
   };
 
 }  // namespace autoencoder
