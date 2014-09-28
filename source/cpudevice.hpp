@@ -1,7 +1,7 @@
 #ifndef AUTOENCODER_CPU_HPP_
 #define AUTOENCODER_CPU_HPP_
 
-#include BLAS_HEADER
+#include AUTOENCODER_BLAS_HEADER
 
 #include "device.hpp"
 
