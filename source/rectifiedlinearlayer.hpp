@@ -1,7 +1,7 @@
 #ifndef AUTOENCODER_RECTIFIEDLINEARLAYER_HPP_
 #define AUTOENCODER_RECTIFIEDLINEARLAYER_HPP_
 
-#include <CL/cl.h>
+#include AUTOENCODER_OPENCL_HEADER
 
 #include "blob.hpp"
 #include "layer.hpp"

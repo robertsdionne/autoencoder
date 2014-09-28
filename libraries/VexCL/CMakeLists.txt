@@ -65,7 +65,7 @@ set(BOOST_COMPONENTS
     thread
     unit_test_framework
     program_options
-    )
+    PARENT_SCOPE)
 
 if (MSVC10)
     set(BOOST_COMPONENTS ${BOOST_COMPONENTS} chrono)

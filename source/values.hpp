@@ -1,7 +1,7 @@
 #ifndef AUTOENCODER_VALUES_HPP_
 #define AUTOENCODER_VALUES_HPP_
 
-#include <CL/cl.h>
+#include AUTOENCODER_OPENCL_HEADER
 #include <algorithm>
 #include <cassert>
 #include <cmath>

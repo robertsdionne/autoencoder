@@ -1,4 +1,4 @@
-#include <CL/cl.h>
+#include AUTOENCODER_OPENCL_HEADER
 #include <cassert>
 #include <clBLAS.h>
 #include <gflags/gflags.h>
