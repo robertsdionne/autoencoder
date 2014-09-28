@@ -72,4 +72,13 @@ namespace autoencoder {
         alpha, &A.values[0], A.height, &x.values[0], 1, beta, &y->values[0], 1);
   }
 
+  template <typename F>
+  void CpuDevice<F>::Max(F alpha, const Values<F> &x, Values<F> *y) {
+    y->values = x.values;
+    y->values[y->values < alpha] = alpha;
+  }
+
+  template class CpuDevice<float>;
+  template class CpuDevice<double>;
+
 }  // namespace autoencoder

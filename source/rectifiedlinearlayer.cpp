@@ -11,25 +11,21 @@ namespace autoencoder {
 
   template <typename F>
   F RectifiedLinearLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
-    for (auto i = 0; i < top->at(0)->width; ++i) {
-      top->at(0)->value(i) = std::max(F(0.0), bottom.at(0)->value(i));
-    }
+    device.Max(F(0.0), bottom.at(0)->values, &top->at(0)->values);
     top->at(0)->IsValid();
     return F(0.0);
   }
 
   template <typename F>
   F RectifiedLinearLayer<F>::ForwardGpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
-    auto &vexcl_device = dynamic_cast<VexClDevice<F> &>(device);
-    top->at(0)->values.values_device = max(F(0.0), bottom.at(0)->values.values_device);
+    device.Max(F(0.0f), bottom.at(0)->values, &top->at(0)->values);
     return F(0.0);
   }
 
   template <typename F>
   void RectifiedLinearLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
-    for (auto i = 0; i < bottom->at(0)->width; ++i) {
-      bottom->at(0)->difference(i) = top.at(0)->difference(i) * (bottom->at(0)->value(i) > F(0.0));
-    }
+    bottom->at(0)->differences.values =
+        top.at(0)->differences.values * (bottom->at(0)->values.values > F(0.0));
     bottom->at(0)->IsValid();
   }
 

@@ -24,6 +24,8 @@ namespace autoencoder {
 
     virtual void Gemv(F alpha, const Values<F> &A, const Values<F> &x, F beta, Values<F> *y,
         Transpose transpose_A = Transpose::kNo) = 0;
+
+    virtual void Max(F alpha, const Values<F> &x, Values<F> *y) = 0;
   };
 
 }  // namespace autoencoder

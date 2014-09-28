@@ -53,6 +53,11 @@ namespace autoencoder {
   }
 
   template <typename F>
+  void VexClDevice<F>::Max(F alpha, const Values<F> &x, Values<F> *y) {
+    y->values_device = max(alpha, x.values_device);
+  }
+
+  template <typename F>
   void VexClDevice<F>::Initialize(Blob<F> &blob) {
     Initialize(blob.values);
     Initialize(blob.differences);
