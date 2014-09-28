@@ -57,7 +57,9 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Retrieve(Values<F> &values) {
-    vex::copy(values.values_device, values.values);
+    if (values.values_device.nparts()) {
+      vex::copy(values.values_device, values.values);
+    }
   }
 
   template <typename F>
@@ -68,6 +70,9 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Ship(Values<F> &values) {
+    if (0 == values.values_device.nparts()) {
+      values.values_device = vex::vector<F>{context, values.values.size()};
+    }
     vex::copy(values.values, values.values_device);
   }
 
