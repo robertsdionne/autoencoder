@@ -28,7 +28,7 @@ if (APPLE)
 
   set(BLAS_LIBRARY ${ACCELERATE_LIBRARY})
   set(BLAS_TARGET AccelerateBlas)
-  set(BLAS_HEADER <Accelerate/Accelerate.h>)
+  set(AUTOENCODER_BLAS_HEADER <Accelerate/Accelerate.h>)
   set(AUTOENCODER_OPENCL_HEADER <OpenCL/cl.h>)
 else (APPLE)
   include(ExternalProject)
@@ -47,12 +47,12 @@ else (APPLE)
 
  set(BLAS_LIBRARY openblas)
  set(BLAS_TARGET OpenBLAS)
- set(BLAS_HEADER <cblas.h>)
+ set(AUTOENCODER_BLAS_HEADER <cblas.h>)
  set(AUTOENCODER_OPENCL_HEADER <CL/cl.h>)
 endif (APPLE)
 
 add_definitions(
-  -DBLAS_HEADER=${BLAS_HEADER}
+  -DAUTOENCODER_BLAS_HEADER=${AUTOENCODER_BLAS_HEADER}
   -DAUTOENCODER_OPENCL_HEADER=${AUTOENCODER_OPENCL_HEADER}
 )
 

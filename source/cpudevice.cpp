@@ -1,4 +1,4 @@
-#include BLAS_HEADER
+#include AUTOENCODER_BLAS_HEADER
 
 #include "cpudevice.hpp"
 #include "values.hpp"
