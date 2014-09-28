@@ -17,15 +17,16 @@ namespace autoencoder {
 
     virtual ~RectifiedLinearLayer() = default;
 
+    F ForwardXpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
+
+    void BackwardXpu(const Blobs<F> &top, Blobs<F> *bottom) override;
+
+    // TODO(robertsdionne): delete methods below this line.
     F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override {
       return F(0.0);
     }
 
-    F ForwardXpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
-
     void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override {}
-
-    void BackwardXpu(const Blobs<F> &top, Blobs<F> *bottom) override;
 
   private:
     Device<F> &device;
