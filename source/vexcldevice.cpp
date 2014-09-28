@@ -1,3 +1,4 @@
+#include <cassert>
 #include <vexcl/vexcl.hpp>
 
 #include "blob.hpp"
@@ -57,6 +58,7 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Retrieve(Values<F> &values) {
+    assert(values.values_device.nparts());
     if (values.values_device.nparts()) {
       vex::copy(values.values_device, values.values);
     }
@@ -70,6 +72,7 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Ship(Values<F> &values) {
+    assert(values.values_device.nparts());
     if (0 == values.values_device.nparts()) {
       values.values_device = vex::vector<F>{context, values.values.size()};
     }
