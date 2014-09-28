@@ -8,16 +8,16 @@ namespace autoencoder {
   template <>
   void CpuDevice<float>::Axpby(float alpha, const Values<float> &x, float beta, Values<float> *y) {
     // TODO(robertsdionne): Figure out why clang thinks cblas_saxpby is an undefined symbol.
-    cblas_sscal(y->width, beta, y->values.data(), 1);
-    cblas_saxpy(x.width, alpha, x.values.data(), 1, y->values.data(), 1);
+    cblas_sscal(y->width, beta, &y->values[0], 1);
+    cblas_saxpy(x.width, alpha, &x.values[0], 1, &y->values[0], 1);
   }
 
   template <>
   void CpuDevice<double>::Axpby(
       double alpha, const Values<double> &x, double beta, Values<double> *y) {
     // TODO(robertsdionne): Figure out why clang thinks cblas_saxpby is an undefined symbol.
-    cblas_dscal(y->width, beta, y->values.data(), 1);
-    cblas_daxpy(x.width, alpha, x.values.data(), 1, y->values.data(), 1);
+    cblas_dscal(y->width, beta, &y->values[0], 1);
+    cblas_daxpy(x.width, alpha, &x.values[0], 1, &y->values[0], 1);
   }
 
   template <>
@@ -29,11 +29,11 @@ namespace autoencoder {
         transpose_A == Transpose::kNo ? A.height : A.width,
         transpose_B == Transpose::kNo ? B.width : B.height,
         transpose_A == Transpose::kNo ? A.width : A.height,
-        alpha, A.values.data(),
+        alpha, &A.values[0],
         A.height,
-        B.values.data(),
+        &B.values[0],
         B.height,
-        beta, C->values.data(), C->height);
+        beta, &C->values[0], C->height);
   }
 
   template <>
@@ -45,11 +45,11 @@ namespace autoencoder {
         transpose_A == Transpose::kNo ? A.height : A.width,
         transpose_B == Transpose::kNo ? B.width : B.height,
         transpose_A == Transpose::kNo ? A.width : A.height,
-        alpha, A.values.data(),
+        alpha, &A.values[0],
         A.height,
-        B.values.data(),
+        &B.values[0],
         B.height,
-        beta, C->values.data(), C->height);
+        beta, &C->values[0], C->height);
   }
 
   template <>
@@ -59,7 +59,7 @@ namespace autoencoder {
     cblas_sgemv(
         CblasColMajor, ToCblas(transpose_A),
         A.height, A.width,
-        alpha, A.values.data(), A.height, x.values.data(), 1, beta, y->values.data(), 1);
+        alpha, &A.values[0], A.height, &x.values[0], 1, beta, &y->values[0], 1);
   }
 
   template <>
@@ -69,7 +69,7 @@ namespace autoencoder {
     cblas_dgemv(
         CblasColMajor, ToCblas(transpose_A),
         A.height, A.width,
-        alpha, A.values.data(), A.height, x.values.data(), 1, beta, y->values.data(), 1);
+        alpha, &A.values[0], A.height, &x.values[0], 1, beta, &y->values[0], 1);
   }
 
 }  // namespace autoencoder

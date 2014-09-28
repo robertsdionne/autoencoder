@@ -121,7 +121,7 @@ namespace autoencoder {
     assert(values.memory);
     assert(CL_SUCCESS == clEnqueueReadBuffer(queue, values.memory, CL_TRUE, 0,
         values.width * values.height * values.depth * values.duration * sizeof(F),
-        values.values.data(), 0, nullptr, nullptr));
+        &values.values[0], 0, nullptr, nullptr));
   }
 
   template <typename F>
@@ -141,7 +141,7 @@ namespace autoencoder {
     }
     assert(CL_SUCCESS == clEnqueueWriteBuffer(queue, values.memory, CL_TRUE, 0,
         values.width * values.height * values.depth * values.duration * sizeof(F),
-        values.values.data(), 0, nullptr, nullptr));
+        &values.values[0], 0, nullptr, nullptr));
   }
 
   template class OpenClDevice<float>;

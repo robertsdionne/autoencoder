@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <valarray>
 #include <vector>
 #include <vexcl/vexcl.hpp>
 
@@ -30,11 +31,11 @@ namespace autoencoder {
     }
 
     F value(int i, int j = 0, int k = 0, int l = 0) const {
-      return values.at(Offset(i, j, k, l));
+      return values[Offset(i, j, k, l)];
     }
 
     F &value(int i, int j = 0, int k = 0, int l = 0) {
-      return values.at(Offset(i, j, k, l));
+      return values[Offset(i, j, k, l)];
     }
 
     inline int Argmax() const {
@@ -84,7 +85,6 @@ namespace autoencoder {
     }
 
     void Reset() {
-      values.clear();
       values.resize(width * height * depth * duration);
     }
 
@@ -103,7 +103,7 @@ namespace autoencoder {
     }
 
   public:
-    std::vector<F> values;
+    std::valarray<F> values;
     vex::vector<F> values_device;
     cl_mem memory = 0;
     int width, height, depth, duration;

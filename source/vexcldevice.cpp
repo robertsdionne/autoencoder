@@ -76,7 +76,8 @@ namespace autoencoder {
   void VexClDevice<F>::Retrieve(Values<F> &values) {
     assert(values.values_device.size());
     if (values.values_device.size()) {
-      vex::copy(values.values_device, values.values);
+      vex::copy(
+          values.values_device.begin(), values.values_device.end(), std::begin(values.values));
     }
   }
 
@@ -90,7 +91,7 @@ namespace autoencoder {
   void VexClDevice<F>::Ship(Values<F> &values) {
     assert(values.values_device.size());
     if (values.values_device.size()) {
-      vex::copy(values.values, values.values_device);
+      vex::copy(std::begin(values.values), std::end(values.values), values.values_device.begin());
     }
   }
 
