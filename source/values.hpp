@@ -2,6 +2,8 @@
 #define AUTOENCODER_VALUES_HPP_
 
 #include AUTOENCODER_OPENCL_HEADER
+#undef nil
+#undef err_local
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -9,6 +11,7 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+#include <vexcl/vexcl.hpp>
 
 namespace autoencoder {
 
@@ -101,6 +104,7 @@ namespace autoencoder {
 
   public:
     std::vector<F> values;
+    vex::vector<F> values_device;
     cl_mem memory = 0;
     int width, height, depth, duration;
   };

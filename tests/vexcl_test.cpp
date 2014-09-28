@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <vexcl/vexcl.hpp>
 #include <vector>
+#include <vexcl/vexcl.hpp>
 
 TEST(VexClTest, TestVexCl) {
   vex::Context context{vex::Filter::Type{CL_DEVICE_TYPE_GPU}};

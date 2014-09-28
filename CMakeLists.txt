@@ -29,7 +29,7 @@ if (APPLE)
   set(BLAS_LIBRARY ${ACCELERATE_LIBRARY})
   set(BLAS_TARGET AccelerateBlas)
   set(AUTOENCODER_BLAS_HEADER <Accelerate/Accelerate.h>)
-  set(AUTOENCODER_OPENCL_HEADER <OpenCL/cl.h>)
+  set(AUTOENCODER_OPENCL_HEADER <OpenCL/opencl.h>)
 else (APPLE)
   include(ExternalProject)
 
@@ -65,7 +65,6 @@ include_directories(
   libraries/eigen
   libraries/gflags-2.1.1/include
   libraries/gtest-1.7.0/include
-  libraries/opencl/include
   libraries/VexCL
   ${Boost_INCLUDE_DIRS}
 )
