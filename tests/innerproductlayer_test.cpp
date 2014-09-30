@@ -4,8 +4,106 @@
 #include "cpudevice.hpp"
 #include "euclideanlosslayer.hpp"
 #include "innerproductlayer.hpp"
+#include "vexcldevice.hpp"
 
 using namespace autoencoder;
+
+TEST(InnerProductLayerTest, TestForwardGpu) {
+  auto input = Blob<float>(4);
+  for (auto i = 0; i < input.width; ++i) {
+    input.value(i) = i;
+  }
+  auto weights = Blob<float>(4, 3);
+  for (auto i = 0; i < weights.height; ++i) {
+    for (auto j = 0; j < weights.width; ++j) {
+      weights.value(j, i) = (i + j);
+    }
+  }
+  auto bias = Blob<float>(3);
+  for (auto i = 0; i < bias.width; ++i) {
+    bias.value(i) = i;
+  }
+  auto device = VexClDevice<float>();
+  auto layer = InnerProductLayer<float>(device, weights, bias);
+  auto output = Blob<float>(3);
+  auto out = Blobs<float>{&output};
+  device.Initialize(input);
+  device.Initialize(weights);
+  device.Initialize(bias);
+  device.Initialize(output);
+  device.Ship(input);
+  device.Ship(weights);
+  device.Ship(bias);
+  device.Ship(output);
+  layer.ForwardXpu(Mode::kTrain, {&input}, &out);
+  device.Retrieve(output);
+
+  EXPECT_FLOAT_EQ(14.0f, output.value(0));
+  EXPECT_FLOAT_EQ(21.0f, output.value(1));
+  EXPECT_FLOAT_EQ(28.0f, output.value(2));
+}
+
+TEST(InnerProductLayerTest, TestBackwardGpu) {
+  auto input = Blob<float>(4);
+  for (auto i = 0; i < input.width; ++i) {
+    input.value(i) = i;
+  }
+  auto weights = Blob<float>(4, 3);
+  for (auto i = 0; i < weights.height; ++i) {
+    for (auto j = 0; j < weights.width; ++j) {
+      weights.value(j, i) = i + j;
+    }
+  }
+  auto bias = Blob<float>(3);
+  for (auto i = 0; i < bias.width; ++i) {
+    bias.value(i) = i;
+  }
+  auto device = VexClDevice<float>();
+  auto layer = InnerProductLayer<float>(device, weights, bias);
+  auto output = Blob<float>(3);
+  auto in = Blobs<float>{&input};
+  auto out = Blobs<float>{&output};
+  device.Initialize(input);
+  device.Initialize(weights);
+  device.Initialize(bias);
+  device.Initialize(output);
+  device.Ship(input);
+  device.Ship(weights);
+  device.Ship(bias);
+  device.Ship(output);
+  layer.ForwardXpu(Mode::kTrain, in, &out);
+  device.Retrieve(output);
+  for (auto i = 0; i < output.width; ++i) {
+    output.difference(i) = 1.0f;
+  }
+  device.Ship(output);
+  layer.BackwardXpu(out, &in);
+  device.Retrieve(weights);
+  device.Retrieve(bias);
+  device.Retrieve(input);
+
+  EXPECT_FLOAT_EQ(0.0f, weights.difference(0, 0));
+  EXPECT_FLOAT_EQ(0.0f, weights.difference(0, 1));
+  EXPECT_FLOAT_EQ(0.0f, weights.difference(0, 2));
+  EXPECT_FLOAT_EQ(1.0f, weights.difference(1, 0));
+  EXPECT_FLOAT_EQ(1.0f, weights.difference(1, 1));
+  EXPECT_FLOAT_EQ(1.0f, weights.difference(1, 2));
+  EXPECT_FLOAT_EQ(2.0f, weights.difference(2, 0));
+  EXPECT_FLOAT_EQ(2.0f, weights.difference(2, 1));
+  EXPECT_FLOAT_EQ(2.0f, weights.difference(2, 2));
+  EXPECT_FLOAT_EQ(3.0f, weights.difference(3, 0));
+  EXPECT_FLOAT_EQ(3.0f, weights.difference(3, 1));
+  EXPECT_FLOAT_EQ(3.0f, weights.difference(3, 2));
+
+  EXPECT_FLOAT_EQ(1.0f, bias.difference(0));
+  EXPECT_FLOAT_EQ(1.0f, bias.difference(1));
+  EXPECT_FLOAT_EQ(1.0f, bias.difference(2));
+
+  EXPECT_FLOAT_EQ(3.0f, input.difference(0));
+  EXPECT_FLOAT_EQ(6.0f, input.difference(1));
+  EXPECT_FLOAT_EQ(9.0f, input.difference(2));
+  EXPECT_FLOAT_EQ(12.0f, input.difference(3));
+}
 
 TEST(InnerProductLayerTest, TestForwardCpu) {
   auto input = Blob<float>(4);
@@ -26,7 +124,7 @@ TEST(InnerProductLayerTest, TestForwardCpu) {
   auto layer = InnerProductLayer<float>(device, weights, bias);
   auto output = Blob<float>(3);
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Mode::kTrain, {&input}, &out);
+  layer.ForwardXpu(Mode::kTrain, {&input}, &out);
 
   EXPECT_FLOAT_EQ(14.0f, output.value(0));
   EXPECT_FLOAT_EQ(21.0f, output.value(1));
@@ -53,11 +151,11 @@ TEST(InnerProductLayerTest, TestBackwardCpu) {
   auto output = Blob<float>(3);
   auto in = Blobs<float>{&input};
   auto out = Blobs<float>{&output};
-  layer.ForwardCpu(Mode::kTrain, in, &out);
+  layer.ForwardXpu(Mode::kTrain, in, &out);
   for (auto i = 0; i < output.width; ++i) {
     output.difference(i) = 1.0f;
   }
-  layer.BackwardCpu(out, &in);
+  layer.BackwardXpu(out, &in);
 
   EXPECT_FLOAT_EQ(0.0f, weights.difference(0, 0));
   EXPECT_FLOAT_EQ(0.0f, weights.difference(0, 1));
@@ -116,21 +214,21 @@ TEST(InnerProductLayerTest, TestGradient) {
     auto loss_in = Blobs<double>{&output, &target};
     auto loss_out = Blobs<double>{&losses};
 
-    layer.ForwardCpu(Mode::kTrain, in, &out);
+    layer.ForwardXpu(Mode::kTrain, in, &out);
     loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
-    layer.BackwardCpu(out, &in);
+    layer.BackwardXpu(out, &in);
 
     auto actual_partial_error_with_respect_to_input_i = input.difference(i);
 
     auto original_input_i = input.value(i);
 
     input.value(i) = original_input_i + kEpsilon;
-    layer.ForwardCpu(Mode::kTrain, in, &out);
+    layer.ForwardXpu(Mode::kTrain, in, &out);
     auto loss_1 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i - kEpsilon;
-    layer.ForwardCpu(Mode::kTrain, in, &out);
+    layer.ForwardXpu(Mode::kTrain, in, &out);
     auto loss_0 = loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
 
     input.value(i) = original_input_i;
@@ -158,7 +256,7 @@ TEST(InnerProductLayerTest, TestGradient) {
       layer.ForwardCpu(Mode::kTrain, in, &out);
       loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
       loss_layer.Backward(loss_out, &loss_in);
-      layer.BackwardCpu(out, &in);
+      layer.BackwardXpu(out, &in);
 
       auto actual_partial_error_with_respect_to_weight_ij = weights.difference(j, i);
 
@@ -195,7 +293,7 @@ TEST(InnerProductLayerTest, TestGradient) {
     layer.ForwardCpu(Mode::kTrain, in, &out);
     loss_layer.Forward(Mode::kTrain, loss_in, &loss_out);
     loss_layer.Backward(loss_out, &loss_in);
-    layer.BackwardCpu(out, &in);
+    layer.BackwardXpu(out, &in);
 
     auto actual_partial_error_with_respect_to_bias_i = bias.difference(i);
 

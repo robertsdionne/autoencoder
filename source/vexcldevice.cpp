@@ -10,46 +10,129 @@ namespace autoencoder {
   template <typename F>
   VexClDevice<F>::VexClDevice() : context{
     vex::Filter::Type{CL_DEVICE_TYPE_GPU} && vex::Filter::DoublePrecision
-  } {}
+  } {
+    assert(clblasSuccess == clblasSetup());
+  }
+
+  template <typename F>
+  VexClDevice<F>::~VexClDevice() {
+    clblasTeardown();
+  }
 
   template <>
   void VexClDevice<float>::Axpby(
       float alpha, const Values<float> &x, float beta, Values<float> *y) {
-    // TODO(robertsdionne): implement.
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    cl_event complete;
+    assert(clblasSuccess == clblasSscal(
+        y->width, beta, y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
+    assert(clblasSuccess == clblasSaxpy(
+        x.width, alpha, x_mem, 0, 1,
+        y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
   }
 
   template <>
   void VexClDevice<double>::Axpby(
       double alpha, const Values<double> &x, double beta, Values<double> *y) {
-    // TODO(robertsdionne): implement.
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    cl_event complete;
+    assert(clblasSuccess == clblasDscal(
+        y->width, beta, y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
+    assert(clblasSuccess == clblasDaxpy(
+        x.width, alpha, x_mem, 0, 1,
+        y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
   }
 
   template <>
   void VexClDevice<float>::Gemm(
       float alpha, const Values<float> &A, const Values<float> &B, float beta, Values<float> *C,
       Transpose transpose_A, Transpose transpose_B) {
-    // TODO(robertsdionne): implement.
+    auto A_mem = A.values_device().raw();
+    auto B_mem = B.values_device().raw();
+    auto C_mem = C->values_device().raw();
+    auto queue = context.queue(0)();
+    cl_event complete;
+    assert(clblasSuccess == clblasSgemm(
+        clblasColumnMajor, ToClBlas(transpose_A), ToClBlas(transpose_B),
+        transpose_A == Transpose::kNo ? A.height : A.width,
+        transpose_B == Transpose::kNo ? B.width : B.height,
+        transpose_A == Transpose::kNo ? A.width : A.height,
+        alpha, A_mem, 0, A.height,
+        B_mem, 0, B.height,
+        beta, C_mem, 0, C->height,
+        1, &queue,
+        0, nullptr, nullptr));
   }
 
   template <>
   void VexClDevice<double>::Gemm(
       double alpha, const Values<double> &A, const Values<double> &B,
       double beta, Values<double> *C, Transpose transpose_A, Transpose transpose_B) {
-    // TODO(robertsdionne): implement.
+    auto A_mem = A.values_device().raw();
+    auto B_mem = B.values_device().raw();
+    auto C_mem = C->values_device().raw();
+    auto queue = context.queue(0)();
+    cl_event complete;
+    assert(clblasSuccess == clblasDgemm(
+        clblasColumnMajor, ToClBlas(transpose_A), ToClBlas(transpose_B),
+        transpose_A == Transpose::kNo ? A.height : A.width,
+        transpose_B == Transpose::kNo ? B.width : B.height,
+        transpose_A == Transpose::kNo ? A.width : A.height,
+        alpha, A_mem, 0, A.height,
+        B_mem, 0, B.height,
+        beta, C_mem, 0, C->height,
+        1, &queue,
+        0, nullptr, nullptr));
   }
 
   template <>
   void VexClDevice<float>::Gemv(
       float alpha, const Values<float> &A, const Values<float> &x, float beta, Values<float> *y,
       Transpose transpose_A) {
-    // TODO(robertsdionne): implement.
+    auto A_mem = A.values_device().raw();
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    cl_event complete;
+    assert(clblasSuccess == clblasSgemv(
+        clblasColumnMajor, ToClBlas(transpose_A),
+        A.height, A.width,
+        alpha, A_mem, 0, A.height,
+        x_mem, 0, 1,
+        beta, y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
   }
 
   template <>
   void VexClDevice<double>::Gemv(
       double alpha, const Values<double> &A, const Values<double> &x,
       double beta, Values<double> *y, Transpose transpose_A) {
-    // TODO(robertsdionne): implement.
+    auto A_mem = A.values_device().raw();
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    cl_event complete;
+    assert(clblasSuccess == clblasDgemv(
+        clblasColumnMajor, ToClBlas(transpose_A),
+        A.height, A.width,
+        alpha, A_mem, 0, A.height,
+        x_mem, 0, 1,
+        beta, y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
   }
 
   template <typename F>

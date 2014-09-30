@@ -15,7 +15,7 @@ namespace autoencoder {
   public:
     VexClDevice();
 
-    virtual ~VexClDevice() = default;
+    virtual ~VexClDevice();
 
     void Axpby(F alpha, const Values<F> &x, F beta, Values<F> *y) override;
 

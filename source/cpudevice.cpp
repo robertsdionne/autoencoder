@@ -30,10 +30,8 @@ namespace autoencoder {
         transpose_A == Transpose::kNo ? A.height : A.width,
         transpose_B == Transpose::kNo ? B.width : B.height,
         transpose_A == Transpose::kNo ? A.width : A.height,
-        alpha, &A.values[0],
-        A.height,
-        &B.values[0],
-        B.height,
+        alpha, &A.values[0], A.height,
+        &B.values[0], B.height,
         beta, &C->values[0], C->height);
   }
 
@@ -46,10 +44,8 @@ namespace autoencoder {
         transpose_A == Transpose::kNo ? A.height : A.width,
         transpose_B == Transpose::kNo ? B.width : B.height,
         transpose_A == Transpose::kNo ? A.width : A.height,
-        alpha, &A.values[0],
-        A.height,
-        &B.values[0],
-        B.height,
+        alpha, &A.values[0], A.height,
+        &B.values[0], B.height,
         beta, &C->values[0], C->height);
   }
 
