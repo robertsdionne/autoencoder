@@ -1,4 +1,5 @@
 #include AUTOENCODER_BLAS_HEADER
+#include <limits>
 
 #include "cpudevice.hpp"
 #include "values.hpp"
@@ -82,6 +83,14 @@ namespace autoencoder {
   void CpuDevice<F>::MaxDerivative(
       F alpha, const Values<F> &dx, const Values<F> &y, Values<F> *dy) {
     dy->values = dx.values * (y.values > alpha);
+  }
+
+  template <typename F>
+  void CpuDevice<F>::Softmax(const Values<F> &x, Values<F> *y) {
+    auto maximum = x.values.max();
+    auto shifted = x.values - maximum;
+    auto sum = std::numeric_limits<F>::epsilon() + std::exp(shifted).sum();
+    y->values = (std::numeric_limits<F>::epsilon() + std::exp(shifted)) / sum;
   }
 
   template class CpuDevice<float>;

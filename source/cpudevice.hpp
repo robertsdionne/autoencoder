@@ -23,6 +23,8 @@ namespace autoencoder {
     void Max(F alpha, const Values<F> &x, Values<F> *y) override;
 
     void MaxDerivative(F alpha, const Values<F> &dx, const Values<F> &y, Values<F> *dy) override;
+
+    void Softmax(const Values<F> &x, Values<F> *y) override;
   };
 
   inline CBLAS_TRANSPOSE ToCblas(Transpose transpose) {

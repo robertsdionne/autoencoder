@@ -28,6 +28,8 @@ namespace autoencoder {
     virtual void Max(F alpha, const Values<F> &x, Values<F> *y) = 0;
 
     virtual void MaxDerivative(F alpha, const Values<F> &dx, const Values<F> &y, Values<F> *dy) = 0;
+
+    virtual void Softmax(const Values<F> &x, Values<F> *y) = 0;
   };
 
 }  // namespace autoencoder

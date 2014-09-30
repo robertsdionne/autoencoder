@@ -64,6 +64,16 @@ namespace autoencoder {
   }
 
   template <typename F>
+  void VexClDevice<F>::Softmax(const Values<F> &x, Values<F> *y) {
+    auto do_max = vex::Reductor<F, vex::MAX>{context};
+    auto do_sum = vex::Reductor<F, vex::SUM>{context};
+    auto maximum = vex::make_temp<1>(do_max(x.values_device));
+    auto exp_shifted = vex::make_temp<2>(exp(x.values_device - maximum));
+    auto sum = vex::make_temp<3>(std::numeric_limits<F>::epsilon() + do_sum(exp_shifted));
+    y->values_device = (std::numeric_limits<F>::epsilon() + exp_shifted) / sum;
+  }
+
+  template <typename F>
   void VexClDevice<F>::Initialize(Blob<F> &blob) {
     Initialize(blob.values);
     Initialize(blob.differences);
