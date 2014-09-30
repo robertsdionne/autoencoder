@@ -12,12 +12,6 @@ namespace autoencoder {
   F InnerProductLayer<F>::ForwardXpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     device.Axpby(F(1.0), bias.values, 0.0f, &top->at(0)->values);
     device.Gemv(F(1.0), weights.values, bottom.at(0)->values, F(1.0), &top->at(0)->values);
-    if (!top->at(0)->IsFinite()) {
-      std::cout << "weights " << weights.values << std::endl << std::endl;
-      std::cout << "bottom " << bottom.at(0)->values << std::endl;
-      std::cout << "top " << top->at(0)->values << std::endl;
-    }
-    top->at(0)->IsValid();
     return 0.0f;
   }
 
@@ -31,9 +25,6 @@ namespace autoencoder {
     // dE/dx
     device.Gemv(F(1.0), weights.values, top.at(0)->differences, F(1.0),
         &bottom->at(0)->differences, Transpose::kYes);
-    weights.IsValid();
-    bias.IsValid();
-    bottom->at(0)->IsValid();
   }
 
   template class InnerProductLayer<float>;
