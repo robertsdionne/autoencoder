@@ -19,14 +19,8 @@ namespace autoencoder {
 
   template <typename F>
   void SoftmaxLayer<F>::BackwardXpu(const Blobs<F> &top, Blobs<F> *bottom) {
-    for (auto i = 0; i < bottom->at(0)->width; ++i) {
-      bottom->at(0)->difference(i) = 0.0f;
-      for (auto j = 0; j < top.at(0)->width; ++j) {
-        bottom->at(0)->difference(i) +=
-            top.at(0)->difference(j) * top.at(0)->value(j) * ((i == j) - top.at(0)->value(i));
-      }
-    }
-    bottom->at(0)->IsValid();
+    device.SoftmaxDerivative(
+        top.at(0)->values, top.at(0)->differences, &bottom->at(0)->differences);
   }
 
   template class SoftmaxLayer<float>;

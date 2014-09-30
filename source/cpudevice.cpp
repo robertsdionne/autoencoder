@@ -93,6 +93,15 @@ namespace autoencoder {
     y->values = (std::numeric_limits<F>::epsilon() + std::exp(shifted)) / sum;
   }
 
+  template <typename F>
+  void CpuDevice<F>::SoftmaxDerivative(const Values<F> &x, const Values<F> &dx, Values<F> *dy) {
+    auto kronecker_delta = std::valarray<F>(dy->values.size());
+    kronecker_delta[0] = F(1.0);
+    for (auto i = 0; i < dy->values.size(); ++i) {
+      dy->values[i] = (dx.values * x.values * (kronecker_delta.shift(-i) - x.values[i])).sum();
+    }
+  }
+
   template class CpuDevice<float>;
   template class CpuDevice<double>;
 

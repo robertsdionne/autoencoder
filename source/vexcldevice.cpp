@@ -73,6 +73,37 @@ namespace autoencoder {
     y->values_device = (std::numeric_limits<F>::epsilon() + exp_shifted) / sum;
   }
 
+  template <>
+  void VexClDevice<float>::SoftmaxDerivative(
+      const Values<float> &x, const Values<float> &dx, Values<float> *dy) {
+    VEX_FUNCTION(float, softmax_derivative, (size_t, n)(size_t, i)(float *, x)(float *, dx),
+      float sum = 0.0f;
+      float x_i = x[i];
+      for (size_t j = 0; j < n; ++j) {
+        sum += dx[j] * x[j] * ((i == j) - x_i);
+      }
+      return sum;
+    );
+    dy->values_device = softmax_derivative(x.values_device.size(), vex::element_index(),
+        vex::raw_pointer(x.values_device), vex::raw_pointer(dx.values_device));
+  }
+
+  template <>
+  void VexClDevice<double>::SoftmaxDerivative(
+      const Values<double> &x, const Values<double> &dx, Values<double> *dy) {
+    VEX_FUNCTION(
+        double, softmax_derivative, (size_t, n)(size_t, i)(double *, x)(double *, dx),
+      double sum = 0.0;
+      double x_i = x[i];
+      for (size_t j = 0; j < n; ++j) {
+        sum += dx[j] * x[j] * ((i == j) - x_i);
+      }
+      return sum;
+    );
+    dy->values_device = softmax_derivative(x.values_device.size(), vex::element_index(),
+        vex::raw_pointer(x.values_device), vex::raw_pointer(dx.values_device));
+  }
+
   template <typename F>
   void VexClDevice<F>::Initialize(Blob<F> &blob) {
     Initialize(blob.values);

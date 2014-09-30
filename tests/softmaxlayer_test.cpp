@@ -41,6 +41,39 @@ TEST(SoftmaxLayerTest, TestForwardGpu) {
   EXPECT_FLOAT_EQ(1.0f, sum);
 }
 
+TEST(SoftmaxLayerTest, TestBackwardGpu) {
+  auto input = Blob<float>(8);
+  for (auto i = 0; i < input.width; ++i) {
+    input.value(i) = i;
+  }
+  auto device = VexClDevice<float>();
+  auto layer = SoftmaxLayer<float>(device);
+  auto output = Blob<float>(8);
+  auto in = Blobs<float>{&input};
+  auto out = Blobs<float>{&output};
+  device.Initialize(input);
+  device.Initialize(output);
+  device.Ship(input);
+  device.Ship(output);
+  layer.ForwardXpu(Mode::kTrain, in, &out);
+  device.Retrieve(output);
+  for (auto i = 0; i < output.width; ++i) {
+    output.difference(i) = (i == 2);
+  }
+  device.Ship(output);
+  layer.BackwardXpu(out, &in);
+  device.Retrieve(input);
+
+  EXPECT_FLOAT_EQ(-2.4570945e-06f, input.difference(0));
+  EXPECT_FLOAT_EQ(-6.6785233e-06f, input.difference(1));
+  EXPECT_FLOAT_EQ(0.0042425455f, input.difference(2));
+  EXPECT_FLOAT_EQ(-4.934593e-05f, input.difference(3));
+  EXPECT_FLOAT_EQ(-0.0001341356f, input.difference(4));
+  EXPECT_FLOAT_EQ(-0.00036461782f, input.difference(5));
+  EXPECT_FLOAT_EQ(-0.00099113351f, input.difference(6));
+  EXPECT_FLOAT_EQ(-0.0026941793f, input.difference(7));
+}
+
 TEST(SoftmaxLayerTest, TestForwardCpu) {
   auto input = Blob<float>(8);
   for (auto i = 0; i < input.width; ++i) {

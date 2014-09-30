@@ -29,6 +29,8 @@ namespace autoencoder {
 
     void Softmax(const Values<F> &x, Values<F> *y) override;
 
+    void SoftmaxDerivative(const Values<F> &x, const Values<F> &dx, Values<F> *dy) override;
+
     void Initialize(Blob<F> &blob);
 
     void Initialize(Values<F> &values);

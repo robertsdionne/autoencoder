@@ -30,24 +30,27 @@ TEST(RectifiedLinearLayerTest, TestForwardGpu) {
   }
 }
 
-TEST(RectifiedLinearLayerTest, TestForwardGpuDouble) {
-  auto input = Blob<double>(10);
+TEST(RectifiedLinearLayerTest, TestBackwardGpu) {
+  auto output = Blob<float>(10);
+  for (auto i = 0; i < output.width; ++i) {
+    output.difference(i) = 1.0f;
+  }
+  auto device = VexClDevice<float>();
+  auto layer = RectifiedLinearLayer<float>(device);
+  auto input = Blob<float>(10);
   for (auto i = 0; i < input.width; ++i) {
     input.value(i) = 2.0f * (i % 2) - 2.0f * (i % 2 == 0);
   }
-  auto device = VexClDevice<double>();
-  auto layer = RectifiedLinearLayer<double>(device);
-  auto output = Blob<double>(10);
+  auto in = Blobs<float>{&input};
   device.Initialize(input);
   device.Initialize(output);
   device.Ship(input);
   device.Ship(output);
-  auto out = Blobs<double>{&output};
-  layer.ForwardGpu(Mode::kTrain, {&input}, &out);
-  device.Retrieve(output);
+  layer.BackwardXpu({&output}, &in);
+  device.Retrieve(input);
 
   for (auto i = 0; i < input.width; ++i) {
-    EXPECT_FLOAT_EQ(2.0f * (i % 2), output.value(i));
+    EXPECT_FLOAT_EQ(i % 2, input.difference(i));
   }
 }
 
