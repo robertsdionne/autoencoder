@@ -42,8 +42,6 @@ namespace autoencoder {
     concatenate.ForwardXpu(mode, dropout_output, &concatenate_output);
     combine.ForwardXpu(mode, concatenate_output, &combine_output);
     rectified_linear.ForwardXpu(mode, combine_output, &rectified_linear_output);
-    top->at(0)->IsValid();
-    top->at(1)->IsValid();
     return 0.0f;
   }
 
@@ -63,8 +61,6 @@ namespace autoencoder {
     softmax.BackwardXpu(softmax_output, &classify_output);
     classify.BackwardXpu(classify_output, &dropout_recurrent_output);
     dropout.BackwardXpu(dropout_output, bottom);
-    bottom->at(0)->IsValid();
-    bottom->at(1)->IsValid();
   }
 
   template class PartOfSpeechWordLayer<float>;

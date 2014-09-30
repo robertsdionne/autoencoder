@@ -29,7 +29,8 @@ namespace autoencoder {
       int recurrent_state_dimension,
       int tag_dimension,
       int word_representation_dimension)
-  : word_table(word_table), tag_table(tag_table),
+  : device(device),
+    word_table(word_table), tag_table(tag_table),
     p(p), generator(generator),
     uniform(), uniform_symmetric(F(-0.1), F(0.1)),
     recurrent_state_dimension(recurrent_state_dimension),
@@ -50,22 +51,32 @@ namespace autoencoder {
       const std::vector<std::string> &sentence, std::vector<std::string> *tags) {
     auto input = Blobs<F>{};
     word_table.ForwardCpu(sentence, &input);
+
+    for (auto *blob : input) {
+      device.Initialize(*blob);
+      device.Ship(*blob);
+    }
+
     input.insert(input.begin(), &recurrent_state_input);
 
     auto guessed_tags = std::vector<Blob<F>>(sentence.size(), Blob<F>(tag_dimension));
     auto output = Blobs<F>{};
     for (auto &guessed_tag : guessed_tags) {
       output.push_back(&guessed_tag);
+      device.Initialize(guessed_tag);
+      device.Ship(guessed_tag);
     }
     output.push_back(&recurrent_state_output);
 
     part_of_speech_sentence.ForwardCpu(Mode::kTest, input, &output);
 
     for (auto i = 0; i < output.size(); ++i) {
+      device.Retrieve(*output.at(i));
       output.at(i)->IsValid();
     }
 
     for (auto i = 1; i < guessed_tags.size(); ++i) {
+      device.Retrieve(guessed_tags.at(i));
       tags->push_back(tag_table.LookupToken(guessed_tags.at(i).values.Argmax()));
     }
   }
@@ -75,15 +86,29 @@ namespace autoencoder {
       const TaggedSentence &tagged_sentence) {
     auto input = Blobs<F>{};
     word_table.ForwardCpu(tagged_sentence.words, &input);
+
+    for (auto *blob : input) {
+      device.Initialize(*blob);
+      device.Ship(*blob);
+    }
+
     input.insert(input.begin(), &recurrent_state_input);
 
     auto target = Blobs<F>{};
     tag_table.ForwardCpu(tagged_sentence.tags, &target);
 
+    for (auto *blob : target) {
+      device.Initialize(*blob);
+      device.Ship(*blob);
+    }
+
     auto guessed_tags = std::vector<Blob<F>>(tagged_sentence.size(), Blob<F>(tag_dimension));
+
     auto output = Blobs<F>{};
     for (auto &guessed_tag : guessed_tags) {
       output.push_back(&guessed_tag);
+      device.Initialize(guessed_tag);
+      device.Ship(guessed_tag);
     }
     output.push_back(&recurrent_state_output);
 
@@ -99,11 +124,14 @@ namespace autoencoder {
     auto loss_output = Blobs<F>{};
     for (auto &loss : losses) {
       loss_output.push_back(&loss);
+      device.Initialize(loss);
+      device.Ship(loss);
     }
 
     auto result = loss.ForwardCpu(Mode::kTrain, output_and_target, &loss_output);
 
     for (auto &loss : losses) {
+      device.Retrieve(loss);
       loss.IsValid();
     }
 
@@ -128,6 +156,17 @@ namespace autoencoder {
     // InitializeBlob(uniform_symmetric, generator, &recurrent_state_input);
     InitializeBlob(uniform_symmetric, generator, &classify_weights);
     InitializeBlob(uniform_symmetric, generator, &combine_weights);
+    device.Initialize(recurrent_state_input);
+    device.Initialize(recurrent_state_output);
+    device.Initialize(classify_weights);
+    device.Initialize(classify_bias);
+    device.Initialize(combine_weights);
+    device.Initialize(combine_bias);
+    device.Ship(recurrent_state_input);
+    device.Ship(classify_weights);
+    device.Ship(classify_bias);
+    device.Ship(combine_weights);
+    device.Ship(combine_bias);
 
     std::uniform_int_distribution<int> uniform(0, tagged_sentences.size() - 1);
 
@@ -146,7 +185,18 @@ namespace autoencoder {
       for (auto j = 0; j < tagged_sentences.size(); ++j) {
         // auto u = uniform(generator);
         auto u = j;
+
+        device.Ship(classify_weights);
+        device.Ship(classify_bias);
+        device.Ship(combine_weights);
+        device.Ship(combine_bias);
+
         ForwardBackwardCpu(tagged_sentences.at(u));
+
+        device.Retrieve(classify_weights);
+        device.Retrieve(classify_bias);
+        device.Retrieve(combine_weights);
+        device.Retrieve(combine_bias);
 
         classify_weights.ClipGradient(tagged_sentences.at(u).size());
         classify_bias.ClipGradient(tagged_sentences.at(u).size());

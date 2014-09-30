@@ -216,7 +216,7 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Initialize(Values<F> &values) {
-    assert(0 == values.values_device.size());
+    // assert(0 == values.values_device.size());
     if (0 == values.values_device.size()) {
       values.values_device = vex::vector<F>{context, values.values.size()};
     }

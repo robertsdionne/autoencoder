@@ -52,6 +52,7 @@ namespace autoencoder {
     F ScoreTagging(const TaggedSentence &tagged_sentence) const override;
 
   public:
+    Device<F> &device;
     LookupTable<F> &word_table;
     LookupTable<F> &tag_table;
     F p;

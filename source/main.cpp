@@ -7,9 +7,10 @@
 #include "blob.hpp"
 #include "cpudevice.hpp"
 #include "dataloader.hpp"
+#include "evaluator.hpp"
 #include "lookuptable.hpp"
 #include "recurrentneuralnetworkpartofspeechtagger.hpp"
-#include "evaluator.hpp"
+#include "vexcldevice.hpp"
 
 using namespace autoencoder;
 
