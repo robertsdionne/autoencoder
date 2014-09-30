@@ -1,6 +1,8 @@
 #ifndef AUTOENCODER_VEXCLDEVICE_HPP_
 #define AUTOENCODER_VEXCLDEVICE_HPP_
 
+#include <clBLAS.h>
+
 #include "device.hpp"
 
 namespace autoencoder {
@@ -46,6 +48,17 @@ namespace autoencoder {
   private:
     vex::Context context;
   };
+
+  inline clblasTranspose ToClBlas(Transpose transpose) {
+    switch (transpose) {
+      case Transpose::kYes:
+        return clblasTrans;
+        break;
+      case Transpose::kNo:
+        return clblasNoTrans;
+        break;
+    }
+  }
 
 }  // namespace autoencoder
 
