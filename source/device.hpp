@@ -42,9 +42,13 @@ namespace autoencoder {
 
     virtual void Copy(const Values<F> &x, Values<F> *y) = 0;
 
+    virtual void Bernoulli(std::mt19937 &generator, F p, Values<F> *y) = 0;
+
     virtual void Multiply(F alpha, const Values<F> &x, const Values<F> &y, Values<F> *z) = 0;
 
-    virtual void Bernoulli(std::mt19937 &generator, F p, Values<F> *y) = 0;
+    virtual void Concatenate(const Values<F> &x, int offset, Values<F> *y) = 0;
+
+    virtual void Split(int offset, const Values<F> &x, Values<F> *y) = 0;
 
     virtual void Initialize(Blob<F> &blob) = 0;
 

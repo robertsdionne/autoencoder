@@ -20,7 +20,7 @@ namespace autoencoder {
       corrupted_word(combine_weights.width - combine_weights.height),
       classify(device, classify_weights, classify_bias), classified(classify_weights.height),
       softmax(device),
-      concatenate(), concatenated(combine_weights.width),
+      concatenate(device), concatenated(combine_weights.width),
       combine(device, combine_weights, combine_bias), combined(combine_weights.height),
       rectified_linear(device) {}
 
@@ -39,7 +39,7 @@ namespace autoencoder {
     dropout.ForwardXpu(mode, bottom, &dropout_output);
     classify.ForwardXpu(mode, dropout_recurrent_output, &classify_output);
     softmax.ForwardXpu(mode, classify_output, &softmax_output);
-    concatenate.ForwardCpu(mode, dropout_output, &concatenate_output);
+    concatenate.ForwardXpu(mode, dropout_output, &concatenate_output);
     combine.ForwardXpu(mode, concatenate_output, &combine_output);
     rectified_linear.ForwardXpu(mode, combine_output, &rectified_linear_output);
     top->at(0)->IsValid();
@@ -59,7 +59,7 @@ namespace autoencoder {
 
     rectified_linear.BackwardXpu(rectified_linear_output, &combine_output);
     combine.BackwardXpu(combine_output, &concatenate_output);
-    concatenate.BackwardCpu(concatenate_output, &dropout_output);
+    concatenate.BackwardXpu(concatenate_output, &dropout_output);
     softmax.BackwardXpu(softmax_output, &classify_output);
     classify.BackwardXpu(classify_output, &dropout_recurrent_output);
     dropout.BackwardXpu(dropout_output, bottom);

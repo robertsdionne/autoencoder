@@ -1,3 +1,4 @@
+#include <algorithm>
 #include AUTOENCODER_BLAS_HEADER
 #include <limits>
 #include <random>
@@ -125,6 +126,18 @@ namespace autoencoder {
   template <typename F>
   void CpuDevice<F>::Multiply(F alpha, const Values<F> &x, const Values<F> &y, Values<F> *z) {
     z->values = alpha * x.values * y.values;
+  }
+
+  template <typename F>
+  void CpuDevice<F>::Concatenate(const Values<F> &x, int offset, Values<F> *y) {
+    std::copy(std::begin(x.values), std::end(x.values), std::begin(y->values) + offset);
+  }
+
+  template <typename F>
+  void CpuDevice<F>::Split(int offset, const Values<F> &x, Values<F> *y) {
+    std::copy(
+        std::begin(x.values) + offset,
+        std::begin(x.values) + offset + y->values.size(), std::begin(y->values));
   }
 
   template class CpuDevice<float>;

@@ -25,7 +25,6 @@ namespace autoencoder {
     auto x_mem = x.values_device().raw();
     auto y_mem = y->values_device().raw();
     auto queue = context.queue(0)();
-    cl_event complete;
     assert(clblasSuccess == clblasSscal(
         y->width, beta, y_mem, 0, 1,
         1, &queue,
@@ -43,7 +42,6 @@ namespace autoencoder {
     auto x_mem = x.values_device().raw();
     auto y_mem = y->values_device().raw();
     auto queue = context.queue(0)();
-    cl_event complete;
     assert(clblasSuccess == clblasDscal(
         y->width, beta, y_mem, 0, 1,
         1, &queue,
@@ -63,7 +61,6 @@ namespace autoencoder {
     auto B_mem = B.values_device().raw();
     auto C_mem = C->values_device().raw();
     auto queue = context.queue(0)();
-    cl_event complete;
     assert(clblasSuccess == clblasSgemm(
         clblasColumnMajor, ToClBlas(transpose_A), ToClBlas(transpose_B),
         transpose_A == Transpose::kNo ? A.height : A.width,
@@ -84,7 +81,6 @@ namespace autoencoder {
     auto B_mem = B.values_device().raw();
     auto C_mem = C->values_device().raw();
     auto queue = context.queue(0)();
-    cl_event complete;
     assert(clblasSuccess == clblasDgemm(
         clblasColumnMajor, ToClBlas(transpose_A), ToClBlas(transpose_B),
         transpose_A == Transpose::kNo ? A.height : A.width,
@@ -105,7 +101,6 @@ namespace autoencoder {
     auto x_mem = x.values_device().raw();
     auto y_mem = y->values_device().raw();
     auto queue = context.queue(0)();
-    cl_event complete;
     assert(clblasSuccess == clblasSgemv(
         clblasColumnMajor, ToClBlas(transpose_A),
         A.height, A.width,
@@ -124,7 +119,6 @@ namespace autoencoder {
     auto x_mem = x.values_device().raw();
     auto y_mem = y->values_device().raw();
     auto queue = context.queue(0)();
-    cl_event complete;
     assert(clblasSuccess == clblasDgemv(
         clblasColumnMajor, ToClBlas(transpose_A),
         A.height, A.width,
@@ -255,6 +249,54 @@ namespace autoencoder {
     if (values.values_device.size()) {
       vex::copy(std::begin(values.values), std::end(values.values), values.values_device.begin());
     }
+  }
+
+  template <>
+  void VexClDevice<float>::Concatenate(const Values<float> &x, int offset, Values<float> *y) {
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    assert(clblasSuccess == clblasScopy(
+        x.values_device.size(), x_mem, 0, 1,
+        y_mem, offset, 1,
+        1, &queue,
+        0, nullptr, nullptr));
+  }
+
+  template <>
+  void VexClDevice<double>::Concatenate(const Values<double> &x, int offset, Values<double> *y) {
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    assert(clblasSuccess == clblasDcopy(
+        x.values_device.size(), x_mem, 0, 1,
+        y_mem, offset, 1,
+        1, &queue,
+        0, nullptr, nullptr));
+  }
+
+  template <>
+  void VexClDevice<float>::Split(int offset, const Values<float> &x, Values<float> *y) {
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    assert(clblasSuccess == clblasScopy(
+        y->values_device.size(), x_mem, offset, 1,
+        y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
+  }
+
+  template <>
+  void VexClDevice<double>::Split(int offset, const Values<double> &x, Values<double> *y) {
+    auto x_mem = x.values_device().raw();
+    auto y_mem = y->values_device().raw();
+    auto queue = context.queue(0)();
+    assert(clblasSuccess == clblasDcopy(
+        y->values_device.size(), x_mem, offset, 1,
+        y_mem, 0, 1,
+        1, &queue,
+        0, nullptr, nullptr));
   }
 
   template class VexClDevice<float>;

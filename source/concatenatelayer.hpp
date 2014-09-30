@@ -6,14 +6,27 @@
 
 namespace autoencoder {
 
+  template <typename F> class Device;
+
   template <typename F>
   class ConcatenateLayer : public Layer<F> {
   public:
+    ConcatenateLayer(Device<F> &device);
+
     virtual ~ConcatenateLayer() = default;
 
-    F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
+    F ForwardXpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) override;
 
-    void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) override;
+    void BackwardXpu(const Blobs<F> &top, Blobs<F> *bottom) override;
+
+    F ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
+      return F(0.0);
+    }
+
+    void BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {}
+
+  private:
+    Device<F> &device;
   };
 
 }  // namespace autoencoder

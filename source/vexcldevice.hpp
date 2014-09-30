@@ -44,6 +44,10 @@ namespace autoencoder {
 
     void Multiply(F alpha, const Values<F> &x, const Values<F> &y, Values<F> *z) override;
 
+    void Concatenate(const Values<F> &x, int offset, Values<F> *y) override;
+
+    void Split(int offset, const Values<F> &x, Values<F> *y) override;
+
     void Initialize(Blob<F> &blob) override;
 
     void Initialize(Values<F> &values) override;
