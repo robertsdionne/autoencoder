@@ -32,6 +32,10 @@ namespace autoencoder {
     virtual void Softmax(const Values<F> &x, Values<F> *y) = 0;
 
     virtual void SoftmaxDerivative(const Values<F> &x, const Values<F> &dx, Values<F> *dy) = 0;
+
+    virtual void Square(F alpha, const Values<F> &x, Values<F> *y) = 0;
+
+    virtual F Sum(const Values<F> &x) = 0;
   };
 
 }  // namespace autoencoder

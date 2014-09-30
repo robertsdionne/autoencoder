@@ -10,26 +10,22 @@ namespace autoencoder {
   EuclideanLossLayer<F>::EuclideanLossLayer(Device<F> &device) : device(device) {}
 
   template <typename F>
-  F EuclideanLossLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
-    auto loss = 0.0f;
+  F EuclideanLossLayer<F>::ForwardXpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
+    auto loss = F(0.0);
     for (auto i = 0; i < bottom.size(); i += 2) {
-      for (auto j = 0; j < bottom.at(i)->width; ++j) {
-        top->at(i / 2)->difference(j) = bottom.at(i + 1)->value(j) - bottom.at(i)->value(j);
-        top->at(i / 2)->value(j) =
-            top->at(i / 2)->difference(j) * top->at(i / 2)->difference(j) / 2.0f;
-        loss += top->at(i / 2)->value(j);
-      }
-      top->at(i / 2)->IsValid();
+      device.Axpby(F(1.0), bottom.at(i + 1)->values, F(0.0), &top->at(i / 2)->differences);
+      device.Axpby(F(-1.0), bottom.at(i)->values, F(1.0), &top->at(i / 2)->differences);
+      device.Square(F(1.0 / 2.0), top->at(i / 2)->differences, &top->at(i / 2)->values);
+      loss += device.Sum(top->at(i / 2)->values);
     }
     return loss;
   }
 
   template <typename F>
-  void EuclideanLossLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
+  void EuclideanLossLayer<F>::BackwardXpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = 0; i < bottom->size(); ++i) {
       auto sign = i % 2 == 0 ? F(-1.0) : F(1.0);
       device.Axpby(sign, top.at(i / 2)->differences, F(1.0), &bottom->at(i)->differences);
-      bottom->at(i)->IsValid();
     }
   }
 

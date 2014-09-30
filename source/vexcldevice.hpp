@@ -33,6 +33,10 @@ namespace autoencoder {
 
     void SoftmaxDerivative(const Values<F> &x, const Values<F> &dx, Values<F> *dy) override;
 
+    void Square(F alpha, const Values<F> &x, Values<F> *y) override;
+
+    F Sum(const Values<F> &x) override;
+
     void Initialize(Blob<F> &blob);
 
     void Initialize(Values<F> &values);

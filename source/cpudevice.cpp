@@ -98,6 +98,16 @@ namespace autoencoder {
     }
   }
 
+  template <typename F>
+  void CpuDevice<F>::Square(F alpha, const Values<F> &x, Values<F> *y) {
+    y->values = alpha * x.values * x.values;
+  }
+
+  template <typename F>
+  F CpuDevice<F>::Sum(const Values<F> &x) {
+    return x.values.sum();
+  }
+
   template class CpuDevice<float>;
   template class CpuDevice<double>;
 

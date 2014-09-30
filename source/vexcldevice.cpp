@@ -188,6 +188,17 @@ namespace autoencoder {
   }
 
   template <typename F>
+  void VexClDevice<F>::Square(F alpha, const Values<F> &x, Values<F> *y) {
+    y->values_device = alpha * x.values_device * x.values_device;
+  }
+
+  template <typename F>
+  F VexClDevice<F>::Sum(const Values<F> &x) {
+    auto do_sum = vex::Reductor<F, vex::SUM>{context};
+    return do_sum(x.values_device);
+  }
+
+  template <typename F>
   void VexClDevice<F>::Initialize(Blob<F> &blob) {
     Initialize(blob.values);
     Initialize(blob.differences);
