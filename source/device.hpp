@@ -5,6 +5,7 @@
 
 namespace autoencoder {
 
+  template <typename F> struct Blob;
   template <typename F> struct Values;
 
   enum class Transpose {
@@ -36,6 +37,18 @@ namespace autoencoder {
     virtual void Square(F alpha, const Values<F> &x, Values<F> *y) = 0;
 
     virtual F Sum(const Values<F> &x) = 0;
+
+    virtual void Initialize(Blob<F> &blob) = 0;
+
+    virtual void Initialize(Values<F> &values) = 0;
+
+    virtual void Retrieve(Blob<F> &blob) = 0;
+
+    virtual void Retrieve(Values<F> &values) = 0;
+
+    virtual void Ship(Blob<F> &blob) = 0;
+
+    virtual void Ship(Values<F> &values) = 0;
   };
 
 }  // namespace autoencoder

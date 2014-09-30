@@ -31,6 +31,18 @@ namespace autoencoder {
     void Square(F alpha, const Values<F> &x, Values<F> *y) override;
 
     F Sum(const Values<F> &x) override;
+
+    void Initialize(Blob<F> &blob) override {}
+
+    void Initialize(Values<F> &values) override {}
+
+    void Retrieve(Blob<F> &blob) override {}
+
+    void Retrieve(Values<F> &values) override {}
+
+    void Ship(Blob<F> &blob) override {}
+
+    void Ship(Values<F> &values) override {}
   };
 
   inline CBLAS_TRANSPOSE ToCblas(Transpose transpose) {

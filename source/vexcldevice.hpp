@@ -37,17 +37,17 @@ namespace autoencoder {
 
     F Sum(const Values<F> &x) override;
 
-    void Initialize(Blob<F> &blob);
+    void Initialize(Blob<F> &blob) override;
 
-    void Initialize(Values<F> &values);
+    void Initialize(Values<F> &values) override;
 
-    void Retrieve(Blob<F> &blob);
+    void Retrieve(Blob<F> &blob) override;
 
-    void Retrieve(Values<F> &values);
+    void Retrieve(Values<F> &values) override;
 
-    void Ship(Blob<F> &blob);
+    void Ship(Blob<F> &blob) override;
 
-    void Ship(Values<F> &values);
+    void Ship(Values<F> &values) override;
 
   private:
     vex::Context context;
