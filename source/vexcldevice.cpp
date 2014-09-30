@@ -199,6 +199,22 @@ namespace autoencoder {
   }
 
   template <typename F>
+  void VexClDevice<F>::Copy(const Values<F> &x, Values<F> *y) {
+    y->values_device = x.values_device;
+  }
+
+  template <typename F>
+  void VexClDevice<F>::Bernoulli(std::mt19937 &generator, F p, Values<F> *y) {
+    vex::Random<F, vex::random::threefry> rng;
+    y->values_device = rng(vex::element_index(), generator()) < p;
+  }
+
+  template <typename F>
+  void VexClDevice<F>::Multiply(F alpha, const Values<F> &x, const Values<F> &y, Values<F> *z) {
+    z->values_device = alpha * x.values_device * y.values_device;
+  }
+
+  template <typename F>
   void VexClDevice<F>::Initialize(Blob<F> &blob) {
     Initialize(blob.values);
     Initialize(blob.differences);

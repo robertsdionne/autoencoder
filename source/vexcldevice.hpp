@@ -2,6 +2,7 @@
 #define AUTOENCODER_VEXCLDEVICE_HPP_
 
 #include <clBLAS.h>
+#include <random>
 
 #include "device.hpp"
 
@@ -36,6 +37,12 @@ namespace autoencoder {
     void Square(F alpha, const Values<F> &x, Values<F> *y) override;
 
     F Sum(const Values<F> &x) override;
+
+    void Copy(const Values<F> &x, Values<F> *y) override;
+
+    void Bernoulli(std::mt19937 &generator, F p, Values<F> *y) override;
+
+    void Multiply(F alpha, const Values<F> &x, const Values<F> &y, Values<F> *z) override;
 
     void Initialize(Blob<F> &blob) override;
 

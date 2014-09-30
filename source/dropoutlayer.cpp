@@ -2,48 +2,39 @@
 #include <random>
 
 #include "blob.hpp"
+#include "device.hpp"
 #include "dropoutlayer.hpp"
 
 namespace autoencoder {
 
   template <typename F>
-  DropoutLayer<F>::DropoutLayer(F p, std::mt19937 &generator)
-    : mask(), p(p), scale(1.0f / p), generator(generator), bernoulli(p) {
+  DropoutLayer<F>::DropoutLayer(Device<F> &device, F p, std::mt19937 &generator)
+    : device(device), mask(), p(p), scale(1.0f / p), generator(generator), bernoulli(p) {
     assert(0.0f <= p <= 1.0f);
   }
 
   template <typename F>
-  F DropoutLayer<F>::ForwardCpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
+  F DropoutLayer<F>::ForwardXpu(Mode mode, const Blobs<F> &bottom, Blobs<F> *top) {
     if (Mode::kTrain == mode) {
       mask.clear();
       for (auto i = 0; i < bottom.size(); ++i) {
         mask.emplace_back(bottom.at(i)->width);
-        for (auto j = 0; j < bottom.at(i)->width; ++j) {
-          mask.at(i).value(j) = bernoulli(generator);
-          top->at(i)->value(j) = bottom.at(i)->value(j) * mask.at(i).value(j) * scale;
-        }
-        bottom.at(i)->IsValid();
-        mask.at(i).IsValid();
-        top->at(i)->IsValid();
+        device.Initialize(mask.at(i));
+        device.Bernoulli(generator, p, &mask.at(i));
+        device.Multiply(scale, bottom.at(i)->values, mask.at(i), &top->at(i)->values);
       }
     } else {
       for (auto i = 0; i < bottom.size(); ++i) {
-        for (auto j = 0; j < bottom.at(i)->width; ++j) {
-          top->at(i)->value(j) = bottom.at(i)->value(j);
-        }
+        device.Copy(bottom.at(i)->values, &top->at(i)->values);
       }
     }
     return 0.0f;
   }
 
   template <typename F>
-  void DropoutLayer<F>::BackwardCpu(const Blobs<F> &top, Blobs<F> *bottom) {
+  void DropoutLayer<F>::BackwardXpu(const Blobs<F> &top, Blobs<F> *bottom) {
     for (auto i = 0; i < bottom->size(); ++i) {
-      for (auto j = 0; j < bottom->at(i)->width; ++j) {
-        auto top_diff = top.at(i)->difference(j);
-        bottom->at(i)->difference(j) = top_diff * mask.at(i).value(j) * scale;
-      }
-      bottom->at(i)->IsValid();
+      device.Multiply(scale, top.at(i)->differences, mask.at(i), &bottom->at(i)->differences);
     }
   }
 

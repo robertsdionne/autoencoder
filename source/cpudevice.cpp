@@ -1,5 +1,6 @@
 #include AUTOENCODER_BLAS_HEADER
 #include <limits>
+#include <random>
 
 #include "cpudevice.hpp"
 #include "values.hpp"
@@ -106,6 +107,24 @@ namespace autoencoder {
   template <typename F>
   F CpuDevice<F>::Sum(const Values<F> &x) {
     return x.values.sum();
+  }
+
+  template <typename F>
+  void CpuDevice<F>::Copy(const Values<F> &x, Values<F> *y) {
+    y->values = x.values;
+  }
+
+  template <typename F>
+  void CpuDevice<F>::Bernoulli(std::mt19937 &generator, F p, Values<F> *y) {
+    auto bernoulli = std::bernoulli_distribution(p);
+    for (auto i = 0; i < y->values.size(); ++i) {
+      y->values[i] = bernoulli(generator);
+    }
+  }
+
+  template <typename F>
+  void CpuDevice<F>::Multiply(F alpha, const Values<F> &x, const Values<F> &y, Values<F> *z) {
+    z->values = alpha * x.values * y.values;
   }
 
   template class CpuDevice<float>;

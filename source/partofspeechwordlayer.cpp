@@ -15,7 +15,7 @@ namespace autoencoder {
       Blob<F> &classify_weights, Blob<F> &classify_bias,
       Blob<F> &combine_weights, Blob<F> &combine_bias,
       std::mt19937 &generator)
-    : dropout(p, generator),
+    : dropout(device, p, generator),
       corrupted_recurrent(combine_weights.height),
       corrupted_word(combine_weights.width - combine_weights.height),
       classify(device, classify_weights, classify_bias), classified(classify_weights.height),
@@ -36,7 +36,7 @@ namespace autoencoder {
     auto combine_output = Blobs<F>{&combined};
     auto rectified_linear_output = Blobs<F>{top->at(1)};
 
-    dropout.ForwardCpu(mode, bottom, &dropout_output);
+    dropout.ForwardXpu(mode, bottom, &dropout_output);
     classify.ForwardXpu(mode, dropout_recurrent_output, &classify_output);
     softmax.ForwardXpu(mode, classify_output, &softmax_output);
     concatenate.ForwardCpu(mode, dropout_output, &concatenate_output);
@@ -62,7 +62,7 @@ namespace autoencoder {
     concatenate.BackwardCpu(concatenate_output, &dropout_output);
     softmax.BackwardXpu(softmax_output, &classify_output);
     classify.BackwardXpu(classify_output, &dropout_recurrent_output);
-    dropout.BackwardCpu(dropout_output, bottom);
+    dropout.BackwardXpu(dropout_output, bottom);
     bottom->at(0)->IsValid();
     bottom->at(1)->IsValid();
   }

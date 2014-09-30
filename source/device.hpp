@@ -1,6 +1,8 @@
 #ifndef AUTOENCODER_DEVICE_HPP_
 #define AUTOENCODER_DEVICE_HPP_
 
+#include <random>
+
 #include "interface.hpp"
 
 namespace autoencoder {
@@ -37,6 +39,12 @@ namespace autoencoder {
     virtual void Square(F alpha, const Values<F> &x, Values<F> *y) = 0;
 
     virtual F Sum(const Values<F> &x) = 0;
+
+    virtual void Copy(const Values<F> &x, Values<F> *y) = 0;
+
+    virtual void Multiply(F alpha, const Values<F> &x, const Values<F> &y, Values<F> *z) = 0;
+
+    virtual void Bernoulli(std::mt19937 &generator, F p, Values<F> *y) = 0;
 
     virtual void Initialize(Blob<F> &blob) = 0;
 
