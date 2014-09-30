@@ -189,7 +189,7 @@ namespace autoencoder {
 
   template <typename F>
   void VexClDevice<F>::Square(F alpha, const Values<F> &x, Values<F> *y) {
-    y->values_device = alpha * x.values_device * x.values_device;
+    y->values_device = alpha * vex::tag<1>(x.values_device) * vex::tag<1>(x.values_device);
   }
 
   template <typename F>
