@@ -41,7 +41,7 @@ THE SOFTWARE.
 #include <boost/io/ios_state.hpp>
 
 // This should be available for all backends
-#include <CL/cl_platform.h>
+#include <OpenCL/cl_platform.h>
 
 /// \cond INTERNAL
 typedef unsigned int  uint;

@@ -21,4 +21,5 @@ add_dependencies(alltests ${BLAS_TARGET})
 
 target_link_libraries(
     alltests autoencoderlib clBLAS gflags-static gtest gtest_main ${BLAS_LIBRARY} ${Boost_LIBRARIES}
+    boost_system
     ${VEXCL_LIBRARIES})

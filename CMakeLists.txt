@@ -58,6 +58,10 @@ add_definitions(
 
 find_package(Boost COMPONENTS ${BOOST_COMPONENTS})
 
+link_directories(
+  /usr/local/lib
+)
+
 include_directories(
   SYSTEM
   libraries/clBLAS/src

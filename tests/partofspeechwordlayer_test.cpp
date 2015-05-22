@@ -65,7 +65,7 @@ TEST(PartOfSpeechWordLayerTest, TestForwardCpu) {
   EXPECT_FLOAT_EQ(1.4617033f, recurrent_output.value(2));
   EXPECT_FLOAT_EQ(2.0389292f, recurrent_output.value(3));
   EXPECT_FLOAT_EQ(0.86021233f, recurrent_output.value(4));
-  EXPECT_FLOAT_EQ(0.24303776f, recurrent_output.value(5));
+  EXPECT_FLOAT_EQ(0.24303791f, recurrent_output.value(5));
   EXPECT_FLOAT_EQ(0.2527028f, recurrent_output.value(6));
   EXPECT_FLOAT_EQ(0.0f, recurrent_output.value(7));
   EXPECT_FLOAT_EQ(0.26613188f, recurrent_output.value(8));
